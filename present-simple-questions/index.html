@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Present Simple Question Formation Lab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --wh: #9b59b6;
+            --aux: #2ecc71;
+            --tobe: #f39c12;
+            --subject: #3498db;
+            --verb: #e67e22;
+            --obj: #95a5a6;
+            --error: #e74c3c;
+            --bg: #f4f7f6;
+            --txt: #2c3e50;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--txt);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1150px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .1);
+        }
+
+        h1 { text-align: center; color: #34495e; margin: 0 0 5px; }
+
+        .subtitle { text-align: center; color: #7f8c8d; margin: 0 0 22px; }
+
+        .step-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        button {
+            padding: 9px 15px;
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: .2s;
+        }
+
+        button:hover { background: #2c3e50; }
+
+        button.active { background: #3498db; outline: 3px solid #b3d4fc; }
+
+        .zone { display: none; animation: fade .4s; }
+
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+        /* STEP 1 */
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 15px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            min-height: 65px;
+        }
+
+        .word-tile {
+            padding: 7px 12px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: grab;
+            user-select: none;
+        }
+
+        /* Question-slot order layout */
+        .build-order {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        .position {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+            flex: 1;
+            max-width: 220px;
+        }
+
+        .pos-label {
+            text-align: center;
+            font-size: .8rem;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-bottom: 6px;
+        }
+
+        .helper-choice {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .helper-choice .zone-box { flex: 1; }
+
+        .helper-note {
+            text-align: center;
+            font-size: .78rem;
+            color: var(--error);
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .zone-box {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 12px;
+            min-height: 140px;
+            text-align: center;
+        }
+
+        .zone-box h3 { margin: 0 0 10px; font-size: .95rem; }
+
+        .zone-box.wh { border-color: var(--wh); }
+        .zone-box.aux { border-color: var(--aux); }
+        .zone-box.tobe { border-color: var(--tobe); }
+        .zone-box.subject { border-color: var(--subject); }
+        .zone-box.verb { border-color: var(--verb); }
+        .zone-box.obj { border-color: var(--obj); }
+
+        #class-msg { text-align: center; margin-top: 15px; font-weight: bold; }
+
+        .hint { text-align: center; color: #7f8c8d; font-style: italic; }
+
+        /* STEPS 2, 2b, 2c */
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .sentence {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.45rem;
+            font-weight: bold;
+            margin: 35px 0;
+        }
+
+        .slot {
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: .2s;
+            border-bottom: 5px solid rgba(0, 0, 0, .2);
+        }
+
+        .slot:hover { transform: translateY(-5px); }
+
+        .slot.wh { background: var(--wh); }
+        .slot.aux { background: var(--aux); }
+        .slot.tobe { background: var(--tobe); }
+        .slot.subject { background: var(--subject); }
+        .slot.verb { background: var(--verb); }
+        .slot.obj { background: var(--obj); }
+
+        .slot.pulse { animation: pulse .7s ease; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+            100% { transform: scale(1); }
+        }
+
+        .ghost-slot {
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: #d5d8dc;
+            color: #7f8c8d;
+            font-size: 1rem;
+            text-decoration: line-through;
+            opacity: .65;
+            align-self: center;
+        }
+
+        .question-mark { color: #34495e; font-size: 1.7rem; }
+
+        .grammar-card {
+            max-width: 760px;
+            margin: auto;
+            padding: 18px;
+            border-radius: 10px;
+            background: #f8fbff;
+            border: 1px solid #d8e8f5;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .grammar-card strong { color: #2980b9; }
+
+        .link-note {
+            max-width: 760px;
+            margin: 15px auto 0;
+            padding: 12px;
+            border-radius: 8px;
+            background: #fff8e1;
+            border: 2px solid #ffe082;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* STEP 2C comparison */
+
+        .comparison-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-box {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .comparison-box:hover { transform: translateY(-3px); }
+
+        .comparison-box.regular { background: #e8f8f5; border: 2px solid #2ecc71; }
+        .comparison-box.tobecol { background: #fef9e7; border: 2px solid #f39c12; }
+
+        .comparison-box p em { color: #555; }
+
+        .decision-tree {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .decision-question { font-weight: bold; color: #2980b9; margin-bottom: 10px; }
+
+        .decision-answer {
+            margin-left: 20px;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #3498db;
+            margin-bottom: 10px;
+        }
+
+        .counter { text-align: center; color: #7f8c8d; font-size: .9rem; margin-top: 5px; }
+
+        /* STEP 3 */
+
+        .mistake-card {
+            background: #fff5f5;
+            border: 2px solid #feb2b2;
+            border-radius: 10px;
+            max-width: 700px;
+            margin: auto;
+            padding: 22px;
+            text-align: center;
+        }
+
+        .mistake-sentence { font-size: 1.7rem; margin: 20px 0; }
+
+        .bad-word {
+            padding: 3px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            border-bottom: 2px dashed #ccc;
+            transition: .2s;
+        }
+
+        .bad-word:hover { background: #fed7d7; }
+        .bad-word.correct { background: var(--aux); color: white; border-bottom: none; }
+        .bad-word.wrong { background: var(--error); color: white; }
+
+        .type-badge {
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        #explain {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            background: white;
+            border: 1px solid #ddd;
+            display: none;
+        }
+
+        /* STEP 4 */
+
+        .scramble { text-align: center; margin-top: 15px; }
+
+        .pool, .answer, .trash {
+            min-height: 65px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 12px auto;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: #fafafa;
+        }
+
+        .answer { border-color: #3498db; background: #f5fbff; }
+        .trash { border-color: var(--error); background: #fff5f5; }
+
+        .trash-label { color: var(--error); font-weight: bold; margin-top: 18px; }
+
+        .scramble-tile {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #34495e;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .scramble-tile:hover { background: #eee; }
+
+        .feedback { font-weight: bold; margin-top: 12px; min-height: 24px; }
+
+        .mode-label { font-size: .9rem; color: #7f8c8d; margin-bottom: 4px; }
+
+        @media (max-width: 768px) {
+            .comparison-panel { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Present Simple Question Formation Lab</h1>
+    <p class="subtitle">Master Yes/No, Wh-, and TO BE questions</p>
+
+    <div class="step-nav">
+        <button data-step="1" class="active">1️⃣ Classify</button>
+        <button data-step="2">2️⃣ Build Regular</button>
+        <button data-step="2b">2b️⃣ Build TO BE</button>
+        <button data-step="2c">2c️⃣ Compare</button>
+        <button data-step="3">3️⃣ Detect Errors</button>
+        <button data-step="4">4️⃣ Reorder</button>
+    </div>
+
+    <!-- STEP 1: CLASSIFICATION -->
+    <div id="step1" class="zone" style="display:block;">
+        <p style="text-align:center;">
+            Drag each word into the correct grammatical box.
+            The boxes are laid out in <strong>question order</strong>.
+        </p>
+
+        <div class="word-bank" id="bank"></div>
+
+        <div class="build-order">
+
+            <div class="position">
+                <div class="pos-label">1 · Wh- questions only</div>
+                <div class="zone-box wh" id="wh" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h3>Wh-Word</h3>
+                </div>
+            </div>
+
+            <div class="position">
+                <div class="pos-label">2 · The helper moves before the subject</div>
+                <div class="helper-note">⚠️ Pick ONE — never both!</div>
+                <div class="helper-choice">
+                    <div class="zone-box aux" id="aux" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h3>Do / Does<small><br>for action verbs</small></h3>
+                    </div>
+                    <div class="zone-box tobe" id="tobe" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <h3>Am / Is / Are<small><br>for "to be"</small></h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="position">
+                <div class="pos-label">3</div>
+                <div class="zone-box subject" id="subject" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h3>Subject</h3>
+                </div>
+            </div>
+
+            <div class="position">
+                <div class="pos-label">4 · action verbs only</div>
+                <div class="zone-box verb" id="verb" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h3>Base Verb</h3>
+                </div>
+            </div>
+
+            <div class="position">
+                <div class="pos-label">5</div>
+                <div class="zone-box obj" id="obj" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <h3>Object / Complement</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="class-msg"></div>
+
+        <p class="hint">
+            Action verbs: <strong>do/does + subject + base verb + object</strong>.<br>
+            "To be": <strong>am/is/are + subject + complement</strong> — no do/does, no base verb!
+        </p>
+    </div>
+
+    <!-- STEP 2: REGULAR BUILD -->
+    <div id="step2" class="zone">
+        <div class="controls">
+            <button onclick="setRegularMode('yesno')">Yes/No Question</button>
+            <button onclick="setRegularMode('wh')">Wh- Question</button>
+        </div>
+
+        <div class="sentence" id="regular-sentence"></div>
+
+        <div class="link-note" id="regular-link-note">
+            🔒 Do / Does is <u>locked</u> to the subject — they always change together!
+        </div>
+
+        <p class="hint">
+            Click any block to change it. Try changing the subject and watch
+            <strong>Do ⇄ Does</strong> change with it!
+        </p>
+
+        <div class="grammar-card" id="regular-grammar-card"></div>
+    </div>
+
+    <!-- STEP 2B: TO BE BUILD -->
+    <div id="step2b" class="zone">
+        <div class="controls">
+            <button onclick="setToBeMode('yesno')">Yes/No Question</button>
+            <button onclick="setToBeMode('wh')">Wh- Question</button>
+        </div>
+
+        <div class="sentence" id="tobe-sentence"></div>
+
+        <div class="link-note" id="tobe-link-note">
+            🔒 Am / Is / Are is <u>locked</u> to the subject — they always change together!
+        </div>
+
+        <p class="hint">
+            Click any block to change it. Try changing the subject and watch
+            <strong>Am ⇄ Is ⇄ Are</strong> follow it. There is <strong>no do/does</strong> here!
+        </p>
+
+        <div class="grammar-card" id="tobe-grammar-card"></div>
+    </div>
+
+    <!-- STEP 2C: COMPARISON -->
+    <div id="step2c" class="zone">
+        <h2 style="text-align: center;">Regular Verbs vs. TO BE Questions</h2>
+
+        <div class="comparison-panel">
+
+            <div class="comparison-box regular" onclick="nextPair()" title="Click to see another pair">
+                <h3>🟢 Regular Verbs (like, play, work)</h3>
+                <p style="font-size: 1.05rem;"><strong>Do/Does + subject + base verb + …?</strong></p>
+                <div id="regular-example" class="sentence"></div>
+                <p><em>Needs the "do/does" helper!</em></p>
+            </div>
+
+            <div class="comparison-box tobecol" onclick="nextPair()" title="Click to see another pair">
+                <h3>🟠 TO BE (am, is, are)</h3>
+                <p style="font-size: 1.05rem;"><strong>Am/Is/Are + subject + …?</strong></p>
+                <div id="tobe-example" class="sentence"></div>
+                <p><em>No "do/does", no base verb!</em></p>
+            </div>
+
+        </div>
+
+        <div class="counter" id="pair-counter"></div>
+
+        <div class="decision-tree">
+            <h3 style="text-align: center;">How to Choose: Quick Decision Guide</h3>
+            <div class="decision-question">Question 1: Is there a main action verb (like, play, study, watch)?</div>
+            <div class="decision-answer">
+                ✅ YES → Use <strong>do/does + subject + base verb</strong>.<br>
+                ❌ NO → Go to question 2.
+            </div>
+            <div class="decision-question">Question 2: Does the sentence describe being, feeling, or a location (happy, a doctor, at home, from Spain)?</div>
+            <div class="decision-answer">
+                ✅ YES → Use <strong>am/is/are + subject + complement</strong>.<br>
+                💡 "To be" needs no helper verb — it moves to the front by itself!
+            </div>
+        </div>
+
+        <p class="hint">Click either panel above to cycle through example pairs.</p>
+    </div>
+
+    <!-- STEP 3: ERROR DETECTION -->
+    <div id="step3" class="zone">
+        <div class="mistake-card">
+            <p>
+                <strong>Find the incorrect word</strong><br>
+                <span class="type-badge" id="error-type">Regular Verb</span>
+                <span id="error-counter" style="color:#999; font-size:.85rem;"></span>
+            </p>
+
+            <div class="mistake-sentence" id="mistake-sentence"></div>
+            <div id="explain"></div>
+            <button id="nextErr" style="margin-top:12px;display:none;" onclick="nextError()">Next →</button>
+        </div>
+    </div>
+
+    <!-- STEP 4: REORDER -->
+    <div id="step4" class="zone">
+        <div class="scramble">
+            <p>Arrange the words to make a correct question. Put the intruder in the red box.</p>
+            <div class="mode-label" id="scramble-mode"></div>
+
+            <div class="pool" id="pool"></div>
+            <div class="answer" id="answer"></div>
+
+            <div class="trash-label">Incorrect Word</div>
+            <div class="trash" id="trash"></div>
+
+            <button onclick="checkScramble()">Check</button>
+            <button onclick="skipScramble()">New</button>
+
+            <div class="feedback" id="scramble-feedback"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+/* ==================== DATA ==================== */
+
+/* NOTE: every key matches its zone-box id exactly (lowercase) so drag & drop works. */
+const data = {
+    wh:  ["What", "Where", "When", "Why", "How"],
+    aux: ["Do", "Does"],
+    tobe: ["Am", "Is", "Are"],
+    subject: ["I", "you", "he", "she", "it", "we", "they"],
+    verb: ["like", "play", "work", "live", "study", "watch"],
+    obj: ["pizza", "football", "in London", "English", "television", "at night"],
+    complement: ["happy", "at home", "a doctor", "tired", "in Paris", "a student"]
+};
+
+/* ---------- Errors (regular + TO BE, mixed) ---------- */
+
+const regularErrors = [
+    { arr: ["Does", "he", "likes", "pizza", "?"], wrong: 2, correct: "like", msg: "After does, use the base form: does he like.", type: "regular" },
+    { arr: ["Do", "she", "play", "tennis", "?"], wrong: 0, correct: "Does", msg: "He, she and it use 'does' in Present Simple questions.", type: "regular" },
+    { arr: ["Where", "does", "they", "live", "?"], wrong: 1, correct: "do", msg: "I, you, we and they use 'do'.", type: "regular" },
+    { arr: ["What", "do", "he", "watch", "?"], wrong: 1, correct: "does", msg: "He, she and it use 'does'.", type: "regular" },
+    { arr: ["Does", "she", "studies", "English", "?"], wrong: 2, correct: "study", msg: "The main verb stays in the base form after does.", type: "regular" },
+    { arr: ["Where", "do", "she", "work", "?"], wrong: 1, correct: "does", msg: "Use 'does' with she.", type: "regular" }
+];
+
+const toBeErrors = [
+    { arr: ["Do", "she", "happy", "?"], wrong: 0, correct: "Is", msg: "'Happy' is an adjective, not a verb — no 'do' needed. The verb 'to be' moves to the front: Is she happy?", type: "tobe" },
+    { arr: ["Is", "they", "at home", "?"], wrong: 0, correct: "Are", msg: "'They' pairs with 'are': Are they at home?", type: "tobe" },
+    { arr: ["Where", "do", "you", "from", "?"], wrong: 1, correct: "are", msg: "'From' is not a verb — it needs 'to be'. Where are you from?", type: "tobe" },
+    { arr: ["Does", "he", "a teacher", "?"], wrong: 0, correct: "Is", msg: "'A teacher' is a complement, not a verb. Use 'to be': Is he a teacher?", type: "tobe" },
+    { arr: ["Are", "I", "late", "?"], wrong: 0, correct: "Am", msg: "'I' pairs with 'am': Am I late?", type: "tobe" },
+    { arr: ["Why", "is", "you", "tired", "?"], wrong: 1, correct: "are", msg: "'You' pairs with 'are': Why are you tired?", type: "tobe" }
+];
+
+/* ---------- Scrambles (regular + TO BE, mixed) ---------- */
+
+const regularScrambles = [
+    { words: ["does", "he", "like", "pizza", "do"], correct: ["Does", "he", "like", "pizza"], intruder: "do", mode: "Yes/No question (regular verb)" },
+    { words: ["where", "do", "they", "live", "does"], correct: ["Where", "do", "they", "live"], intruder: "does", mode: "Wh- question (regular verb)" },
+    { words: ["does", "she", "study", "English", "studies"], correct: ["Does", "she", "study", "English"], intruder: "studies", mode: "Yes/No question (regular verb)" },
+    { words: ["what", "does", "he", "watch", "is"], correct: ["What", "does", "he", "watch"], intruder: "is", mode: "Wh- question (regular verb)" }
+];
+
+const toBeScrambles = [
+    { words: ["is", "she", "doctor", "a", "are"], correct: ["Is", "she", "a", "doctor"], intruder: "are", mode: "Yes/No question (TO BE)" },
+    { words: ["where", "are", "they", "from", "do"], correct: ["Where", "are", "they", "from"], intruder: "do", mode: "Wh- question (TO BE)" },
+    { words: ["am", "I", "right", "is", "do"], correct: ["Am", "I", "right"], intruder: "is", mode: "Yes/No question (TO BE)" },
+    { words: ["why", "are", "you", "sad", "is"], correct: ["Why", "are", "you", "sad"], intruder: "is", mode: "Wh- question (TO BE)" },
+    { words: ["are", "you", "a", "teacher", "does"], correct: ["Are", "you", "a", "teacher"], intruder: "does", mode: "Yes/No question (TO BE)" },
+    { words: ["how", "is", "he", "tired", "does"], correct: ["How", "is", "he"], intruder: "does", mode: "Wh- question (TO BE, trick!)" }
+];
+
+/* ---------- Comparison pairs for Step 2c ---------- */
+
+const comparisonPairs = [
+    {
+        regular: [["Does", "aux"], ["he", "subject"], ["like", "verb"], ["pizza", "obj"]],
+        tobe:    [["Is", "tobe"], ["he", "subject"], ["hungry", "obj"]]
+    },
+    {
+        regular: [["Where", "wh"], ["do", "aux"], ["they", "subject"], ["live", "verb"], ["in London", "obj"]],
+        tobe:    [["Where", "wh"], ["are", "tobe"], ["they", "subject"], ["from", "obj"]]
+    },
+    {
+        regular: [["Do", "aux"], ["you", "subject"], ["work", "verb"], ["at night", "obj"]],
+        tobe:    [["Are", "tobe"], ["you", "subject"], ["a doctor", "obj"]]
+    },
+    {
+        regular: [["What", "wh"], ["does", "aux"], ["she", "subject"], ["watch", "verb"]],
+        tobe:    [["What", "wh"], ["is", "tobe"], ["she", "subject"]]
+    },
+    {
+        regular: [["Does", "aux"], ["it", "subject"], ["work", "verb"]],
+        tobe:    [["Is", "tobe"], ["it", "subject"], ["cold", "obj"]]
+    },
+    {
+        regular: [["Why", "wh"], ["do", "aux"], ["we", "subject"], ["study", "verb"], ["English", "obj"]],
+        tobe:    [["Why", "wh"], ["are", "we", "subject"][0] === "Why" ? ["are", "tobe"] : null, ["we", "subject"], ["tired", "obj"]]
+    }
+];
+
+/* ---------- Utility ---------- */
+
+function shuffle(array) {
+    const copy = [...array];
+    for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+}
+
+/* Mixed and shuffled so TO BE appears right from the start */
+const allErrors = shuffle([...regularErrors, ...toBeErrors]);
+const allScrambles = shuffle([...regularScrambles, ...toBeScrambles]);
+
+/* ==================== STATE ==================== */
+
+let regularMode = "yesno";
+let toBeModeState = "yesno";
+
+let selRegular = { wh: 0, subject: 0, verb: 0, obj: 0 };
+let selToBe = { wh: 0, subject: 0, complement: 0 };
+
+let prevRegAux = null;
+let prevToBeForm = null;
+
+let errorIndex = 0;
+let scrambleIndex = 0;
+let pairIndex = 0;
+
+/* ==================== NAVIGATION ==================== */
+
+function navigateToStep(step) {
+    document.querySelectorAll(".zone").forEach(z => { z.style.display = "none"; });
+    const target = document.getElementById("step" + step);
+    if (target) target.style.display = "block";
+
+    document.querySelectorAll(".step-nav button").forEach(b => {
+        b.classList.toggle("active", b.dataset.step === step);
+    });
+
+    if (step === "1") initStep1();
+    if (step === "2") renderRegularQuestion();
+    if (step === "2b") renderToBeQuestion();
+    if (step === "2c") renderComparison();
+    if (step === "3") loadError();
+    if (step === "4") loadScramble();
+}
+
+document.querySelectorAll(".step-nav button").forEach(btn => {
+    btn.addEventListener("click", () => navigateToStep(btn.dataset.step));
+});
+
+/* ==================== STEP 1: CLASSIFICATION ==================== */
+
+function initStep1() {
+    const bank = document.getElementById("bank");
+    bank.innerHTML = "";
+
+    const wordPool = [];
+
+    for (const category in data) {
+        data[category].forEach(word => {
+            wordPool.push({ word, category });
+        });
+    }
+
+    shuffle(wordPool).forEach((item, index) => {
+        const tile = document.createElement("div");
+        tile.className = "word-tile";
+        tile.id = "word-" + index;
+        tile.textContent = item.word;
+        tile.draggable = true;
+        tile.dataset.category = item.category;
+
+        tile.ondragstart = e => { e.dataTransfer.setData("text/plain", tile.id); };
+
+        bank.appendChild(tile);
+    });
+
+    document.getElementById("class-msg").textContent = "";
+}
+
+function allowDrop(e) { e.preventDefault(); }
+
+function drop(e) {
+    e.preventDefault();
+
+    const tile = document.getElementById(e.dataTransfer.getData("text/plain"));
+    const target = e.target.closest(".zone-box");
+
+    if (!tile || !target) return;
+
+    const draggedCategory = tile.dataset.category;
+    const zoneId = target.id; /* wh, aux, tobe, subject, verb, obj */
+
+    const isMatch =
+        draggedCategory === zoneId ||
+        /* complements (happy, a doctor...) belong in the Object/Complement box */
+        (zoneId === "obj" && draggedCategory === "complement");
+
+    if (isMatch) {
+        target.appendChild(tile);
+        tile.style.background = "#dff0d8";
+        setTimeout(() => { tile.style.background = "white"; }, 500);
+        checkClassification();
+    } else {
+        tile.style.background = "#f2dede";
+        setTimeout(() => { tile.style.background = "white"; }, 500);
+    }
+}
+
+function checkClassification() {
+    const bank = document.getElementById("bank");
+    if (bank.children.length === 0) {
+        document.getElementById("class-msg").textContent =
+            "✅ Excellent! All words correctly classified.";
+    }
+}
+
+/* ==================== STEP 2: REGULAR BUILD ==================== */
+
+function setRegularMode(m) {
+    regularMode = m;
+    renderRegularQuestion();
+}
+
+function isThirdPerson(subject) {
+    return ["he", "she", "it"].includes(subject.toLowerCase());
+}
+
+function getAuxiliary(subject) {
+    return isThirdPerson(subject) ? "Does" : "Do";
+}
+
+function renderRegularQuestion(showLinkNote) {
+    const sentence = document.getElementById("regular-sentence");
+    const grammarCard = document.getElementById("regular-grammar-card");
+    const linkNote = document.getElementById("regular-link-note");
+    sentence.innerHTML = "";
+
+    const subject = data.subject[selRegular.subject];
+    const auxiliary = getAuxiliary(subject);
+    const auxJustChanged = prevRegAux !== null && prevRegAux !== auxiliary;
+    prevRegAux = auxiliary;
+
+    const parts = [];
+    if (regularMode === "wh") parts.push({ text: data.wh[selRegular.wh], category: "wh" });
+    parts.push({ text: auxiliary, category: "aux" });
+    parts.push({ text: subject, category: "subject" });
+    parts.push({ text: data.verb[selRegular.verb], category: "verb" });
+    parts.push({ text: data.obj[selRegular.obj], category: "obj" });
+
+    parts.forEach(part => {
+        const block = document.createElement("div");
+        block.className = "slot " + part.category;
+        block.textContent = part.text;
+
+        /* Clicking the AUX cycles the SUBJECT — that's the whole point:
+           do/does is locked to the subject and can't change alone. */
+        block.onclick = () => {
+            if (part.category === "aux" || part.category === "subject") {
+                selRegular.subject = (selRegular.subject + 1) % data.subject.length;
+                renderRegularQuestion(true);
+            } else if (data[part.category]) {
+                selRegular[part.category] = (selRegular[part.category] + 1) % data[part.category].length;
+                renderRegularQuestion(false);
+            }
+        };
+
+        if (part.category === "aux" && auxJustChanged) {
+            block.classList.add("pulse");
+            setTimeout(() => block.classList.remove("pulse"), 700);
+        }
+
+        sentence.appendChild(block);
+    });
+
+    const q = document.createElement("span");
+    q.className = "question-mark";
+    q.textContent = "?";
+    sentence.appendChild(q);
+
+    linkNote.style.display = showLinkNote ? "block" : "none";
+
+    if (regularMode === "yesno") {
+        grammarCard.innerHTML =
+            "<strong>Yes/No question pattern (regular verb):</strong><br>" +
+            "Do/Does + subject + base verb + object?<br><br>" +
+            "Example: <strong>" + auxiliary + " " + subject + " " + data.verb[selRegular.verb] + " " + data.obj[selRegular.obj] + "?</strong>";
+    } else {
+        grammarCard.innerHTML =
+            "<strong>Wh- question pattern (regular verb):</strong><br>" +
+            "Wh-word + do/does + subject + base verb + object?<br><br>" +
+            "Example: <strong>" + data.wh[selRegular.wh] + " " + auxiliary + " " + subject + " " + data.verb[selRegular.verb] + " " + data.obj[selRegular.obj] + "?</strong>";
+    }
+}
+
+/* ==================== STEP 2B: TO BE BUILD ==================== */
+
+function setToBeMode(m) {
+    toBeModeState = m;
+    renderToBeQuestion();
+}
+
+function getToBeForm(subject) {
+    const s = subject.toLowerCase();
+    if (s === "i") return "Am";
+    if (["he", "she", "it"].includes(s)) return "Is";
+    return "Are";
+}
+
+function renderToBeQuestion(showLinkNote) {
+    const sentence = document.getElementById("tobe-sentence");
+    const grammarCard = document.getElementById("tobe-grammar-card");
+    const linkNote = document.getElementById("tobe-link-note");
+    sentence.innerHTML = "";
+
+    const subject = data.subject[selToBe.subject];
+    const toBeForm = getToBeForm(subject);
+    const toBeJustChanged = prevToBeForm !== null && prevToBeForm !== toBeForm;
+    prevToBeForm = toBeForm;
+
+    /* Reminder of what is NOT here: a crossed-out do/does */
+    const ghost = document.createElement("div");
+    ghost.className = "ghost-slot";
+    ghost.textContent = "do/does ✗";
+    ghost.title = "No do/does with the verb to be!";
+    sentence.appendChild(ghost);
+
+    const parts = [];
+    if (toBeModeState === "wh") parts.push({ text: data.wh[selToBe.wh], category: "wh" });
+    parts.push({ text: toBeForm, category: "tobe" });
+    parts.push({ text: subject, category: "subject" });
+    parts.push({ text: data.complement[selToBe.complement], category: "obj" });
+
+    parts.forEach(part => {
+        const block = document.createElement("div");
+        block.className = "slot " + part.category;
+        block.textContent = part.text;
+
+        /* Clicking AM/IS/ARE cycles the SUBJECT — the form is locked to it. */
+        block.onclick = () => {
+            if (part.category === "tobe" || part.category === "subject") {
+                selToBe.subject = (selToBe.subject + 1) % data.subject.length;
+                renderToBeQuestion(true);
+            } else if (part.category === "wh") {
+                selToBe.wh = (selToBe.wh + 1) % data.wh.length;
+                renderToBeQuestion(false);
+            } else if (part.category === "obj") {
+                selToBe.complement = (selToBe.complement + 1) % data.complement.length;
+                renderToBeQuestion(false);
+            }
+        };
+
+        if (part.category === "tobe" && toBeJustChanged) {
+            block.classList.add("pulse");
+            setTimeout(() => block.classList.remove("pulse"), 700);
+        }
+
+        sentence.appendChild(block);
+    });
+
+    const q = document.createElement("span");
+    q.className = "question-mark";
+    q.textContent = "?";
+    sentence.appendChild(q);
+
+    linkNote.style.display = showLinkNote ? "block" : "none";
+
+    if (toBeModeState === "yesno") {
+        grammarCard.innerHTML =
+            "<strong>Yes/No question pattern (TO BE):</strong><br>" +
+            "Am/Is/Are + subject + complement?<br><br>" +
+            "Example: <strong>" + toBeForm + " " + subject + " " + data.complement[selToBe.complement] + "?</strong><br><br>" +
+            "⚠️ NO 'do/does' — 'to be' moves to the front by itself!<br>" +
+            "<em>I → Am, He/She/It → Is, You/We/They → Are</em>";
+    } else {
+        grammarCard.innerHTML =
+            "<strong>Wh- question pattern (TO BE):</strong><br>" +
+            "Wh-word + am/is/are + subject + complement?<br><br>" +
+            "Example: <strong>" + data.wh[selToBe.wh] + " " + toBeForm + " " + subject + " " + data.complement[selToBe.complement] + "?</strong><br><br>" +
+            "⚠️ The 'to be' form still matches the subject, even after a Wh- word!";
+    }
+}
+
+/* ==================== STEP 2C: COMPARISON ==================== */
+
+function renderComparison() {
+    const pair = comparisonPairs[pairIndex];
+
+    renderRoleList(document.getElementById("regular-example"), [
+        ["do/does ✗", "ghost"],
+        ...pair.regular
+    ]);
+
+    renderRoleList(document.getElementById("tobe-example"), [
+        ["am/is/are ✗", "ghost"],
+        ...pair.tobe
+    ]);
+
+    document.getElementById("pair-counter").textContent =
+        "Example pair " + (pairIndex + 1) + " of " + comparisonPairs.length;
+}
+
+function renderRoleList(container, roles) {
+    container.innerHTML = "";
+    roles.forEach(([text, category]) => {
+        if (category === "ghost") {
+            const g = document.createElement("div");
+            g.className = "ghost-slot";
+            g.textContent = text;
+            container.appendChild(g);
+        } else {
+            const s = document.createElement("div");
+            s.className = "slot " + category;
+            s.textContent = text;
+            container.appendChild(s);
+        }
+    });
+    const q = document.createElement("span");
+    q.className = "question-mark";
+    q.textContent = "?";
+    container.appendChild(q);
+}
+
+function nextPair() {
+    pairIndex = (pairIndex + 1) % comparisonPairs.length;
+    renderComparison();
+}
+
+/* ==================== STEP 3: ERROR DETECTION ==================== */
+
+function loadError() {
+    const current = allErrors[errorIndex % allErrors.length];
+
+    const badge = document.getElementById("error-type");
+    badge.textContent = current.type === "tobe" ? "TO BE question" : "Regular verb question";
+    badge.style.background = current.type === "tobe" ? "#f39c12" : "#2ecc71";
+
+    document.getElementById("error-counter").textContent =
+        "  (" + (errorIndex + 1) + " / " + allErrors.length + ")";
+
+    const sentenceEl = document.getElementById("mistake-sentence");
+    sentenceEl.innerHTML = "";
+
+    current.arr.forEach((word, index) => {
+        const span = document.createElement("span");
+        span.className = "bad-word";
+        span.textContent = word;
+        span.dataset.index = index;
+
+        span.onclick = () => {
+            const explanation = document.getElementById("explain");
+            span.classList.remove("wrong");
+
+            if (parseInt(span.dataset.index) === current.wrong) {
+                span.classList.add("correct");
+                explanation.innerHTML =
+                    "✅ Correct! " + current.msg +
+                    "<br>The correct word is <strong>" + current.correct + "</strong>.";
+                document.getElementById("nextErr").style.display = "inline-block";
+            } else {
+                span.classList.add("wrong");
+                explanation.innerHTML = "❌ That is not the incorrect word. Try again.";
+            }
+
+            explanation.style.display = "block";
+        };
+
+        sentenceEl.appendChild(span);
+    });
+
+    document.getElementById("explain").style.display = "none";
+    document.getElementById("nextErr").style.display = "none";
+}
+
+function nextError() {
+    errorIndex = (errorIndex + 1) % allErrors.length;
+    loadError();
+}
+
+/* ==================== STEP 4: REORDER (mixed list) ==================== */
+
+function loadScramble() {
+    const current = allScrambles[scrambleIndex % allScrambles.length];
+
+    document.getElementById("scramble-mode").textContent =
+        "Current exercise: " + current.mode;
+
+    const pool = document.getElementById("pool");
+    const answer = document.getElementById("answer");
+    const trash = document.getElementById("trash");
+    const feedback = document.getElementById("scramble-feedback");
+
+    pool.innerHTML = "";
+    answer.innerHTML = "";
+    trash.innerHTML = "";
+    feedback.textContent = "";
+
+    shuffle(current.words).forEach(word => {
+        const tile = document.createElement("div");
+        tile.className = "scramble-tile";
+        tile.textContent = word;
+        tile.onclick = () => moveTile(tile, current);
+        pool.appendChild(tile);
+    });
+}
+
+function moveTile(tile, current) {
+    const pool = document.getElementById("pool");
+    const answer = document.getElementById("answer");
+    const trash = document.getElementById("trash");
+
+    if (pool.contains(tile)) {
+        if (tile.textContent.toLowerCase() === current.intruder.toLowerCase()) {
+            trash.appendChild(tile);
+        } else {
+            answer.appendChild(tile);
+        }
+    } else {
+        pool.appendChild(tile);
+    }
+}
+
+function checkScramble() {
+    const current = allScrambles[scrambleIndex % allScrambles.length];
+    const feedback = document.getElementById("scramble-feedback");
+
+    const answerWords = [...document.getElementById("answer").children].map(t => t.textContent);
+    const trashWords = [...document.getElementById("trash").children].map(t => t.textContent);
+
+    const answerCorrect =
+        answerWords.join(" ").toLowerCase() === current.correct.join(" ").toLowerCase();
+    const intruderCorrect =
+        trashWords.some(w => w.toLowerCase() === current.intruder.toLowerCase());
+
+    if (answerCorrect && intruderCorrect) {
+        feedback.textContent = "✅ Correct! Great question formation.";
+        setTimeout(() => { scrambleIndex++; loadScramble(); }, 1000);
+    } else {
+        feedback.textContent = "❌ Not quite. Check the word order and the intruder.";
+    }
+}
+
+function skipScramble() {
+    scrambleIndex++;
+    loadScramble();
+}
+
+/* ==================== INITIALISE ==================== */
+
+initStep1();
+renderRegularQuestion();
+renderToBeQuestion();
+renderComparison();
+</script>
+
+</body>
+</html>
