@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Present Perfect Mastery Lab</title>
+    <title>Present Perfect Mastery Lab – Updated</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root{
@@ -15,7 +15,7 @@
             --txt:#2c3e50;
         }
         body{
-            font-family:Segoe UI,Tahoma,Geneva, Verdana,sans-serif;
+            font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
             background:var(--bg);
             color:var(--txt);
             margin:0;
@@ -119,10 +119,7 @@
         .bad-word.wrong{background:var(--error);color:#fff;}
         #explain{margin-top:15px;padding:12px;border-radius:6px;background:#fff;border:1px solid #ddd;display:none;}
         /* ---------- STEP 4 ---------- */
-        .scramble{
-            text-align:center;
-            margin-top:15px;
-        }
+        .scramble{ text-align:center; margin-top:15px; }
         .pool,.answer,.trash{
             min-height:60px;
             border:2px solid #ddd;
@@ -147,11 +144,16 @@
         }
         .scramble-tile:hover{background:#eee;}
         .feedback{font-weight:bold;margin-top:12px;}
+        .mode-label{
+            font-size:0.9rem;
+            color:#7f8c8d;
+            margin-bottom:4px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Present Perfect Mastery Lab</h1>
+    <h1>Present Perfect Mastery Lab – Updated</h1>
 
     <div class="step-nav">
         <button id="b1" class="active" onclick="showStep(1)">1️⃣ Classify</button>
@@ -161,7 +163,7 @@
     </div>
 
     <!-- STEP 1 – Classification -->
-    <div id="step1" class="zone">
+    <div id="step1" class="zone" style="display:block;">
         <p style="text-align:center;">Drag each word into the correct box.</p>
         <div class="word-bank" id="bank"></div>
         <div class="drop-zones">
@@ -197,7 +199,8 @@
     <!-- STEP 4 – Reorder Exercise -->
     <div id="step4" class="zone">
         <div class="scramble">
-            <p>Arrange the words to a correct sentence. Place the intruder in the red box.</p>
+            <p>Arrange the words to make a correct sentence. Put the intruder in the red box.</p>
+            <div class="mode-label" id="scramble-mode"></div>
             <div class="pool" id="pool"></div>
             <div class="answer" id="answer"></div>
             <div class="trash-label">Incorrect Word</div>
@@ -212,7 +215,7 @@
 <script>
 /* ---------- DATA ---------- */
 const data = {
-    subject:["I","You","He","She","It","We","They"],
+    subject:["i","you","he","she","it","we","they"],   // keep lower‑case as stored
     aux:["have","has"],
     verb:["visited","eaten","seen","finished","bought","studied"],
     obj:["Paris","the pizza","the movie","the homework","a new car","English"]
@@ -226,9 +229,9 @@ const errors = [
 ];
 
 const scrambles = [
-    {words:["has","English","studied","it","have"],correct:["it","has","studied","English"],intruder:"have"},
-    {words:["visited","They","not","have","Paris","has"],correct:["They","have","not","visited","Paris"],intruder:"has"},
-    {words:["she","seen","movie","has","the","have"],correct:["has","she","seen","the","movie"],intruder:"have"}
+    {words:["has","English","studied","it","have"],correct:["it","has","studied","English"],intruder:"have",mode:"affirm"},
+    {words:["visited","They","not","have","Paris","has"],correct:["They","have","not","visited","Paris"],intruder:"has",mode:"neg"},
+    {words:["she","seen","movie","has","the","have"],correct:["has","she","seen","the","movie"],intruder:"have",mode:"ques"}
 ];
 
 /* ---------- STATE ---------- */
@@ -249,7 +252,7 @@ function showStep(n){
 
 /* ---------- STEP 1 ---------- */
 function initStep1(){
-    const bank = document.getElementById('bank');
+    const bank=document.getElementById('bank');
     let pool=[];
     for(let cat in data) data[cat].forEach(w=>pool.push({w,cat}));
     pool.sort(()=>Math.random()-0.5);
@@ -282,8 +285,7 @@ function drop(e){
     }
 }
 function checkDone(){
-    const remaining=document.getElementById('bank').children.length;
-    if(remaining===0){
+    if(document.getElementById('bank').children.length===0){
         document.getElementById('class-msg').textContent='✅ All placed! Move to the next step.';
     }
 }
@@ -295,7 +297,8 @@ function setMode(m){
 }
 function getAux(){
     const sub=data.subject[selection.subject];
-    return (sub==="He"||sub==="She"||sub==="It")?"has":"have";
+    // treat lower‑case “he/she/it” as singular
+    return (sub==="he"||sub==="she"||sub==="it")?"has":"have";
 }
 function renderSentence(){
     const arena=document.getElementById('sentence');
@@ -318,6 +321,13 @@ function renderSentence(){
         }
         arena.appendChild(d);
     });
+    // add a real question mark for the question mode
+    if(mood==='ques'){
+        const qm=document.createElement('div');
+        qm.textContent='?';
+        qm.style.fontSize='1.5rem';
+        arena.appendChild(qm);
+    }
 }
 function cycle(cat){
     const list=data[cat];
@@ -328,7 +338,7 @@ function cycle(cat){
 /* ---------- STEP 3 ---------- */
 function loadError(){
     const e=errors[errIdx];
-    const line = e.arr.map((w,i)=>`<span class="bad-word" data-idx="${i}">${w}</span>`).join(' ');
+    const line=e.arr.map((w,i)=>`<span class="bad-word" data-idx="${i}">${w}</span>`).join(' ');
     document.getElementById('mistake-sentence').innerHTML=line;
     document.getElementById('explain').style.display='none';
     document.getElementById('nextErr').style.display='none';
@@ -337,10 +347,10 @@ function loadError(){
             const idx=parseInt(el.dataset.idx);
             if(idx===e.wrong){
                 el.classList.add('correct');
-                document.getElementById('explain').innerHTML=`✅ ${e.msg} The correct word is <strong>${e.correct}</strong>.`;
+                document.getElementById('explain').innerHTML=`✅ ${e.msg} The right word is <strong>${e.correct}</strong>.`;
             }else{
                 el.classList.add('wrong');
-                document.getElementById('explain').innerHTML=`❌ That’s not the error. Try again.`;
+                document.getElementById('explain').innerHTML='❌ That’s not the error. Try again.';
             }
             document.getElementById('explain').style.display='block';
             if(idx===e.wrong) document.getElementById('nextErr').style.display='inline-block';
@@ -354,12 +364,13 @@ function nextError(){
 
 /* ---------- STEP 4 ---------- */
 function loadScramble(){
-    const ch=scrambles[scrambleIdx];
+    const cur=scrambles[scrambleIdx];
+    document.getElementById('scramble-mode').textContent=`Current mode: ${cur.mode.toUpperCase()}`;
     const pool=document.getElementById('pool');
     const ans=document.getElementById('answer');
     const trash=document.getElementById('trash');
     pool.innerHTML=''; ans.innerHTML=''; trash.innerHTML=''; document.getElementById('scramble-feedback').textContent='';
-    ch.words.sort(()=>Math.random()-0.5).forEach(w=>{
+    cur.words.sort(()=>Math.random()-0.5).forEach(w=>{
         const t=document.createElement('div');
         t.className='scramble-tile';
         t.textContent=w;
@@ -371,17 +382,14 @@ function moveTile(tile){
     const pool=document.getElementById('pool');
     const ans=document.getElementById('answer');
     const trash=document.getElementById('trash');
+    const cur=scrambles[scrambleIdx];
     if(pool.contains(tile)){
-        const cur=scrambles[scrambleIdx];
-        if(tile.textContent===cur.intruder){
-            trash.appendChild(tile);
-        }else{
-            ans.appendChild(tile);
-        }
+        if(tile.textContent===cur.intruder) trash.appendChild(tile);
+        else ans.appendChild(tile);
     }else if(ans.contains(tile)){
         pool.appendChild(tile);
     }else if(trash.contains(tile)){
-        pool.appendChild(tile);
+        pool.appendChild(tile);   // allow moving back if a mistake was made
     }
 }
 function checkScramble(){
@@ -389,15 +397,15 @@ function checkScramble(){
     const ansArr=[...document.getElementById('answer').children].map(t=>t.textContent);
     const trashArr=[...document.getElementById('trash').children].map(t=>t.textContent);
     const correct = ansArr.join(' ')===cur.correct.join(' ') && trashArr.includes(cur.intruder);
-    document.getElementById('scramble-feedback').textContent=correct?'✅ Correct!':'❌ Not quite. Try rearranging again.';
+    document.getElementById('scramble-feedback').textContent=correct?'✅ Correct!':'❌ Not quite – try again.';
     if(correct){
         scrambleIdx=(scrambleIdx+1)%scrambles.length;
     }
 }
 
-/* ---------- INITIALISE ---------- */
-initStep1();
-renderSentence();
+/* ---------- INIT ---------- */
+initStep1();          // Step 1 words
+renderSentence();    // default Step 2 view
 </script>
 </body>
 </html>
