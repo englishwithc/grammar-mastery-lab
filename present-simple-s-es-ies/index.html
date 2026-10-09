@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Magic Verb Lab</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&family=Poppins:wght@600;800&display=swap"
+    rel="stylesheet"
+  >
+  <style>
+    :root {
+      --primary: #ff6b6b;
+      --secondary: #4ecdc4;
+      --accent: #ffe66d;
+      --bg: #f7fff7;
+      --text: #2f2f2f;
+      --wrong: #ff4d4d;
+      --correct: #4caf50;
+      --highlight: #ffdf00;
+    }
+
+    body[data-theme="teen"] {
+      --primary: #6c5ce7;
+      --secondary: #a29bfe;
+      --accent: #fdcb6e;
+      --bg: #f5f6fa;
+      --text: #2d3436;
+      --wrong: #d63031;
+      --correct: #00b894;
+      --highlight: #ffeaa7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: "Quicksand", sans-serif;
+      text-align: center;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body[data-theme="teen"] h1,
+    body[data-theme="teen"] h2,
+    body[data-theme="teen"] .subject-btn,
+    body[data-theme="teen"] .rule-category-btn,
+    body[data-theme="teen"] .example-word,
+    body[data-theme="teen"] .game-prompt,
+    body[data-theme="teen"] .score-board,
+    body[data-theme="teen"] .end-btn,
+    body[data-theme="teen"] .game-bubble,
+    body[data-theme="teen"] .base-verb,
+    body[data-theme="teen"] .streak-indicator,
+    body[data-theme="teen"] .morph-display,
+    body[data-theme="teen"] .verb-display {
+      font-family: "Poppins", "Quicksand", sans-serif;
+      font-weight: 700;
+    }
+
+    body[data-theme="teen"] .transformer-box,
+    body[data-theme="teen"] #game-canvas,
+    body[data-theme="teen"] .game-prompt-container {
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid var(--secondary);
+      background: white;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(20deg) scale(1.1);
+      border-color: var(--primary);
+    }
+
+    h1,
+    h2 {
+      color: var(--primary);
+      font-family: "Fredoka One", cursive;
+    }
+
+    p {
+      max-width: 700px;
+      padding: 0 12px;
+      line-height: 1.5;
+    }
+
+    .nav-dots {
+      position: fixed;
+      z-index: 100;
+      top: 50%;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      transform: translateY(-50%);
+    }
+
+    .dot {
+      width: 15px;
+      height: 15px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: #ccc;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .dot.active {
+      background: var(--primary);
+      transform: scale(1.3);
+    }
+
+    section {
+      display: none;
+      min-height: 100vh;
+      padding: 40px 20px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    section.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      width: min(800px, 100%);
+      margin-bottom: 50px;
+    }
+
+    .subject-btn {
+      padding: 20px;
+      border: 4px solid var(--secondary);
+      border-radius: 20px;
+      background: white;
+      cursor: pointer;
+      font-family: "Fredoka One", cursive;
+      font-size: 1.5rem;
+      transition: 0.2s;
+    }
+
+    .subject-btn:hover {
+      background: var(--secondary);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .verb-display {
+      display: flex;
+      min-height: 120px;
+      align-items: center;
+      gap: 10px;
+      font-family: "Fredoka One", cursive;
+      font-size: clamp(3rem, 10vw, 5rem);
+    }
+
+    .suffix {
+      display: inline-block;
+      color: var(--primary);
+      opacity: 0;
+      transform: scale(0);
+      transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .suffix.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .pulse {
+      animation: pulse 0.4s ease-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { color: var(--secondary); transform: scale(1.1); }
+    }
+
+    .rule-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin: 10px 0 30px;
+    }
+
+    .rule-category-btn {
+      padding: 15px 25px;
+      border: 4px solid var(--secondary);
+      border-radius: 15px;
+      background: white;
+      cursor: pointer;
+      font-family: "Fredoka One", cursive;
+      font-size: 1.2rem;
+      transition: 0.2s;
+    }
+
+    .rule-category-btn:hover {
+      background: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .rule-category-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+
+    .examples-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .example-word {
+      padding: 12px 20px;
+      border: 3px solid var(--secondary);
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      font-family: "Fredoka One", cursive;
+      font-size: 1.2rem;
+      opacity: 0.8;
+      transition: 0.2s;
+    }
+
+    .example-word:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    .example-word.active {
+      border-color: var(--secondary);
+      background: var(--secondary);
+      color: white;
+      opacity: 1;
+    }
+
+    .morph-display {
+      display: flex;
+      min-height: 150px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: "Fredoka One", cursive;
+      font-size: clamp(3rem, 10vw, 6rem);
+    }
+
+    .morph-label {
+      margin-top: 10px;
+      color: var(--text);
+      font-family: "Quicksand", sans-serif;
+      font-size: 1.2rem;
+    }
+
+    .letter-group {
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .highlight-end {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    .transformed {
+      display: inline-block;
+      color: var(--correct);
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.5); }
+      to { transform: scale(1); }
+    }
+
+    .transformer-box {
+      width: min(600px, 100%);
+      padding: 40px 20px;
+      border: 5px solid var(--secondary);
+      border-radius: 40px;
+      background: white;
+      box-shadow: 0 10px 0 var(--secondary);
+    }
+
+    .base-verb {
+      margin-bottom: 30px;
+      font-family: "Fredoka One", cursive;
+      font-size: clamp(2.5rem, 8vw, 3rem);
+    }
+
+    .ending-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .end-btn {
+      padding: 15px 30px;
+      border: 0;
+      border-radius: 15px;
+      background: var(--accent);
+      cursor: pointer;
+      font-family: "Fredoka One", cursive;
+      font-size: 2rem;
+      transition: 0.2s;
+    }
+
+    .end-btn:hover {
+      transform: translateY(-5px);
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    #game-header {
+      width: min(800px, 90vw);
+      margin-bottom: 15px;
+    }
+
+    .game-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 0 10px;
+    }
+
+    .score-board {
+      font-family: "Fredoka One", cursive;
+      font-size: 1.8rem;
+      color: var(--text);
+    }
+
+    .streak-indicator {
+      font-family: "Fredoka One", cursive;
+      font-size: 1.4rem;
+      color: var(--text);
+      transition: color 0.3s;
+    }
+
+    .game-prompt-container {
+      background: white;
+      padding: 25px 50px;
+      border-radius: 20px;
+      border: 4px solid var(--primary);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      margin: 10px 0 20px;
+      min-width: 280px;
+    }
+
+    .game-prompt {
+      font-family: "Fredoka One", cursive;
+      font-size: 3rem;
+      color: var(--text);
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .game-prompt strong {
+      color: var(--primary);
+      font-size: 3.2rem;
+      margin-right: 10px;
+    }
+
+    .highlight-last2 {
+      background: var(--highlight);
+      padding: 0 8px;
+      border-radius: 6px;
+      display: inline-block;
+      color: var(--text);
+    }
+
+    .heat-wrap {
+      position: relative;
+      width: min(600px, 80vw);
+      margin: 0 auto 15px;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 20px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid var(--secondary);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #81ecec, #00cec9);
+      border-radius: 8px;
+      transition: width 0.3s ease, background 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .steam {
+      position: absolute;
+      top: -14px;
+      width: 5px;
+      height: 16px;
+      border-radius: 3px;
+      background: rgba(160, 160, 160, 0.55);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .steam.s1 { left: 35%; }
+    .steam.s2 { left: 50%; }
+    .steam.s3 { left: 65%; }
+
+    .heat-wrap.warm .steam,
+    .heat-wrap.hot .steam {
+      opacity: 1;
+      animation: steamRise 1.4s ease-in-out infinite;
+    }
+
+    .heat-wrap.warm .steam.s2,
+    .heat-wrap.hot .steam.s2 {
+      animation-delay: 0.45s;
+    }
+
+    .heat-wrap.warm .steam.s3,
+    .heat-wrap.hot .steam.s3 {
+      animation-delay: 0.9s;
+    }
+
+    @keyframes steamRise {
+      0% { transform: translateY(4px) scaleY(0.8); opacity: 0.5; }
+      100% { transform: translateY(-14px) scaleY(1.3); opacity: 0; }
+    }
+
+    #game-canvas {
+      position: relative;
+      width: min(800px, 90vw);
+      height: min(500px, 60vh);
+      min-height: 320px;
+      overflow: hidden;
+      margin: 0 auto;
+      border: 8px solid white;
+      border-radius: 30px;
+      background: #e0f7fa;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    body[data-theme="teen"] #game-canvas {
+      background: #dfe6e9;
+    }
+
+    .bubble-wrapper {
+      position: absolute;
+      bottom: -110px;
+      width: 90px;
+      height: 90px;
+      animation: floatUp var(--duration, 6s) linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+      }
+      25% {
+        transform: translateY(-150px) translateX(calc(var(--wobble, 0px) * 0.5)) rotate(calc(var(--rotation, 0deg) * 0.5));
+      }
+      50% {
+        transform: translateY(-300px) translateX(calc(var(--wobble, 0px) * -0.3)) rotate(calc(var(--rotation, 0deg) * -0.5));
+      }
+      75% {
+        transform: translateY(-450px) translateX(calc(var(--wobble, 0px) * 0.4)) rotate(calc(var(--rotation, 0deg) * 0.3));
+      }
+      100% {
+        transform: translateY(-680px) translateX(0) rotate(0deg);
+      }
+    }
+
+    .game-bubble {
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 0;
+      padding: 0;
+      background: radial-gradient(circle at 30% 30%, white, var(--secondary));
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      font-family: "Fredoka One", cursive;
+      font-size: 1.4rem;
+      color: var(--text);
+      user-select: none;
+      transition: background 0.2s, transform 0.2s, opacity 0.2s;
+    }
+
+    .hint-popup {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--wrong);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 15px;
+      font-family: "Quicksand", sans-serif;
+      font-size: 1.1rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 200;
+      max-width: 90vw;
+      pointer-events: none;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .hint-popup.show {
+      opacity: 1;
+    }
+
+    .win-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+
+    .win-screen.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .win-screen h2 {
+      font-size: 3rem;
+      color: var(--correct);
+      margin-bottom: 20px;
+    }
+
+    .win-screen button {
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      border: 4px solid var(--secondary);
+      border-radius: 20px;
+      background: var(--accent);
+      font-family: "Fredoka One", cursive;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .win-screen button:hover {
+      transform: scale(1.05);
+      background: var(--secondary);
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      .nav-dots {
+        right: 8px;
+      }
+
+      .rule-category-btn {
+        padding: 12px 16px;
+        font-size: 1rem;
+      }
+
+      .transformer-box {
+        padding: 30px 15px;
+      }
+
+      .bubble-wrapper,
+      .game-bubble {
+        width: 75px;
+        height: 75px;
+      }
+
+      .game-bubble {
+        font-size: 1.2rem;
+      }
+
+      .game-prompt {
+        font-size: 2rem;
+      }
+
+      .game-prompt strong {
+        font-size: 2.2rem;
+      }
+
+      .score-board {
+        font-size: 1.4rem;
+      }
+
+      .streak-indicator {
+        font-size: 1.1rem;
+      }
+
+      .game-prompt-container {
+        padding: 20px 30px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="kid">
+
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme" title="Switch theme">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 3 A9 9 0 0 1 12 21 Z" fill="currentColor"/>
+    </svg>
+  </button>
+
+  <nav class="nav-dots" aria-label="Page sections">
+    <button class="dot active" type="button" aria-label="Section 1" onclick="showSection(0)"></button>
+    <button class="dot" type="button" aria-label="Section 2" onclick="showSection(1)"></button>
+    <button class="dot" type="button" aria-label="Section 3" onclick="showSection(2)"></button>
+    <button class="dot" type="button" aria-label="Section 4" onclick="showSection(3)"></button>
+  </nav>
+
+  <section id="sec0" class="active">
+    <h1>Who gets the Magic S?</h1>
+    <p>Click a person to see if the verb changes!</p>
+
+    <div class="subject-grid">
+      <button class="subject-btn" type="button" onclick="checkSubject(false)">I</button>
+      <button class="subject-btn" type="button" onclick="checkSubject(false)">You</button>
+      <button class="subject-btn" type="button" onclick="checkSubject(true)">He</button>
+      <button class="subject-btn" type="button" onclick="checkSubject(true)">She</button>
+      <button class="subject-btn" type="button" onclick="checkSubject(true)">It</button>
+      <button class="subject-btn" type="button" onclick="checkSubject(false)">We</button>
+      <button class="subject-btn" type="button" onclick="checkSubject(false)">They</button>
+    </div>
+
+    <div class="verb-display">
+      <span id="base-word">Play</span><span id="magic-s" class="suffix">s</span>
+    </div>
+  </section>
+
+  <section id="sec1">
+    <h1>The Rule Lab</h1>
+    <p>Pick a rule category, then click a word to see the transformation!</p>
+
+    <div class="rule-buttons">
+      <button class="rule-category-btn active" type="button"
+        data-category="regular" onclick="selectRuleCategory(this, 'regular')">
+        Regular -s
+      </button>
+      <button class="rule-category-btn" type="button"
+        data-category="es" onclick="selectRuleCategory(this, 'es')">
+        Special -es
+      </button>
+      <button class="rule-category-btn" type="button"
+        data-category="ies" onclick="selectRuleCategory(this, 'ies')">
+        Y-Change -ies
+      </button>
+    </div>
+
+    <div class="examples-grid" id="examples-container"></div>
+
+    <div class="morph-display" id="morph-box" aria-live="polite">
+      <span>Select a category above!</span>
+      <div class="morph-label"></div>
+    </div>
+  </section>
+
+  <section id="sec2">
+    <h1>The Verb Transformer</h1>
+    <p>Now you try! Choose the correct ending for the third person.</p>
+
+    <div class="transformer-box" id="transformer">
+      <div class="base-verb" id="trans-word">Play</div>
+      <div class="ending-options">
+        <button class="end-btn" type="button" onclick="testEnding('s')">-s</button>
+        <button class="end-btn" type="button" onclick="testEnding('es')">-es</button>
+        <button class="end-btn" type="button" onclick="testEnding('ies')">-ies</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="sec3">
+    <h1>Verb Bubble Pop!</h1>
+    <div id="game-header">
+      <div class="game-stats">
+        <div class="score-board">Score: <span id="score">0</span> / 20</div>
+        <div class="streak-indicator" id="streak-text">Streak: <span id="streak">0</span></div>
+      </div>
+      <div class="game-prompt-container">
+        <p class="game-prompt" id="game-prompt">She + Fly</p>
+      </div>
+      <div class="heat-wrap" id="heat-wrap">
+        <div class="steam s1"></div>
+        <div class="steam s2"></div>
+        <div class="steam s3"></div>
+        <div class="progress-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+      </div>
+    </div>
+    <div id="game-canvas"></div>
+    <div class="hint-popup" id="hint-popup"></div>
+
+    <div class="win-screen" id="win-screen">
+      <h2>YOU WON!</h2>
+      <p style="font-size: 1.5rem; margin-bottom: 30px;">You mastered 20 verbs!</p>
+      <button type="button" onclick="restartGame()">Play Again!</button>
+    </div>
+  </section>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+
+    const savedTheme = localStorage.getItem('verbLabTheme');
+    if (savedTheme) {
+      document.body.setAttribute('data-theme', savedTheme);
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.body.getAttribute('data-theme');
+      const next = current === 'teen' ? 'kid' : 'teen';
+      document.body.setAttribute('data-theme', next);
+      localStorage.setItem('verbLabTheme', next);
+    });
+
+    // Navigation
+    function showSection(index) {
+      document.querySelectorAll("section").forEach((section, i) => {
+        section.classList.toggle("active", i === index);
+      });
+
+      document.querySelectorAll(".dot").forEach((dot, i) => {
+        dot.classList.toggle("active", i === index);
+      });
+
+      if (index === 3 && !gameActive) {
+        startGame();
+      }
+    }
+
+    // Form a third-person singular verb.
+    function conjugate(word, suffix) {
+      if (suffix === "ies" && /[^aeiou]y$/i.test(word)) {
+        return word.slice(0, -1) + "ies";
+      }
+      return word + suffix;
+    }
+
+    // Section 1: Subject Filter
+    function checkSubject(needsS) {
+      const suffix = document.getElementById("magic-s");
+      const base = document.getElementById("base-word");
+
+      base.classList.remove("pulse");
+      void base.offsetWidth;
+      base.classList.add("pulse");
+
+      suffix.classList.toggle("show", needsS);
+      suffix.textContent = "s";
+    }
+
+    // Section 2: The Rule Lab
+    const morphRules = {
+      regular: [
+        { word: "Eat", stem: "Eat", ending: "", result: "Eats", suffix: "s", label: "Just add -s" },
+        { word: "Run", stem: "Run", ending: "", result: "Runs", suffix: "s", label: "Just add -s" },
+        { word: "Jump", stem: "Jump", ending: "", result: "Jumps", suffix: "s", label: "Just add -s" },
+        { word: "Read", stem: "Read", ending: "", result: "Reads", suffix: "s", label: "Just add -s" }
+      ],
+      es: [
+        { word: "Watch", stem: "Watc", ending: "h", result: "Watches", suffix: "es", label: "-ch to -es" },
+        { word: "Wash", stem: "Was", ending: "h", result: "Washes", suffix: "es", label: "-sh to -es" },
+        { word: "Guess", stem: "Gues", ending: "s", result: "Guesses", suffix: "es", label: "-ss to -es" },
+        { word: "Box", stem: "Bo", ending: "x", result: "Boxes", suffix: "es", label: "-x to -es" },
+        { word: "Buzz", stem: "Bu", ending: "zz", result: "Buzzes", suffix: "es", label: "-zz to -es" },
+        { word: "Go", stem: "Go", ending: "", result: "Goes", suffix: "es", label: "-o to -es" }
+      ],
+      ies: [
+        { word: "Fly", stem: "Fl", ending: "y", result: "Flies", suffix: "ies", label: "consonant + y to -ies" },
+        { word: "Carry", stem: "Carr", ending: "y", result: "Carries", suffix: "ies", label: "consonant + y to -ies" },
+        { word: "Study", stem: "Stud", ending: "y", result: "Studies", suffix: "ies", label: "consonant + y to -ies" },
+        { word: "Cry", stem: "Cr", ending: "y", result: "Cries", suffix: "ies", label: "consonant + y to -ies" },
+        { word: "Try", stem: "Tr", ending: "y", result: "Tries", suffix: "ies", label: "consonant + y to -ies" }
+      ]
+    };
+
+    let currentCategory = "regular";
+    let currentExampleIdx = null;
+    let morphTimer;
+
+    function selectRuleCategory(button, category) {
+      currentCategory = category;
+      currentExampleIdx = null;
+      clearTimeout(morphTimer);
+
+      document.querySelectorAll(".rule-category-btn").forEach((item) => {
+        item.classList.toggle("active", item === button);
+      });
+
+      const container = document.getElementById("examples-container");
+      container.innerHTML = "";
+
+      morphRules[category].forEach((example, index) => {
+        const exampleButton = document.createElement("button");
+        exampleButton.type = "button";
+        exampleButton.className = "example-word";
+        exampleButton.textContent = example.word;
+        exampleButton.addEventListener("click", () => selectExample(index));
+        container.appendChild(exampleButton);
+      });
+
+      document.getElementById("morph-box").innerHTML =
+        "<span>Select a word above!</span><div class=\"morph-label\"></div>";
+    }
+
+    function selectExample(index) {
+      currentExampleIdx = index;
+      clearTimeout(morphTimer);
+
+      const data = morphRules[currentCategory][index];
+      const box = document.getElementById("morph-box");
+
+      document.querySelectorAll(".example-word").forEach((button, i) => {
+        button.classList.toggle("active", i === index);
+      });
+
+      box.innerHTML =
+        `<span class="letter-group"><span>${data.stem}</span>` +
+        `<span class="highlight-end">${data.ending}</span></span>` +
+        `<div class="morph-label">${data.label}</div>`;
+
+      morphTimer = setTimeout(() => {
+        if (currentExampleIdx !== index) return;
+
+        const prefix = data.result.slice(0, -data.suffix.length);
+        box.innerHTML =
+          `<span class="letter-group"><span>${prefix}</span>` +
+          `<span class="transformed">${data.suffix}</span></span>` +
+          `<div class="morph-label">${data.label}</div>`;
+      }, 1200);
+    }
+
+    // Populate the first category when the page loads.
+    document.addEventListener("DOMContentLoaded", () => {
+      const firstButton = document.querySelector(
+        '.rule-category-btn[data-category="regular"]'
+      );
+
+      if (firstButton) {
+        selectRuleCategory(firstButton, 'regular');
+      }
+
+      // Ensure the transformer starts on the correct first word (Play).
+      const transWord = document.getElementById("trans-word");
+      if (transWord && typeof rules !== 'undefined' && rules.length > 0) {
+        transWord.textContent = rules[0].word;
+      }
+    });
+
+    // Section 3: The Transformer
+    const rules = [
+      { word: "Play", correct: "s" },
+      { word: "Fly", correct: "ies" },
+      { word: "Watch", correct: "es" },
+      { word: "Go", correct: "es" },
+      { word: "Study", correct: "ies" },
+      { word: "Eat", correct: "s" },
+      { word: "Fix", correct: "es" },
+      { word: "Carry", correct: "ies" }
+    ];
+
+    let currentRuleIdx = 0;
+
+    function testEnding(choice) {
+      const box = document.getElementById("transformer");
+      const wordDisplay = document.getElementById("trans-word");
+      const current = rules[currentRuleIdx];
+
+      if (choice === current.correct) {
+        wordDisplay.textContent = conjugate(current.word, current.correct);
+        wordDisplay.style.color = "var(--correct)";
+
+        setTimeout(() => {
+          currentRuleIdx = (currentRuleIdx + 1) % rules.length;
+          wordDisplay.textContent = rules[currentRuleIdx].word;
+          wordDisplay.style.color = "var(--text)";
+        }, 1000);
+      } else {
+        box.classList.remove("shake");
+        void box.offsetWidth;
+        box.classList.add("shake");
+        wordDisplay.style.color = "var(--wrong)";
+
+        setTimeout(() => {
+          box.classList.remove("shake");
+          wordDisplay.style.color = "var(--text)";
+        }, 400);
+      }
+    }
+
+    // Section 4: Bubble Pop Game
+    let score = 0;
+    let gameActive = false;
+    let streak = 0;
+    let heat = 0;
+    let availableWords = [];
+    let hintTimeout;
+
+    // Expanded word list with extensive variety (child-friendly)
+    const gameWords = [
+      // Regular -s
+      { subject: "He", verb: "Run", correct: "s" },
+      { subject: "She", verb: "Jump", correct: "s" },
+      { subject: "It", verb: "Walk", correct: "s" },
+      { subject: "He", verb: "Talk", correct: "s" },
+      { subject: "She", verb: "Eat", correct: "s" },
+      { subject: "It", verb: "Read", correct: "s" },
+      { subject: "He", verb: "Sing", correct: "s" },
+      { subject: "She", verb: "Dance", correct: "s" },
+      { subject: "It", verb: "Swim", correct: "s" },
+      { subject: "He", verb: "Help", correct: "s" },
+      { subject: "She", verb: "Look", correct: "s" },
+      { subject: "It", verb: "Listen", correct: "s" },
+      { subject: "He", verb: "Cook", correct: "s" },
+      { subject: "She", verb: "Clean", correct: "s" },
+      { subject: "It", verb: "Paint", correct: "s" },
+      { subject: "He", verb: "Work", correct: "s" },
+      { subject: "She", verb: "Live", correct: "s" },
+      { subject: "It", verb: "Love", correct: "s" },
+      { subject: "He", verb: "Like", correct: "s" },
+      { subject: "She", verb: "Want", correct: "s" },
+      { subject: "It", verb: "Need", correct: "s" },
+      { subject: "He", verb: "Open", correct: "s" },
+      { subject: "She", verb: "Close", correct: "s" },
+      { subject: "It", verb: "Start", correct: "s" },
+      { subject: "He", verb: "Stop", correct: "s" },
+      { subject: "She", verb: "Hop", correct: "s" },
+      { subject: "It", verb: "Skip", correct: "s" },
+      { subject: "He", verb: "Smile", correct: "s" },
+      { subject: "She", verb: "Ride", correct: "s" },
+      { subject: "It", verb: "Write", correct: "s" },
+      // Special -es
+      { subject: "She", verb: "Watch", correct: "es" },
+      { subject: "He", verb: "Wash", correct: "es" },
+      { subject: "It", verb: "Guess", correct: "es" },
+      { subject: "She", verb: "Kiss", correct: "es" },
+      { subject: "He", verb: "Pass", correct: "es" },
+      { subject: "It", verb: "Miss", correct: "es" },
+      { subject: "She", verb: "Fix", correct: "es" },
+      { subject: "He", verb: "Mix", correct: "es" },
+      { subject: "It", verb: "Box", correct: "es" },
+      { subject: "She", verb: "Buzz", correct: "es" },
+      { subject: "He", verb: "Catch", correct: "es" },
+      { subject: "It", verb: "Teach", correct: "es" },
+      { subject: "She", verb: "Touch", correct: "es" },
+      { subject: "He", verb: "Push", correct: "es" },
+      { subject: "It", verb: "Wish", correct: "es" },
+      { subject: "She", verb: "Brush", correct: "es" },
+      { subject: "He", verb: "Finish", correct: "es" },
+      { subject: "It", verb: "Go", correct: "es" },
+      { subject: "She", verb: "Reach", correct: "es" },
+      { subject: "He", verb: "Match", correct: "es" },
+      // Y-Change -ies
+      { subject: "It", verb: "Fly", correct: "ies" },
+      { subject: "She", verb: "Cry", correct: "ies" },
+      { subject: "He", verb: "Try", correct: "ies" },
+      { subject: "It", verb: "Study", correct: "ies" },
+      { subject: "She", verb: "Carry", correct: "ies" },
+      { subject: "He", verb: "Marry", correct: "ies" },
+      { subject: "It", verb: "Apply", correct: "ies" },
+      { subject: "She", verb: "Reply", correct: "ies" },
+      { subject: "He", verb: "Deny", correct: "ies" },
+      { subject: "It", verb: "Fry", correct: "ies" },
+      { subject: "She", verb: "Tidy", correct: "ies" },
+      { subject: "He", verb: "Hurry", correct: "ies" },
+      { subject: "It", verb: "Worry", correct: "ies" },
+      { subject: "She", verb: "Copy", correct: "ies" },
+      { subject: "He", verb: "Spy", correct: "ies" }
+    ];
+
+    function startGame() {
+      if (gameActive) return;
+
+      gameActive = true;
+      score = 0;
+      streak = 0;
+      heat = 0;
+      availableWords = [...gameWords];
+
+      document.getElementById("score").textContent = score;
+      updateStreakDisplay();
+      updateProgressBar();
+      hideWinScreen();
+
+      nextRound();
+    }
+
+    function restartGame() {
+      hideWinScreen();
+      startGame();
+    }
+
+    function hideWinScreen() {
+      document.getElementById("win-screen").classList.remove("show");
+    }
+
+    function updateStreakDisplay() {
+      document.getElementById("streak").textContent = streak;
+      const streakText = document.getElementById("streak-text");
+      streakText.style.color = streak >= 3 ? "var(--primary)" : "var(--text)";
+    }
+
+    function updateProgressBar() {
+      const bar = document.getElementById("progress-bar");
+      const wrap = document.getElementById("heat-wrap");
+
+      bar.style.width = heat + "%";
+      wrap.classList.remove("warm", "hot");
+
+      if (heat >= 75) {
+        bar.style.background = "linear-gradient(90deg, #ff7675, #d63031)";
+        bar.style.boxShadow = "0 0 14px rgba(214, 48, 49, 0.5)";
+        wrap.classList.add("hot");
+      } else if (heat >= 40) {
+        bar.style.background = "linear-gradient(90deg, #fdcb6e, #e17055)";
+        bar.style.boxShadow = "0 0 12px rgba(225, 112, 85, 0.4)";
+        wrap.classList.add("warm");
+      } else {
+        bar.style.background = "linear-gradient(90deg, #81ecec, #00cec9)";
+        bar.style.boxShadow = "none";
+      }
+    }
+
+    function showHint(correctType) {
+      const hintPopup = document.getElementById("hint-popup");
+      let hintText = "";
+
+      switch(correctType) {
+        case "es":
+          hintText = "Tip: Words ending in -ch, -sh, -x, -ss, -z, or -o need -es!";
+          break;
+        case "ies":
+          hintText = "Tip: Consonant + y means drop the y and add -ies!";
+          break;
+        default:
+          hintText = "Tip: Most words just add -s for he/she/it!";
+      }
+
+      hintPopup.textContent = hintText;
+      hintPopup.classList.add("show");
+
+      clearTimeout(hintTimeout);
+      hintTimeout = setTimeout(() => {
+        hintPopup.classList.remove("show");
+      }, 4000);
+    }
+
+    function nextRound() {
+      if (score >= 20) {
+        document.getElementById("win-screen").classList.add("show");
+        gameActive = false;
+        return;
+      }
+
+      if (availableWords.length === 0) {
+        availableWords = [...gameWords];
+      }
+
+      const canvas = document.getElementById("game-canvas");
+      canvas.innerHTML = "";
+
+      const roundIndex = Math.floor(Math.random() * availableWords.length);
+      const round = availableWords[roundIndex];
+
+      // Highlight the last 2 letters only for the first few points (gentle start).
+      let promptHTML;
+      if (score < 5) {
+        const lastTwo = round.verb.slice(-2);
+        const firstPart = round.verb.slice(0, -2);
+        promptHTML = `<strong>${round.subject}</strong> + ${firstPart}<span class="highlight-last2">${lastTwo}</span>`;
+      } else {
+        promptHTML = `<strong>${round.subject}</strong> + ${round.verb}`;
+      }
+
+      document.getElementById("game-prompt").innerHTML = promptHTML;
+
+      // Speed increases with score: starts at 6s, minimum 2.5s.
+      const baseDuration = 6;
+      const minDuration = 2.5;
+      const speedIncrease = Math.min(score * 0.2, baseDuration - minDuration);
+      const duration = baseDuration - speedIncrease;
+
+      const options = ["s", "es", "ies"];
+      const positions = [20, 50, 80];
+
+      options.forEach((option, index) => {
+        // The wrapper handles the looping float animation so bubbles
+        // always respawn at the bottom and the game can never stall.
+        const wrapper = document.createElement("div");
+        wrapper.className = "bubble-wrapper";
+
+        const jitter = (Math.random() - 0.5) * 8;
+        wrapper.style.left = `${positions[index] + jitter}%`;
+
+        const bubbleDuration = duration + (Math.random() * 0.8 - 0.4);
+        wrapper.style.setProperty('--duration', `${bubbleDuration}s`);
+        wrapper.style.setProperty('--wobble', `${(Math.random() - 0.5) * 100}px`);
+        wrapper.style.setProperty('--rotation', `${(Math.random() - 0.5) * 60}deg`);
+
+        const bubble = document.createElement("button");
+        bubble.type = "button";
+        bubble.className = "game-bubble";
+        bubble.textContent = `-${option}`;
+        bubble.addEventListener("click", () => handleBubbleClick(bubble, option, round, roundIndex));
+
+        wrapper.appendChild(bubble);
+        canvas.appendChild(wrapper);
+      });
+    }
+
+    function handleBubbleClick(bubble, choice, round, roundIndex) {
+      if (choice === round.correct) {
+        score += 1;
+        streak += 1;
+
+        // Heat builds faster with higher streaks.
+        const heatGain = 5 + (streak * 2);
+        heat = Math.min(100, heat + heatGain);
+
+        document.getElementById("score").textContent = score;
+        updateStreakDisplay();
+        updateProgressBar();
+
+        // Correctly answered verbs leave the pool.
+        availableWords.splice(roundIndex, 1);
+
+        bubble.style.background = "var(--correct)";
+        bubble.style.transform = "scale(1.3)";
+        bubble.style.opacity = "0";
+        bubble.style.pointerEvents = "none";
+
+        setTimeout(() => {
+          nextRound();
+        }, 300);
+      } else {
+        // Mistake: reset the streak and fizzle the heat back down.
+        streak = 0;
+        heat = Math.max(0, heat - 25);
+
+        updateStreakDisplay();
+        updateProgressBar();
+
+        bubble.style.background = "var(--wrong)";
+        bubble.classList.remove("shake");
+        void bubble.offsetWidth;
+        bubble.classList.add("shake");
+
+        showHint(round.correct);
+
+        setTimeout(() => {
+          bubble.classList.remove("shake");
+          bubble.style.background = "";
+        }, 400);
+      }
+    }
+  </script>
+</body>
+</html>
