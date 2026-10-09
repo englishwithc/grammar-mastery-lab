@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Past Perfect Tenses Mastery Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="toggle-bar">
+  <span class="toggle-label">Tense:</span>
+  <div class="toggle-container">
+    <button class="toggle-btn active-simple" id="btnSimple">Past Perfect Simple</button>
+    <button class="toggle-btn" id="btnContinuous">Past Perfect Continuous</button>
+  </div>
+</div>
+
+<div class="main-container">
+
+  <!-- ============ INTERACTIVE TIMELINE EXPLORERS ============ -->
+  <section class="panel fade-in" id="explorerSection">
+    <h2 class="panel-title">Discover When to Use This Tense</h2>
+    <p class="panel-sub">Click through the scenarios below. Watch how the timeline changes and see <em>why</em> we need the Past Perfect.</p>
+
+    <!-- ========== SIMPLE EXPLORERS ========== -->
+    <div id="simpleExplorers">
+
+      <!-- Explorer 1: Before another past action -->
+      <div class="explorer" data-explorer="cause">
+        <div class="explorer-header" onclick="toggleExplorer('cause')">
+          <span class="explorer-num">1</span>
+          <div>
+            <h3>An action finished <em>before</em> another past action</h3>
+            <p>Two things happened in the past. Which came first?</p>
+          </div>
+          <span class="explorer-chevron">▼</span>
+        </div>
+        <div class="explorer-body" id="explorer-cause">
+          <div class="explorer-controls">
+            <button class="scenario-btn active" data-scenario="0">Scenario A: She ate → I arrived</button>
+            <button class="scenario-btn" data-scenario="1">Scenario B: She ate → I arrived (reversed!)</button>
+            <button class="scenario-btn" data-scenario="2">Scenario C: No past perfect needed</button>
+          </div>
+          <div class="timeline-wrap">
+            <svg id="causeSvg" viewBox="0 0 760 320" class="interactive-svg"></svg>
+          </div>
+          <div class="explorer-insight" id="causeInsight"></div>
+        </div>
+      </div>
+
+      <!-- Explorer 2: States with duration -->
+      <div class="explorer" data-explorer="state">
+        <div class="explorer-header" onclick="toggleExplorer('state')">
+          <span class="explorer-num">2</span>
+          <div>
+            <h3>A state that lasted <em>until</em> a past moment</h3>
+            <p>How long had they lived there before they moved?</p>
+          </div>
+          <span class="explorer-chevron">▼</span>
+        </div>
+        <div class="explorer-body" id="explorer-state">
+          <div class="slider-control">
+            <label>Years living in Paris: <span id="stateYearsVal">5</span> years</label>
+            <input type="range" id="stateSlider" min="1" max="20" value="5">
+          </div>
+          <div class="timeline-wrap">
+            <svg id="stateSvg" viewBox="0 0 760 280" class="interactive-svg"></svg>
+          </div>
+          <div class="explorer-insight" id="stateInsight"></div>
+        </div>
+      </div>
+
+      <!-- Explorer 3: Time markers -->
+      <div class="explorer" data-explorer="markers">
+        <div class="explorer-header" onclick="toggleExplorer('markers')">
+          <span class="explorer-num">3</span>
+          <div>
+            <h3>Time markers: <em>already, just, never, yet, before</em></h3>
+            <p>Pick a marker and see what it means.</p>
+          </div>
+          <span class="explorer-chevron">▼</span>
+        </div>
+        <div class="explorer-body" id="explorer-markers">
+          <div class="explorer-controls" id="markerBtns">
+            <button class="scenario-btn active" data-marker="just">just</button>
+            <button class="scenario-btn" data-marker="never">never</button>
+            <button class="scenario-btn" data-marker="already">already</button>
+            <button class="scenario-btn" data-marker="yet">yet (negative)</button>
+            <button class="scenario-btn" data-marker="before">before</button>
+          </div>
+          <div class="timeline-wrap" id="markerTimelineWrap">
+            <svg id="markerSvg" viewBox="0 0 760 280" class="interactive-svg"></svg>
+          </div>
+          <div class="marker-position-diagram hidden" id="markerPositionDiagram"></div>
+          <div class="explorer-insight" id="markerInsight"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== CONTINUOUS EXPLORERS ========== -->
+    <div id="continuousExplorers" class="hidden">
+
+      <!-- Explorer 1: Duration before interruption -->
+      <div class="explorer" data-explorer="duration">
+        <div class="explorer-header" onclick="toggleExplorer('duration')">
+          <span class="explorer-num">1</span>
+          <div>
+            <h3>An action <em>in progress</em> before another past action</h3>
+            <p>How long had she been studying when the power went out?</p>
+          </div>
+          <span class="explorer-chevron">▼</span>
+        </div>
+        <div class="explorer-body" id="explorer-duration">
+          <div class="slider-control">
+            <label>Hours studying: <span id="durHoursVal">3</span> hours</label>
+            <input type="range" id="durSlider" min="1" max="8" value="3">
+          </div>
+          <div class="timeline-wrap">
+            <svg id="durationSvg" viewBox="0 0 760 300" class="interactive-svg"></svg>
+          </div>
+          <div class="explorer-insight" id="durationInsight"></div>
+        </div>
+      </div>
+
+      <!-- Explorer 2: Cause/explanation -->
+      <div class="explorer" data-explorer="explanation">
+        <div class="explorer-header" onclick="toggleExplorer('explanation')">
+          <span class="explorer-num">2</span>
+          <div>
+            <h3>Explaining <em>why</em> someone felt a certain way</h3>
+            <p>His eyes were red. Why? Because he had been crying.</p>
+          </div>
+          <span class="explorer-chevron">▼</span>
+        </div>
+        <div class="explorer-body" id="explorer-explanation">
+          <div class="explorer-controls" id="explBtns">
+            <button class="scenario-btn active" data-expl="tired">He was exhausted</button>
+            <button class="scenario-btn" data-expl="wet">She was soaked</button>
+            <button class="scenario-btn" data-expl="angry">He was furious</button>
+          </div>
+          <div class="timeline-wrap">
+            <svg id="explanationSvg" viewBox="0 0 760 300" class="interactive-svg"></svg>
+          </div>
+          <div class="explorer-insight" id="explanationInsight"></div>
+        </div>
+      </div>
+
+      <!-- Explorer 3: Time markers for continuous -->
+      <div class="explorer" data-explorer="cmarkers">
+        <div class="explorer-header" onclick="toggleExplorer('cmarkers')">
+          <span class="explorer-num">3</span>
+          <div>
+            <h3>Time markers: <em>for, since, all day, how long</em></h3>
+            <p>These emphasize <em>duration</em>, not completion.</p>
+          </div>
+          <span class="explorer-chevron">▼</span>
+        </div>
+        <div class="explorer-body" id="explorer-cmarkers">
+          <div class="explorer-controls" id="cmarkerBtns">
+            <button class="scenario-btn active" data-cmarker="for">for + duration</button>
+            <button class="scenario-btn" data-cmarker="since">since + point</button>
+            <button class="scenario-btn" data-cmarker="allday">all day</button>
+            <button class="scenario-btn" data-cmarker="howlong">how long (question)</button>
+          </div>
+          <div class="timeline-wrap">
+            <svg id="cmarkerSvg" viewBox="0 0 760 280" class="interactive-svg"></svg>
+          </div>
+          <div class="explorer-insight" id="cmarkerInsight"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ EXERCISE 1: STRUCTURE SPOTTER ============ -->
+  <section class="panel fade-in" id="ex1Section">
+    <div class="exercise-header">
+      <span class="step-num" id="ex1Num">1</span>
+      <div>
+        <h2>Structure Spotter</h2>
+        <span class="difficulty-badge easy" id="ex1Badge">Easy</span>
+      </div>
+    </div>
+    <p class="exercise-instruction">Three sentences are shown below. <strong>Your task:</strong> label each sentence as <strong class="aff">Affirmative (+)</strong>, <strong class="neg">Negative (−)</strong>, or <strong class="quest">Question (?)</strong> by clicking the buttons under each sentence. Then click "Check My Answers" to see if you were right and reveal the structure.</p>
+
+    <div class="formula-box" id="ex1Formula">
+      <div class="formula-line simple-f">
+        <span class="f-subj">Subject</span> <span class="f-op">+</span>
+        <span class="f-aux">had</span> <span class="f-op">+</span>
+        <span class="f-v">past participle</span>
+        <span class="f-opt">(+ not)</span>
+      </div>
+      <div class="formula-line continuous-f hidden">
+        <span class="f-subj">Subject</span> <span class="f-op">+</span>
+        <span class="f-aux">had</span> <span class="f-op">+</span>
+        <span class="f-v">been</span> <span class="f-op">+</span>
+        <span class="f-ing">verb-ing</span>
+        <span class="f-opt">(+ not)</span>
+      </div>
+      <p class="formula-note">In questions, <strong>had</strong> moves to the front: <em>Had</em> + subject + ... ?</p>
+    </div>
+
+    <div class="spotter-grid" id="spotterGrid"></div>
+
+    <div class="spotter-summary hidden" id="spotterSummary">
+      <h4>What changed?</h4>
+      <div class="diff-table" id="spotterDiff"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" id="ex1Check">Check My Understanding</button>
+      <button class="btn btn-next" id="ex1Next">New Set →</button>
+    </div>
+    <p class="feedback-msg" id="ex1Feedback"></p>
+  </section>
+
+  <!-- ============ EXERCISE 2: SENTENCE BUILDER ============ -->
+  <section class="panel fade-in" id="ex2Section">
+    <div class="exercise-header">
+      <span class="step-num" id="ex2Num">2</span>
+      <div>
+        <h2>Sentence Builder</h2>
+        <span class="difficulty-badge easy" id="ex2Badge">Easy</span>
+      </div>
+    </div>
+    <p class="exercise-instruction">Build the sentence by clicking words in order. Choose the type, then construct it. Harder levels use <strong>longer sentences</strong>. A <span class="hint-toggle" onclick="toggleHint()">hint 💡</span> is available after 2 mistakes.</p>
+
+    <div class="type-selector" id="ex2TypeBtns">
+      <button class="type-btn active" data-type="affirmative">Affirmative (+)</button>
+      <button class="type-btn" data-type="negative">Negative (−)</button>
+      <button class="type-btn" data-type="question">Question (?)</button>
+    </div>
+
+    <div class="context-line" id="ex2Context"></div>
+
+    <div class="build-display" id="ex2Display">
+      <span class="build-placeholder">Click words below to build your sentence...</span>
+    </div>
+
+    <div class="build-words" id="ex2Words"></div>
+
+    <div class="hint-box hidden" id="ex2Hint"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" id="ex2Check">Check</button>
+      <button class="btn btn-reset" id="ex2Reset">Clear</button>
+      <button class="btn btn-next" id="ex2Next">Skip →</button>
+    </div>
+    <p class="feedback-msg" id="ex2Feedback"></p>
+    <div class="mistake-counter" id="ex2Mistakes"></div>
+  </section>
+
+  <!-- ============ EXERCISE 3: ERROR DETECTIVE ============ -->
+  <section class="panel fade-in" id="ex3Section">
+    <div class="exercise-header">
+      <span class="step-num" id="ex3Num">3</span>
+      <div>
+        <h2>Error Detective</h2>
+        <span class="difficulty-badge easy" id="ex3Badge">Easy</span>
+      </div>
+    </div>
+    <p class="exercise-instruction">Find the <strong>one mistake</strong> in each sentence — or say "No Error" if it's correct. Wrong clicks cost you a life. Survive all rounds to reach Hard mode.</p>
+
+    <div class="lives-bar" id="ex3Lives"></div>
+    <div class="round-indicator" id="ex3Round"></div>
+
+    <div class="detective-sentence" id="ex3Sentence"></div>
+
+    <p class="feedback-msg" id="ex3Feedback"></p>
+
+    <div class="btn-row">
+      <button class="btn btn-noerror" id="ex3NoError">✓ No Error</button>
+      <button class="btn btn-next hidden" id="ex3Next">Next →</button>
+    </div>
+
+    <div class="score-bar" id="ex3Score"></div>
+  </section>
+
+  <!-- ============ EXERCISE 4: TIMELINE PUZZLE ============ -->
+  <section class="panel fade-in" id="ex4Section">
+    <div class="exercise-header">
+      <span class="step-num" id="ex4Num">4</span>
+      <div>
+        <h2>Timeline Puzzle</h2>
+        <span class="difficulty-badge easy" id="ex4Badge">Easy</span>
+      </div>
+    </div>
+    <p class="instruction">Read the story, then place each event on the timeline. <strong>Drag</strong> an event onto a slot, or <strong>click an event</strong> then <strong>click a slot</strong>. Past Perfect events go in the numbered slots <em>before</em> the reference point, in the correct order. The reference point (Past Simple) is already placed. Click a placed event to remove it.</p>
+
+    <div class="puzzle-story" id="ex4Story"></div>
+
+    <div class="puzzle-timeline" id="ex4Timeline">
+      <div class="tl-track">
+        <div class="tl-label">Earlier past</div>
+        <div class="tl-slot" data-pos="0"></div>
+        <div class="tl-slot" data-pos="1"></div>
+        <div class="tl-slot" data-pos="2"></div>
+        <div class="tl-label">Reference point</div>
+        <div class="tl-slot reference" data-pos="3"></div>
+        <div class="tl-label">Later / Now</div>
+      </div>
+      <div class="tl-arrow">→ time →</div>
+    </div>
+
+    <div class="puzzle-events" id="ex4Events"></div>
+
+    <div class="puzzle-legend">
+      <span class="legend-item"><span class="legend-dot pp"></span> Past Perfect</span>
+      <span class="legend-item"><span class="legend-dot ps"></span> Past Simple (reference)</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" id="ex4Check">Check Order</button>
+      <button class="btn btn-next" id="ex4Next">New Puzzle →</button>
+    </div>
+    <p class="feedback-msg" id="ex4Feedback"></p>
+  </section>
+
+  <!-- ============ SUMMARY ============ -->
+  <section class="panel fade-in" id="summarySection">
+    <h2 class="panel-title">Quick Reference</h2>
+    <div class="ref-grid">
+      <div class="ref-card simple-ref">
+        <h3>Past Perfect Simple</h3>
+        <div class="ref-formula">had + past participle</div>
+        <ul>
+          <li>Action completed <em>before</em> another past action</li>
+          <li>States with duration up to a past point</li>
+          <li>With: already, just, never, yet, before</li>
+          <li>Focus: the <strong>result</strong>, the action is complete</li>
+        </ul>
+        <div class="ref-example">"She <strong>had finished</strong> when I arrived."</div>
+      </div>
+      <div class="ref-card continuous-ref">
+        <h3>Past Perfect Continuous</h3>
+        <div class="ref-formula">had + been + verb-ing</div>
+        <ul>
+          <li>Action <em>in progress</em> before another past action</li>
+          <li>Explaining a past state (cause)</li>
+          <li>With: for, since, all day, how long</li>
+          <li>Focus: the <strong>duration</strong>, the activity itself</li>
+        </ul>
+        <div class="ref-example">"She <strong>had been working</strong> for 3 hours when I arrived."</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/exercise1.js"></script>
+<script src="js/exercise2.js"></script>
+<script src="js/exercise3.js"></script>
+<script src="js/exercise4.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
