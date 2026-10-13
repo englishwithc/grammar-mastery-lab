@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Past Simple Mastery Lab</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏳</text></svg>">
+<style>
+:root {
+    --past: #8e44ad;
+    --did: #2ecc71;
+    --subject: #3498db;
+    --verb: #e67e22;
+    --obj: #95a5a6;
+    --time: #f1c40f;
+    --wh: #9b59b6;
+    --be: #16a085;
+    --error: #e74c3c;
+    --txt: #2c3e50;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e8f0f7, #f4ecf9);
+    color: var(--txt);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+.container {
+    max-width: 1100px;
+    width: 100%;
+    background: #fff;
+    border-radius: 18px;
+    padding: 30px;
+    border-top: 8px solid var(--past);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+}
+h1 {
+    text-align: center;
+    margin: 0 0 4px;
+    font-size: 1.9rem;
+    color: #6c3483;
+    background: linear-gradient(90deg, #8e44ad, #e67e22);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.subtitle { text-align: center; color: #7f8c8d; margin: 0 0 18px; }
+.hint { text-align: center; color: #7f8c8d; font-style: italic; }
+.goal {
+    text-align: center;
+    background: #f3e9fb;
+    border: 1px solid #e3c9f5;
+    color: #6c3483;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+.sec-sub { display: block; font-size: .8rem; color: #95a5a6; font-weight: normal; font-style: italic; }
+.feedback { text-align: center; font-weight: bold; min-height: 24px; margin-top: 10px; color: #34495e; }
+
+/* ---------- Step navigation ---------- */
+.step-timeline { display: flex; justify-content: space-between; margin: 22px 0 26px; padding: 0 2px; }
+.step-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+}
+.step-item:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: calc(50% + 24px);
+    right: calc(-50% + 24px);
+    height: 4px;
+    border-radius: 2px;
+    background: #e0e6ea;
+}
+.step-item.done:not(:last-child)::before { background: var(--did); }
+.step-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #d5dbe0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 1;
+    transition: .25s;
+}
+.step-item.active .step-circle {
+    background: var(--past);
+    border-color: var(--past);
+    transform: scale(1.15);
+    animation: pulse 1.6s infinite;
+}
+.step-item.done .step-circle { background: var(--did); border-color: var(--did); color: #fff; font-weight: bold; }
+.step-label { font-size: .72rem; font-weight: bold; color: #7f8c8d; text-align: center; }
+.step-item.active .step-label { color: var(--past); }
+
+/* ---------- Zones & animations ---------- */
+.zone { display: none; animation: fade .4s; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn {
+    0% { opacity: 0; transform: scale(.5) translateY(12px); }
+    70% { transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@keyframes morphFlip {
+    0% { transform: rotateX(0) scale(1); filter: brightness(1); }
+    50% { transform: rotateX(90deg) scale(1.15); filter: brightness(1.5); }
+    100% { transform: rotateX(0) scale(1); filter: brightness(1); }
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+}
+@keyframes dotPop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+@keyframes starPop {
+    0% { transform: scale(0) rotate(0); opacity: 1; }
+    100% { transform: scale(2.2) rotate(180deg); opacity: 0; }
+}
+@keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+/* ---------- Accordion stages ---------- */
+.stage {
+    border: 2px solid #e3e9ee;
+    border-radius: 14px;
+    margin: 12px 0;
+    background: #fff;
+    overflow: hidden;
+    transition: border-color .3s, box-shadow .3s;
+}
+.stage.open { border-color: var(--past); box-shadow: 0 6px 16px rgba(142, 68, 173, .12); }
+.stage-head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: #34495e;
+    font-family: inherit;
+}
+.stage-head:hover { background: #faf7fd; }
+.stage-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ecf0f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: .3s;
+}
+.stage.open .stage-num { background: var(--past); color: #fff; }
+.stage-title { flex: 1; }
+.stage-sub { display: block; font-weight: normal; color: #95a5a6; font-size: .85rem; }
+.stage-arrow { color: #95a5a6; transition: transform .3s; }
+.stage.open .stage-arrow { transform: rotate(180deg); }
+.stage-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s ease; }
+.stage.open .stage-body { grid-template-rows: 1fr; }
+.stage-inner { overflow: hidden; min-height: 0; }
+.stage-content { padding: 4px 18px 20px; }
+.next-btn {
+    display: block;
+    margin: 16px auto 0;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: var(--did);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    transition: .2s;
+}
+.next-btn:hover { transform: translateY(-2px); }
+
+/* ---------- Buttons & chips ---------- */
+.btn {
+    padding: 10px 18px;
+    background: #34495e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .2s;
+    font-family: inherit;
+}
+.btn:hover { background: #2c3e50; transform: translateY(-2px); }
+.btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+.mini-btn {
+    padding: 7px 16px;
+    border-radius: 16px;
+    border: 2px solid #d5dbe0;
+    background: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .15s;
+    font-family: inherit;
+}
+.mini-btn.active { background: var(--did); color: #fff; border-color: var(--did); }
+.chip {
+    padding: 8px 16px;
+    background: #fff;
+    border: 2px solid var(--past);
+    color: var(--past);
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .2s;
+    font-family: inherit;
+}
+.chip:hover { background: #f3e9fb; }
+.chip.active { background: var(--past); color: #fff; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+
+/* ---------- Step 1: time machine ---------- */
+.tm-scene {
+    position: relative;
+    border-radius: 16px;
+    padding: 18px 16px 14px;
+    background: linear-gradient(180deg, #dff1ff 0%, #fdf6d8 100%);
+    border: 2px solid #e3e9ee;
+    transition: background 1s;
+}
+.tm-scene.dusk { background: linear-gradient(180deg, #34495e 0%, #6c3483 100%); }
+.tm-readout { text-align: center; font-size: 1.3rem; font-weight: bold; color: #6c3483; }
+.tm-scene.dusk .tm-readout { color: #f9e79f; }
+.tm-area { position: relative; height: 110px; margin: 0 6px; }
+.tm-track {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    border-radius: 5px;
+    background: #e5e8eb;
+}
+.tm-scene.dusk .tm-track { background: #5d6d7e; }
+.tm-fill {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    height: 10px;
+    width: 100%;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #c39bd3, #8e44ad);
+}
+.tm-now { position: absolute; right: 0; top: 16px; font-size: .8rem; font-weight: bold; color: #b7950b; }
+.tm-marker {
+    position: absolute;
+    top: 36px;
+    width: 30px;
+    height: 30px;
+    margin-left: -15px;
+    border-radius: 50%;
+    background: #f1c40f;
+    border: 4px solid #fff;
+    box-shadow: 0 0 0 5px rgba(241, 196, 15, .35), 0 4px 10px rgba(0, 0, 0, .2);
+    transition: left .05s linear;
+}
+.tm-you {
+    position: absolute;
+    top: 12px;
+    transform: translateX(-50%);
+    font-size: .72rem;
+    font-weight: bold;
+    color: #7d6608;
+    transition: left .05s linear;
+}
+.tm-scene.dusk .tm-you { color: #f9e79f; }
+.tm-stop {
+    position: absolute;
+    top: 41px;
+    width: 24px;
+    height: 24px;
+    margin-left: -12px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+    cursor: pointer;
+    transition: background .3s, transform .2s;
+    padding: 0;
+}
+.tm-stop.happened { background: var(--past); }
+.tm-stop.future { background: #bdc3c7; }
+.tm-stop:hover { transform: scale(1.25); }
+.tm-stop-lab {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: .72rem;
+    font-weight: bold;
+    white-space: nowrap;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: #fff;
+    color: #6c3483;
+}
+.tm-scene.dusk .tm-stop-lab { background: #f9e79f; color: #34495e; }
+.tm-slider { width: 100%; margin-top: 6px; accent-color: var(--past); }
+.tm-legend { text-align: center; font-size: .85rem; color: #5d6d7e; margin-top: 4px; }
+.tm-scene.dusk .tm-legend { color: #e8daef; }
+.travel-btn {
+    display: block;
+    margin: 14px auto 0;
+    padding: 12px 26px;
+    font-size: 1.05rem;
+    border-radius: 14px;
+    border: none;
+    background: var(--past);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+    box-shadow: 0 6px 14px rgba(142, 68, 173, .35);
+    font-family: inherit;
+}
+.travel-btn:hover { transform: translateY(-3px); }
+.event-bubble {
+    max-width: 640px;
+    margin: 14px auto 0;
+    padding: 14px 18px;
+    background: #f3e9fb;
+    border: 2px solid #d7bde2;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: #6c3483;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.event-bubble.pop { animation: popIn .45s both; }
+
+/* ---------- Sentence slots ---------- */
+.sentence {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(1.05rem, 2.6vw, 1.4rem);
+    margin: 22px 0 10px;
+    min-height: 66px;
+}
+.slot {
+    padding: 12px 18px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    border-bottom: 5px solid rgba(0, 0, 0, .18);
+    animation: popIn .4s both;
+    user-select: none;
+}
+.slot:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0, 0, 0, .15); }
+.slot.fix { cursor: default; }
+.slot.fix:hover { transform: none; box-shadow: none; }
+.slot.morph { animation: morphFlip .7s ease both; }
+.slot.subject { background: var(--subject); }
+.slot.did { background: var(--did); }
+.slot.verb { background: var(--verb); }
+.slot.obj { background: var(--obj); }
+.slot.time { background: var(--time); color: #6e5a06; }
+.slot.wh { background: var(--wh); }
+.slot.be { background: var(--be); }
+.punct { font-size: 1.8rem; font-weight: bold; color: #34495e; animation: popIn .4s both; }
+.grammar-card {
+    max-width: 780px;
+    margin: 16px auto 0;
+    padding: 14px;
+    border-radius: 12px;
+    background: #f8fbff;
+    border: 1px solid #d8e8f5;
+    text-align: center;
+    line-height: 1.7;
+}
+.grammar-card strong { color: #2980b9; }
+.key-fact {
+    max-width: 780px;
+    margin: 14px auto 0;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #fff8e1;
+    border: 2px solid var(--time);
+    text-align: center;
+    line-height: 1.6;
+}
+.c-verb { color: var(--verb); font-weight: bold; }
+.c-did { color: #27ae60; font-weight: bold; }
+.c-time { background: #fff3c4; border-radius: 5px; padding: 0 5px; }
+.c-be { color: var(--be); font-weight: bold; }
+.type-toggle { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.q-sub-toggle { display: flex; justify-content: center; gap: 8px; margin-bottom: 4px; }
+
+/* ---------- Step 2: uses ---------- */
+.level-pick { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 16px 0 4px; }
+.lv2-btn {
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 2px solid #d5dbe0;
+    background: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .2s;
+    font-family: inherit;
+}
+.lv2-btn.active { background: var(--past); color: #fff; border-color: var(--past); }
+.use-badge { padding: 3px 10px; border-radius: 10px; color: #fff; font-weight: bold; font-size: .75rem; margin-left: 6px; vertical-align: middle; }
+.use-badge.A1 { background: #3498db; }
+.use-badge.A2 { background: #2ecc71; }
+.use-badge.B1 { background: #e67e22; }
+.use-ex p { margin: 6px 0; font-size: 1.02rem; line-height: 1.55; }
+.use-note {
+    color: #7f8c8d;
+    font-size: .88rem;
+    font-style: italic;
+    border-top: 1px dashed #e3e9ee;
+    padding-top: 8px;
+    margin-bottom: 0;
+}
+.tl { position: relative; height: 78px; margin: 8px 0 4px; }
+.tl-mini { position: relative; height: 42px; margin: 2px 0; }
+.tl-mini .tl-track { top: 16px; height: 6px; }
+.tl-mini .tl-dot { top: 11px; width: 14px; height: 14px; margin-left: -7px; border-width: 2px; }
+.tl-mini .tl-lab { top: 26px; font-size: .68rem; }
+.tl-lab { position: absolute; top: 54px; font-size: .75rem; font-weight: bold; }
+.tl-lab.past { left: 2%; color: var(--past); }
+.tl-lab.now { right: 2%; color: #b7950b; }
+.tl-track.uses {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #e3d0f5 0%, #e3d0f5 68%, #ffedae 68%, #ffedae 100%);
+}
+.tl > .tl-track:not(.uses) { }
+.tl-dot {
+    position: absolute;
+    top: 34px;
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    border-radius: 50%;
+    background: var(--past);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+    animation: dotPop .5s both;
+}
+.tl-word {
+    position: absolute;
+    top: 8px;
+    transform: translateX(-50%);
+    font-size: .72rem;
+    font-weight: bold;
+    color: #6c3483;
+    background: #f3e9fb;
+    padding: 2px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+.tl-span {
+    position: absolute;
+    top: 26px;
+    height: 30px;
+    border: 3px dashed var(--past);
+    border-radius: 10px;
+    background: rgba(142, 68, 173, .07);
+}
+.tl-span-lab {
+    position: absolute;
+    top: 2px;
+    transform: translateX(-50%);
+    font-size: .72rem;
+    font-weight: bold;
+    color: var(--past);
+    white-space: nowrap;
+}
+
+/* ---------- Step 3: regular verbs ---------- */
+.rule-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 14px 0; }
+.rule-card {
+    background: #fff;
+    border: 2px solid #e3e9ee;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.rule-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px; }
+.rule-card.r1::before { background: var(--subject); }
+.rule-card.r2::before { background: var(--did); }
+.rule-card.r3::before { background: var(--verb); }
+.rule-num {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #34495e;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+.rule-card h3 { margin: 4px 0; }
+.rule-card .ex { font-size: 1.2rem; font-weight: bold; }
+.rule-card .ex b { color: var(--past); }
+.rule-note { color: #95a5a6; font-size: .85rem; font-style: italic; }
+.machine {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    background: #faf7fd;
+    border: 2px dashed #d9b8f0;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 10px 0;
+}
+.machine-base, .machine-past { font-size: 2rem; font-weight: bold; }
+.machine-base { color: #5d6d7e; }
+.machine-past { color: var(--verb); }
+.machine-past .hl { background: #ffe9a8; border-radius: 6px; padding: 0 4px; color: #b9770e; }
+.machine-past .ghost { color: #c39bd3; text-decoration: line-through; font-size: 1.3rem; }
+.machine-anim .machine-base { animation: popIn .4s both; }
+.machine-anim .machine-past { animation: popIn .5s .2s both; }
+.machine-arrow { font-size: 2rem; color: #b39ddb; }
+.machine-meta { text-align: center; font-weight: bold; margin-bottom: 6px; display: none; }
+.sound-chip { display: inline-block; padding: 2px 12px; border-radius: 12px; color: #fff; margin-left: 8px; }
+.s-t { background: #3498db; }
+.s-d { background: #2ecc71; }
+.s-id { background: #e67e22; }
+.try-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 2px solid #e3e9ee;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    background: #fff;
+}
+.try-row.done { background: #eafaf1; border-color: var(--did); }
+.try-word { font-size: 1.2rem; font-weight: bold; min-width: 90px; }
+.try-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.try-btn {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 2px solid #b2bec3;
+    background: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .15s;
+    font-family: inherit;
+}
+.try-btn:hover { transform: translateY(-2px); border-color: var(--subject); }
+.try-btn.wrong { animation: shake .4s; background: #fdecea; border-color: var(--error); }
+.try-result { font-weight: bold; color: #1e8449; }
+
+/* ---------- Step 4: -ed sound ---------- */
+.sound-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 14px 0; }
+.sound-card { border-radius: 14px; padding: 16px; text-align: center; color: #fff; }
+.sound-card.t { background: #3498db; }
+.sound-card.d { background: #2ecc71; }
+.sound-card.id { background: #e67e22; }
+.sound-card h3 { margin: 0 0 6px; font-size: 1.9rem; }
+.sound-card p { margin: 6px 0; line-height: 1.5; }
+.sound-card .ex { font-weight: bold; font-size: 1.05rem; }
+.sound-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 14px;
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    min-height: 60px;
+    margin-bottom: 14px;
+}
+.sound-tile {
+    padding: 8px 14px;
+    background: #fff;
+    border: 2px solid #b2bec3;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .15s;
+}
+.sound-tile:hover { transform: translateY(-3px); }
+.sound-tile.selected { border-color: var(--past); background: #f3e9fb; transform: scale(1.08); }
+.sound-tile.placed { background: #d5f5e3; border-color: var(--did); cursor: default; }
+.sound-tile.wrong-shake { animation: shake .4s; }
+.sound-buckets { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.sound-bucket {
+    border: 3px solid;
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s;
+    background: #fff;
+}
+.sound-bucket:hover { transform: translateY(-4px); }
+.sound-bucket.t { border-color: #3498db; }
+.sound-bucket.d { border-color: #2ecc71; }
+.sound-bucket.id { border-color: #e67e22; }
+.sound-bucket h4 { margin: 0 0 4px; font-size: 1.6rem; }
+.sound-bucket.t h4 { color: #3498db; }
+.sound-bucket.d h4 { color: #2ecc71; }
+.sound-bucket.id h4 { color: #e67e22; }
+.sound-bucket p { margin: 0 0 8px; color: #95a5a6; font-size: .85rem; }
+.bucket-drop {
+    min-height: 80px;
+    border: 2px dashed #d5dbe0;
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    align-content: flex-start;
+}
+
+/* ---------- Step 6: irregular verbs ---------- */
+.pattern-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 14px 0; }
+.pattern-card { border-radius: 12px; padding: 14px; color: #fff; text-align: center; }
+.pattern-card h3 { margin: 0 0 6px; font-size: 1rem; }
+.pattern-card .ex { font-size: 1.05rem; font-weight: bold; line-height: 1.8; }
+.filter-bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 10px 0; }
+.fbtn {
+    padding: 7px 14px;
+    border-radius: 18px;
+    border: 2px solid #d5dbe0;
+    background: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: .85rem;
+    transition: .2s;
+    font-family: inherit;
+}
+.fbtn.active { background: #34495e; color: #fff; border-color: #34495e; }
+.flip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+.flip-card { height: 86px; perspective: 800px; cursor: pointer; }
+.flip-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .55s; }
+.flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #d5dbe0;
+    background: #fff;
+}
+.flip-back { transform: rotateY(180deg); color: #fff; border: none; }
+.flip-base { font-size: 1.15rem; font-weight: bold; color: #34495e; }
+.flip-tag { font-size: .66rem; color: #95a5a6; text-transform: uppercase; letter-spacing: .5px; }
+.flip-past { font-size: 1.3rem; font-weight: bold; }
+
+/* ---------- Step 8: games ---------- */
+.mistake-card { text-align: center; }
+.mistake-sentence { font-size: 1.5rem; margin: 18px 0; }
+.bad-word {
+    padding: 3px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    border-bottom: 2px dashed #ccc;
+    transition: .2s;
+    display: inline-block;
+    margin: 2px;
+}
+.bad-word:hover { background: #fed7d7; }
+.bad-word.correct { background: var(--did); color: #fff; border-bottom: none; }
+.bad-word.wrong { background: var(--error); color: #fff; animation: shake .4s; }
+#explain {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    display: none;
+}
+.pool, .answer, .trash {
+    min-height: 65px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 12px auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: #fafafa;
+}
+.answer { border-color: #3498db; background: #f5fbff; }
+.trash { border-color: var(--error); background: #fff5f5; }
+.trash-label { color: var(--error); font-weight: bold; text-align: center; }
+.mode-label { font-size: .9rem; color: #7f8c8d; text-align: center; margin-bottom: 4px; }
+.scr-tile {
+    padding: 8px 16px;
+    background: #fff;
+    border: 2px solid #34495e;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: bold;
+}
+.scr-tile:hover { background: #eee; }
+.streak { text-align: center; font-weight: bold; color: var(--verb); font-size: 1.05rem; margin-bottom: 6px; }
+.quiz-wrap { position: relative; }
+.quiz-q { font-size: 1.3rem; font-weight: bold; text-align: center; margin: 16px 0; }
+.quiz-opts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.quiz-opt {
+    padding: 12px 22px;
+    font-size: 1.05rem;
+    border-radius: 12px;
+    border: 2px solid #b2bec3;
+    background: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .15s;
+    font-family: inherit;
+}
+.quiz-opt:hover { transform: translateY(-3px); border-color: var(--subject); }
+.quiz-opt.correct { background: var(--did); color: #fff; border-color: var(--did); }
+.quiz-opt.wrong { background: var(--error); color: #fff; border-color: var(--error); animation: shake .4s; }
+.quiz-opt:disabled { cursor: default; }
+.quiz-opt:disabled:hover { transform: none; }
+.star-pop { position: absolute; font-size: 2rem; animation: starPop .8s forwards; pointer-events: none; }
+
+/* ---------- Pager ---------- */
+.pager { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 10px; }
+#pagerInfo { font-weight: bold; color: #7f8c8d; text-align: center; }
+.footer { text-align: center; color: #95a5a6; font-size: .85rem; margin-top: 20px; }
+
+@media (max-width: 760px) {
+    .step-timeline { flex-wrap: wrap; gap: 12px; }
+    .step-item { flex: 1 1 22%; }
+    .step-item::before { display: none; }
+    .container { padding: 18px; }
+    .tm-marker { width: 24px; height: 24px; margin-left: -12px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <h1>⏳ Past Simple Mastery Lab</h1>
+    <p class="subtitle">Travel back in time, then build Past Simple sentences one stage at a time</p>
+
+    <nav class="step-timeline">
+        <button class="step-item active" onclick="showStep(1)"><span class="step-circle" data-emoji="🕰️">🕰️</span><span class="step-label">Meaning</span></button>
+        <button class="step-item" onclick="showStep(2)"><span class="step-circle" data-emoji="📅">📅</span><span class="step-label">When to Use</span></button>
+        <button class="step-item" onclick="showStep(3)"><span class="step-circle" data-emoji="⚙️">⚙️</span><span class="step-label">Regular</span></button>
+        <button class="step-item" onclick="showStep(4)"><span class="step-circle" data-emoji="🔊">🔊</span><span class="step-label">-ed Sound</span></button>
+        <button class="step-item" onclick="showStep(5)"><span class="step-circle" data-emoji="👻">👻</span><span class="step-label">was / were</span></button>
+        <button class="step-item" onclick="showStep(6)"><span class="step-circle" data-emoji="🎲">🎲</span><span class="step-label">Irregular</span></button>
+        <button class="step-item" onclick="showStep(7)"><span class="step-circle" data-emoji="🔨">🔨</span><span class="step-label">Build It</span></button>
+        <button class="step-item" onclick="showStep(8)"><span class="step-circle" data-emoji="🎯">🎯</span><span class="step-label">Challenge</span></button>
+    </nav>
+
+    <!-- ===================== STEP 1: MEANING ===================== -->
+    <section id="step1" class="zone" style="display:block">
+        <p class="goal">🕰️ Past Simple is for actions that are FINISHED. They happened before now.</p>
+
+        <div class="stage open">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">1</span>
+                <span class="stage-title">Time machine<span class="stage-sub">drag the slider, or press play, and see what has already happened</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="tm-scene" id="tmScene">
+                    <div class="tm-readout" id="tmReadout">Now ✨</div>
+                    <div class="tm-area" id="tmArea">
+                        <div class="tm-track"><div class="tm-fill" id="tmFill"></div></div>
+                        <div class="tm-now">NOW ✨</div>
+                        <div class="tm-you" id="tmYou" style="left:100%">YOU</div>
+                        <div class="tm-marker" id="tmMarker" style="left:100%"></div>
+                    </div>
+                    <input type="range" class="tm-slider" id="tmSlider" min="0" max="100" value="100" oninput="onSliderInput(this.value)">
+                    <div class="tm-legend" id="tmLegend"></div>
+                </div>
+                <button class="travel-btn" id="travelBtn" onclick="playTravel()">⏪ Travel back in time</button>
+                <div class="event-bubble" id="eventBubble">Tap a dot on the timeline to see what happened there.</div>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">2</span>
+                <span class="stage-title">The formula<span class="stage-sub">subject + past form + the rest</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="sentence" style="margin-top:10px">
+                    <div class="slot subject fix">Subject</div>
+                    <div class="slot verb fix">V2 (past form)</div>
+                    <div class="slot obj fix">object</div>
+                    <div class="slot time fix">time</div>
+                </div>
+                <p style="text-align:center">I <span class="c-verb">watched</span> TV <span class="c-time">yesterday</span>. → finished action ✅</p>
+                <p class="hint">Time words: yesterday · last night · last week · in 2015 · two days ago · when I was a child</p>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+    </section>
+
+    <!-- ===================== STEP 2: WHEN TO USE ===================== -->
+    <section id="step2" class="zone">
+        <p class="goal">📅 When do we use Past Simple? Pick your CEFR level to see the uses you need. Tap a use to open it.</p>
+        <div class="level-pick">
+            <button class="lv2-btn" id="ub-A1" onclick="setUsesLevel('A1')">Show up to <b>A1</b></button>
+            <button class="lv2-btn active" id="ub-A2" onclick="setUsesLevel('A2')">Show up to <b>A2</b></button>
+            <button class="lv2-btn" id="ub-B1" onclick="setUsesLevel('B1')">Show up to <b>B1</b> (all)</button>
+        </div>
+        <div id="usesList"></div>
+    </section>
+
+    <!-- ===================== STEP 3: REGULAR VERBS ===================== -->
+    <section id="step3" class="zone">
+        <p class="goal">⚙️ Regular verbs add -ed. The spelling follows three rules.</p>
+
+        <div class="stage open">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">1</span>
+                <span class="stage-title">The three spelling rules<span class="stage-sub">click a verb in the machine and watch it change</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="rule-cards">
+                    <div class="rule-card r1"><span class="rule-num">1</span><h3>Add -ed</h3><p class="ex">walk → walk<b>ed</b></p><p class="rule-note">most verbs</p></div>
+                    <div class="rule-card r2"><span class="rule-num">2</span><h3>Add -d</h3><p class="ex">live → live<b>d</b></p><p class="rule-note">verbs that already end in -e</p></div>
+                    <div class="rule-card r3"><span class="rule-num">3</span><h3>y → -ied</h3><p class="ex">stud<b>y</b> → stud<b>ied</b></p><p class="rule-note">consonant + y</p></div>
+                </div>
+                <div class="chips" id="edChips"></div>
+                <div class="machine" id="edMachine">
+                    <div class="machine-base" id="edBase"></div>
+                    <div class="machine-arrow">→</div>
+                    <div class="machine-past" id="edPast"></div>
+                </div>
+                <div class="machine-meta" id="edMeta"></div>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">2</span>
+                <span class="stage-title">Your turn<span class="stage-sub">choose the right spelling rule for each verb</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div id="tryList"></div>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+    </section>
+
+    <!-- ===================== STEP 4: -ED SOUND ===================== -->
+    <section id="step4" class="zone">
+        <p class="goal">🔊 The -ed ending has three sounds. Spelling tells you nothing about the sound, so listen!</p>
+
+        <div class="stage open">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">1</span>
+                <span class="stage-title">The three sounds<span class="stage-sub">say the verb out loud and look at its last sound</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="sound-cards">
+                    <div class="sound-card t"><h3>/t/</h3><p>After hard sounds: p, k, f, s, sh, ch</p><p class="ex">walked · watched · stopped</p></div>
+                    <div class="sound-card d"><h3>/d/</h3><p>After vowels and soft sounds: l, m, n, v, z, b, g…</p><p class="ex">played · lived · loved</p></div>
+                    <div class="sound-card id"><h3>/ɪd/</h3><p>After t or d sounds (it adds an extra syllable)</p><p class="ex">wanted · studied · needed</p></div>
+                </div>
+                <p class="hint">Tip: if the verb ends in /t/ or /d/, you hear an extra "id" sound.</p>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">2</span>
+                <span class="stage-title">Sound sorter<span class="stage-sub">click a word, then click the sound it makes</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="sound-pool" id="soundPool"></div>
+                <div class="sound-buckets">
+                    <div class="sound-bucket t" onclick="sortSound('t')"><h4>/t/</h4><p>walked · watched · stopped</p><div class="bucket-drop" id="bucket-t"></div></div>
+                    <div class="sound-bucket d" onclick="sortSound('d')"><h4>/d/</h4><p>played · lived · loved</p><div class="bucket-drop" id="bucket-d"></div></div>
+                    <div class="sound-bucket id" onclick="sortSound('id')"><h4>/ɪd/</h4><p>wanted · studied · needed</p><div class="bucket-drop" id="bucket-id"></div></div>
+                </div>
+                <div class="feedback" id="soundFeedback"></div>
+                <div style="text-align:center;margin-top:8px"><button class="mini-btn" onclick="resetSort()">🔁 Reset sorter</button></div>
+            </div></div></div>
+        </div>
+    </section>
+
+    <!-- ===================== STEP 5: WAS / WERE ===================== -->
+    <section id="step5" class="zone">
+        <p class="goal">👻 The past of "to be" is WAS or WERE. There is no -ed and no did!</p>
+
+        <div class="stage open">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">1</span>
+                <span class="stage-title">Was or were?<span class="stage-sub">pick a subject and watch the verb change</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="chips" id="beChips"></div>
+                <div class="sentence" id="beA"></div>
+                <div class="grammar-card" id="beAG"></div>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">2</span>
+                <span class="stage-title">Negative<span class="stage-sub">wasn't / weren't — no did</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="sentence" id="beN"></div>
+                <div class="grammar-card" id="beNG"></div>
+                <div class="key-fact">👻 With <b>be</b>, we do NOT use <b>did</b>. "I didn't was happy" is wrong. ✅ "I wasn't happy."</div>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">3</span>
+                <span class="stage-title">Questions<span class="stage-sub">was / were goes first</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="sentence" id="beQ"></div>
+                <div class="grammar-card" id="beQG"></div>
+                <div class="key-fact">👻 <b>Was</b> she happy? · <b>Were</b> they at school? — never "Did she was…?"</div>
+            </div></div></div>
+        </div>
+    </section>
+
+    <!-- ===================== STEP 6: IRREGULAR VERBS ===================== -->
+    <section id="step6" class="zone">
+        <p class="goal">🎲 Irregular verbs don't follow the -ed rule. Their past forms must be learned, but they follow patterns.</p>
+
+        <div class="stage open">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">1</span>
+                <span class="stage-title">Five patterns<span class="stage-sub">most irregular verbs fit one of these groups</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="pattern-grid">
+                    <div class="pattern-card" style="background:#16a085"><h3>No change</h3><div class="ex">cut → cut<br>put → put<br>hit → hit</div></div>
+                    <div class="pattern-card" style="background:#2980b9"><h3>Add -t</h3><div class="ex">build → built<br>send → sent<br>feel → felt</div></div>
+                    <div class="pattern-card" style="background:#e67e22"><h3>Vowel change</h3><div class="ex">eat → ate<br>sing → sang<br>see → saw</div></div>
+                    <div class="pattern-card" style="background:#8e44ad"><h3>-ew → -ewn</h3><div class="ex">grow → grew<br>know → knew<br>throw → threw</div></div>
+                    <div class="pattern-card" style="background:#e74c3c"><h3>Special</h3><div class="ex">go → went<br>have → had<br>be → was / were</div></div>
+                </div>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">2</span>
+                <span class="stage-title">Flip the cards<span class="stage-sub">click a card to reveal the past form</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="filter-bar" id="irFilter"></div>
+                <div class="flip-grid" id="irGrid"></div>
+                <p class="hint" id="irCount"></p>
+            </div></div></div>
+        </div>
+    </section>
+
+    <!-- ===================== STEP 7: BUILD IT ===================== -->
+    <section id="step7" class="zone">
+        <p class="goal">🔨 Now build full sentences. Click any coloured block to change the words.</p>
+
+        <div class="stage open">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">1</span>
+                <span class="stage-title">Affirmative<span class="stage-sub">subject + past form</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="sentence" id="bA"></div>
+                <div class="grammar-card" id="bAG"></div>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">2</span>
+                <span class="stage-title">Negative<span class="stage-sub">didn't + base verb</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="sentence" id="bN"></div>
+                <div class="grammar-card" id="bNG"></div>
+                <div class="key-fact">⚠️ After <b>didn't</b>, the verb goes back to the base form: <b>didn't go</b> ✅ · "didn't went" ❌</div>
+                <button class="next-btn" onclick="nextStage(this)">Next stage ▼</button>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">3</span>
+                <span class="stage-title">Questions<span class="stage-sub">Did + subject + base verb</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="q-sub-toggle">
+                    <button id="qs-yesno" class="mini-btn active" onclick="setBuilderQ('yesno')">Yes / No</button>
+                    <button id="qs-wh" class="mini-btn" onclick="setBuilderQ('wh')">Wh- question</button>
+                </div>
+                <div class="sentence" id="bQ"></div>
+                <div class="grammar-card" id="bQG"></div>
+                <div class="key-fact">⚠️ After <b>Did</b>, the verb is ALWAYS the base form: <b>Did you go?</b> ✅ · "Did you went?" ❌</div>
+            </div></div></div>
+        </div>
+    </section>
+
+    <!-- ===================== STEP 8: CHALLENGE ===================== -->
+    <section id="step8" class="zone">
+        <p class="goal">🎯 Prove your time-travelling skills!</p>
+
+        <div class="stage open">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">1</span>
+                <span class="stage-title">Find the error<span class="stage-sub">click the incorrect word</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="mistake-card">
+                    <div class="mistake-sentence" id="mistakeSentence"></div>
+                    <div id="explain"></div>
+                    <button class="btn" id="nextErr" style="margin-top:12px;display:none" onclick="nextError()">Next →</button>
+                </div>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">2</span>
+                <span class="stage-title">Reorder the words<span class="stage-sub">put the intruder in the red box</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="mode-label" id="scrMode"></div>
+                <div class="pool" id="pool"></div>
+                <div class="answer" id="answer"></div>
+                <div class="trash-label">🗑 Incorrect word</div>
+                <div class="trash" id="trash"></div>
+                <div style="text-align:center;margin-top:10px">
+                    <button class="btn" onclick="checkScramble()">Check</button>
+                    <button class="btn" onclick="nextScramble()">New</button>
+                </div>
+                <div class="feedback" id="scrFeedback"></div>
+            </div></div></div>
+        </div>
+
+        <div class="stage">
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">3</span>
+                <span class="stage-title">Quick quiz<span class="stage-sub">fill the gap with the correct form</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                <div class="quiz-wrap" id="gameQuiz">
+                    <div class="streak" id="quizStreak"></div>
+                    <div class="quiz-q" id="quizQ"></div>
+                    <div class="quiz-opts" id="quizOpts"></div>
+                </div>
+            </div></div></div>
+        </div>
+    </section>
+
+    <div class="pager">
+        <button class="btn" id="prevBtn" onclick="stepPrev()">⏮ Previous</button>
+        <span id="pagerInfo"></span>
+        <button class="btn" id="nextBtn" onclick="stepNext()">Next ⏭</button>
+    </div>
+
+    <p class="footer">Past Simple Mastery Lab · made for time travellers 🌟</p>
+</div>
+
+<script>
+/* ==================== NAVIGATION & ACCORDION ==================== */
+
+const STEP_COUNT = 8;
+const STEP_TITLES = ["Meaning", "When to Use", "Regular Verbs", "The -ed Sound", "was / were", "Irregular Verbs", "Build It", "Challenge"];
+let currentStep = 1;
+
+function showStep(n) {
+    currentStep = n;
+    document.querySelectorAll(".zone").forEach(z => z.style.display = "none");
+    document.getElementById("step" + n).style.display = "block";
+
+    document.querySelectorAll(".step-item").forEach((el, i) => {
+        el.classList.toggle("active", i === n - 1);
+        el.classList.toggle("done", i < n - 1);
+        const c = el.querySelector(".step-circle");
+        c.textContent = i < n - 1 ? "✓" : c.dataset.emoji;
+    });
+
+    document.getElementById("pagerInfo").textContent = "Step " + n + " of " + STEP_COUNT + " — " + STEP_TITLES[n - 1];
+    document.getElementById("prevBtn").disabled = n === 1;
+    document.getElementById("nextBtn").disabled = n === STEP_COUNT;
+
+    const first = document.querySelector("#step" + n + " .stage");
+    if (first) openStage(first);
+    if (n === 1) bootTimeMachine();
+    if (n === 8) { loadError(); loadScramble(); renderQuiz(); }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function stepPrev() { if (currentStep > 1) showStep(currentStep - 1); }
+function stepNext() { if (currentStep < STEP_COUNT) showStep(currentStep + 1); }
+
+function openStage(st) {
+    st.parentElement.querySelectorAll(":scope > .stage").forEach(s => s.classList.toggle("open", s === st));
+}
+
+function toggleStage(btn) {
+    const st = btn.parentElement;
+    if (st.classList.contains("open")) st.classList.remove("open");
+    else openStage(st);
+}
+
+function nextStage(btn) {
+    const st = btn.closest(".stage");
+    const nx = st.nextElementSibling;
+    if (nx && nx.classList.contains("stage")) {
+        openStage(nx);
+        setTimeout(() => nx.scrollIntoView({ behavior: "smooth", block: "center" }), 450);
+    }
+}
+
+function hideLastNextButtons() {
+    document.querySelectorAll(".stage").forEach(st => {
+        const nx = st.nextElementSibling;
+        const btn = st.querySelector(".next-btn");
+        if (btn && !(nx && nx.classList.contains("stage"))) btn.style.display = "none";
+    });
+}
+
+/* ==================== STEP 1: TIME MACHINE ==================== */
+
+const TM_EVENTS = [
+    { pos: 22, when: "2015", text: "I <b>started</b> school <span class='c-time'>in 2015</span>." },
+    { pos: 42, when: "2 years ago", text: "We <b>moved</b> to this city <span class='c-time'>two years ago</span>." },
+    { pos: 62, when: "last week", text: "She <b>visited</b> her grandmother <span class='c-time'>last week</span>." },
+    { pos: 80, when: "yesterday", text: "I <b>played</b> football <span class='c-time'>yesterday</span>." }
+];
+let tmValue = 100;
+let tmTimer = null;
+let tmDir = -1;
+
+function buildTimeStops() {
+    const area = document.getElementById("tmArea");
+    TM_EVENTS.forEach((e, i) => {
+        const d = document.createElement("button");
+        d.className = "tm-stop";
+        d.id = "tmStop" + i;
+        d.style.left = e.pos + "%";
+        d.innerHTML = '<span class="tm-stop-lab">' + e.when + '</span>';
+        d.onclick = () => showTmEvent(i);
+        area.appendChild(d);
+    });
+}
+
+function timeLabel(v) {
+    if (v >= 95) return "Now ✨";
+    if (v >= 71) return "Yesterday";
+    if (v >= 51) return "Last week";
+    if (v >= 31) return "Two years ago";
+    return "2015 or earlier";
+}
+
+function moveTime(v) {
+    tmValue = Math.max(0, Math.min(100, Number(v)));
+    document.getElementById("tmSlider").value = tmValue;
+    document.getElementById("tmMarker").style.left = tmValue + "%";
+    document.getElementById("tmYou").style.left = tmValue + "%";
+    document.getElementById("tmFill").style.width = tmValue + "%";
+    document.getElementById("tmReadout").textContent = "You are in: " + timeLabel(tmValue);
+    document.getElementById("tmScene").classList.toggle("dusk", tmValue < 95);
+
+    let happenedCount = 0;
+    TM_EVENTS.forEach((e, i) => {
+        const d = document.getElementById("tmStop" + i);
+        const happened = tmValue > e.pos;
+        if (happened) happenedCount++;
+        d.classList.toggle("happened", happened);
+        d.classList.toggle("future", !happened);
+    });
+    document.getElementById("tmLegend").textContent = happenedCount === 0
+        ? "🔮 Nothing has happened yet at this moment."
+        : "✅ Purple dots have already happened. Grey dots haven't happened yet.";
+    updateTravelBtn();
+}
+
+function onSliderInput(v) {
+    stopTravel();
+    moveTime(v);
+}
+
+function showTmEvent(i) {
+    const b = document.getElementById("eventBubble");
+    const e = TM_EVENTS[i];
+    if (tmValue > e.pos) {
+        b.innerHTML = e.text;
+    } else {
+        b.innerHTML = "⏳ Not yet! At this moment in time, this hasn't happened. Move the time machine forward.";
+    }
+    b.classList.remove("pop");
+    void b.offsetWidth;
+    b.classList.add("pop");
+}
+
+function playTravel() {
+    if (tmTimer) { stopTravel(); return; }
+    if (tmValue >= 100) tmDir = -1;
+    else if (tmValue <= 0) tmDir = 1;
+    tmTimer = setInterval(() => {
+        const next = tmValue + tmDir;
+        moveTime(next);
+        if (next <= 0 || next >= 100) stopTravel();
+    }, 30);
+    updateTravelBtn();
+}
+
+function stopTravel() {
+    if (tmTimer) { clearInterval(tmTimer); tmTimer = null; }
+    updateTravelBtn();
+}
+
+function updateTravelBtn() {
+    const b = document.getElementById("travelBtn");
+    if (tmTimer) b.textContent = "⏸ Pause";
+    else if (tmValue >= 100) b.textContent = "⏪ Travel back in time";
+    else if (tmValue <= 0) b.textContent = "⏩ Return to now";
+    else b.textContent = "▶ Continue";
+}
+
+function bootTimeMachine() {
+    document.querySelectorAll("#tmArea .tm-stop").forEach((d, i) => {
+        d.style.animation = "dotPop .5s " + (i * 0.12) + "s both";
+    });
+}
+
+/* ==================== STEP 2: WHEN TO USE ==================== */
+
+const USES = [
+    {
+        level: "A1", title: "Finished actions in the past",
+        tl: `<div class="tl"><div class="tl-track uses"></div><span class="tl-lab past">⏪ PAST</span><span class="tl-lab now">NOW ✨</span><span class="tl-dot" style="left:30%"></span><span class="tl-word" style="left:30%">yesterday</span></div>`,
+        aff: `I <span class="c-verb">played</span> football <span class="c-time">yesterday</span>.`,
+        que: `<span class="c-did">Did</span> you <span class="c-verb">play</span> football <span class="c-time">yesterday</span>?`,
+        note: "Time words: yesterday · last night · last week · in 2020 · 5 minutes ago"
+    },
+    {
+        level: "A1", title: "Past states and facts",
+        tl: `<div class="tl"><div class="tl-track uses"></div><span class="tl-lab past">⏪ PAST</span><span class="tl-lab now">NOW ✨</span><span class="tl-dot" style="left:45%"></span><span class="tl-word" style="left:45%">before — finished</span></div>`,
+        aff: `She <span class="c-be">was</span> very happy. He <span class="c-verb">lived</span> in London.`,
+        que: `<span class="c-be">Was</span> she very happy? <span class="c-did">Did</span> he <span class="c-verb">live</span> in London?`,
+        note: "States that are finished: they are not true now."
+    },
+    {
+        level: "A2", title: "Stories: one thing after another",
+        tl: `<div class="tl"><div class="tl-track uses"></div><span class="tl-lab past">⏪ PAST</span><span class="tl-lab now">NOW ✨</span><span class="tl-dot" style="left:18%"></span><span class="tl-word" style="left:18%">1st</span><span class="tl-dot" style="left:42%"></span><span class="tl-word" style="left:42%">then</span><span class="tl-dot" style="left:66%"></span><span class="tl-word" style="left:66%">finally</span></div>`,
+        aff: `I <span class="c-verb">woke</span> up, <span class="c-verb">had</span> breakfast and <span class="c-verb">went</span> to school.`,
+        que: `<span class="c-did">Did</span> you <span class="c-verb">have</span> breakfast?`,
+        note: "A sequence of finished events, like a story: one thing, then another."
+    },
+    {
+        level: "A2", title: "Past habits (not true now)",
+        tl: `<div class="tl"><div class="tl-track uses"></div><span class="tl-lab past">⏪ PAST</span><span class="tl-lab now">NOW ✨</span><span class="tl-dot" style="left:15%"></span><span class="tl-dot" style="left:32%"></span><span class="tl-dot" style="left:49%"></span><span class="tl-dot" style="left:66%"></span><span class="tl-word" style="left:40%">every Saturday</span></div>`,
+        aff: `I <span class="c-verb">played</span> tennis <span class="c-time">every Saturday</span>.`,
+        que: `<span class="c-did">Did</span> you <span class="c-verb">play</span> tennis when you were young?`,
+        note: "Repeated actions in the past, often with always, every day or when I was young."
+    },
+    {
+        level: "B1", title: "Finished durations",
+        tl: `<div class="tl"><div class="tl-track uses"></div><span class="tl-lab past">⏪ PAST</span><span class="tl-lab now">NOW ✨</span><div class="tl-span" style="left:25%;width:32%"></div><span class="tl-span-lab" style="left:41%">for 3 hours — finished ✓</span></div>`,
+        aff: `I <span class="c-verb">studied</span> <span class="c-time">for three hours</span>.`,
+        que: `<span class="c-did">Did</span> you <span class="c-verb">study</span> <span class="c-time">for three hours</span>?`,
+        note: "A duration that is completely finished. We often use for + a time period."
+    },
+    {
+        level: "B1", title: "Past vs now",
+        tl: `<div class="tl"><div class="tl-mini"><div class="tl-track uses"></div><span class="tl-lab past" style="top:26px">BEFORE</span><span class="tl-dot" style="left:30%"></span><span class="tl-word" style="left:30%;top:-14px">I lived in Tokyo</span></div><div class="tl-mini"><div class="tl-track" style="background:#ffedae"></div><span class="tl-lab now" style="top:26px">NOW ✨</span><span class="tl-dot" style="left:70%;background:#f1c40f"></span><span class="tl-word" style="left:70%;top:-14px;background:#fff3c4;color:#7d6608">I live in Osaka</span></div></div>`,
+        aff: `I <span class="c-verb">lived</span> in Tokyo. Now I live in Osaka.`,
+        que: `<span class="c-did">Did</span> you <span class="c-verb">live</span> in Tokyo?`,
+        note: "Past Simple for the finished past. Present Simple for now."
+    }
+];
+const LEVEL_ORDER = { A1: 1, A2: 2, B1: 3 };
+let usesLevel = "A2";
+
+function setUsesLevel(l) {
+    usesLevel = l;
+    ["A1", "A2", "B1"].forEach(k => document.getElementById("ub-" + k).classList.toggle("active", k === l));
+    renderUses();
+}
+
+function renderUses() {
+    const list = document.getElementById("usesList");
+    list.innerHTML = "";
+    USES.filter(u => LEVEL_ORDER[u.level] <= LEVEL_ORDER[usesLevel]).forEach((u, i) => {
+        const st = document.createElement("div");
+        st.className = "stage";
+        st.innerHTML = `
+            <button class="stage-head" onclick="toggleStage(this)">
+                <span class="stage-num">${i + 1}</span>
+                <span class="stage-title">${u.title} <span class="use-badge ${u.level}">${u.level}</span></span>
+                <span class="stage-arrow">▼</span>
+            </button>
+            <div class="stage-body"><div class="stage-inner"><div class="stage-content">
+                ${u.tl}
+                <div class="use-ex"><p>✅ ${u.aff}</p><p>❓ ${u.que}</p></div>
+                <p class="use-note">💡 ${u.note}</p>
+            </div></div></div>`;
+        list.appendChild(st);
+    });
+    const first = list.querySelector(".stage");
+    if (first) openStage(first);
+}
+
+/* ==================== STEP 3: REGULAR VERBS ==================== */
+
+const ED_VERBS = [
+    { base: "walk", past: "walked", show: "walk", add: "ed", rule: 1, sound: "t" },
+    { base: "jump", past: "jumped", show: "jump", add: "ed", rule: 1, sound: "t" },
+    { base: "watch", past: "watched", show: "watch", add: "ed", rule: 1, sound: "t" },
+    { base: "clean", past: "cleaned", show: "clean", add: "ed", rule: 1, sound: "d" },
+    { base: "live", past: "lived", show: "live", add: "d", rule: 2, sound: "d" },
+    { base: "love", past: "loved", show: "love", add: "d", rule: 2, sound: "d" },
+    { base: "arrive", past: "arrived", show: "arrive", add: "d", rule: 2, sound: "d" },
+    { base: "dance", past: "danced", show: "dance", add: "d", rule: 2, sound: "d" },
+    { base: "study", past: "studied", show: "stud", add: "ied", rule: 3, sound: "id" },
+    { base: "cry", past: "cried", show: "cr", add: "ied", rule: 3, sound: "id" },
+    { base: "try", past: "tried", show: "tr", add: "ied", rule: 3, sound: "id" },
+    { base: "carry", past: "carried", show: "carr", add: "ied", rule: 3, sound: "id" }
+];
+const ED_RULES = {
+    1: "Rule 1 — just add -ed",
+    2: "Rule 2 — already ends in -e: add -d",
+    3: "Rule 3 — consonant + y: change the y to -ied"
+};
+const SOUND_SYM = { t: "/t/", d: "/d/", id: "/ɪd/" };
+const SOUND_CLASS = { t: "s-t", d: "s-d", id: "s-id" };
+let edSel = 0;
+
+function buildEdChips() {
+    const wrap = document.getElementById("edChips");
+    wrap.innerHTML = "";
+    ED_VERBS.forEach((v, i) => {
+        const b = document.createElement("button");
+        b.className = "chip" + (i === edSel ? " active" : "");
+        b.textContent = v.base;
+        b.onclick = () => { edSel = i; buildEdChips(); showEdMachine(); };
+        wrap.appendChild(b);
+    });
+}
+
+function showEdMachine() {
+    const v = ED_VERBS[edSel];
+    document.getElementById("edBase").innerHTML = v.rule === 3 ? v.show + '<span class="ghost">y</span>' : v.show;
+    document.getElementById("edPast").innerHTML = v.show + '<span class="hl">' + v.add + '</span>';
+    const meta = document.getElementById("edMeta");
+    meta.innerHTML = ED_RULES[v.rule] + ' <span class="sound-chip ' + SOUND_CLASS[v.sound] + '">🔊 ' + SOUND_SYM[v.sound] + '</span>';
+    meta.style.display = "block";
+    const m = document.getElementById("edMachine");
+    m.style.display = "flex";
+    m.classList.remove("machine-anim");
+    void m.offsetWidth;
+    m.classList.add("machine-anim");
+}
+
+const TRY = [
+    { v: "cook", r: 1 }, { v: "love", r: 2 }, { v: "try", r: 3 },
+    { v: "play", r: 1 }, { v: "arrive", r: 2 }, { v: "carry", r: 3 }
+];
+const TRY_LABELS = { 1: "+ -ed", 2: "+ -d", 3: "y → -ied" };
+const TRY_PAST = { cook: "cooked", love: "loved", try: "tried", play: "played", arrive: "arrived", carry: "carried" };
+
+function buildTry() {
+    const list = document.getElementById("tryList");
+    list.innerHTML = "";
+    TRY.forEach((t, i) => {
+        const row = document.createElement("div");
+        row.className = "try-row";
+        row.id = "try" + i;
+        row.innerHTML = `<span class="try-word">${t.v}</span>
+            <div class="try-btns">
+                <button class="try-btn" onclick="checkTry(${i}, 1, this)">${TRY_LABELS[1]}</button>
+                <button class="try-btn" onclick="checkTry(${i}, 2, this)">${TRY_LABELS[2]}</button>
+                <button class="try-btn" onclick="checkTry(${i}, 3, this)">${TRY_LABELS[3]}</button>
+            </div>`;
+        list.appendChild(row);
+    });
+}
+
+function checkTry(i, choice, btn) {
+    const t = TRY[i];
+    const row = document.getElementById("try" + i);
+    if (row.classList.contains("done")) return;
+    if (choice === t.r) {
+        row.classList.add("done");
+        row.querySelector(".try-btns").innerHTML = '<span class="try-result">✅ ' + TRY_PAST[t.v] + '</span>';
+    } else {
+        btn.classList.remove("wrong");
+        void btn.offsetWidth;
+        btn.classList.add("wrong");
+    }
+}
+
+/* ==================== STEP 4: -ED SOUND SORTER ==================== */
+
+const SOUNDS = [
+    { w: "walked", s: "t", ipa: "/wɔːkt/", placed: false },
+    { w: "watched", s: "t", ipa: "/wɒtʃt/", placed: false },
+    { w: "stopped", s: "t", ipa: "/stɒpt/", placed: false },
+    { w: "jumped", s: "t", ipa: "/dʒʌmpt/", placed: false },
+    { w: "played", s: "d", ipa: "/pleɪd/", placed: false },
+    { w: "lived", s: "d", ipa: "/lɪvd/", placed: false },
+    { w: "loved", s: "d", ipa: "/lʌvd/", placed: false },
+    { w: "arrived", s: "d", ipa: "/əˈraɪvd/", placed: false },
+    { w: "wanted", s: "id", ipa: "/ˈwɒntɪd/", placed: false },
+    { w: "studied", s: "id", ipa: "/ˈstʌdɪd/", placed: false },
+    { w: "needed", s: "id", ipa: "/ˈniːdɪd/", placed: false },
+    { w: "carried", s: "id", ipa: "/ˈkærid/", placed: false }
+];
+let sortSel = -1;
+let sortDone = 0;
+
+function buildSoundPool() {
+    const pool = document.getElementById("soundPool");
+    pool.innerHTML = "";
+    SOUNDS.forEach((s, i) => {
+        if (s.placed) return;
+        const t = document.createElement("div");
+        t.id = "stile" + i;
+        t.className = "sound-tile" + (sortSel === i ? " selected" : "");
+        t.textContent = s.w;
+        t.onclick = () => { sortSel = sortSel === i ? -1 : i; refreshSoundTiles(); };
+        pool.appendChild(t);
+    });
+}
+
+function refreshSoundTiles() {
+    SOUNDS.forEach((s, i) => {
+        const t = document.getElementById("stile" + i);
+        if (t && t.parentElement.id === "soundPool") t.classList.toggle("selected", sortSel === i);
+    });
+}
+
+function setSoundFeedback(msg) { document.getElementById("soundFeedback").textContent = msg; }
+
+function sortSound(sound) {
+    if (sortSel < 0) { setSoundFeedback("👆 Click a word first, then click a sound!"); return; }
+    const s = SOUNDS[sortSel];
+    const t = document.getElementById("stile" + sortSel);
+    if (s.s === sound) {
+        document.getElementById("bucket-" + sound).appendChild(t);
+        t.classList.remove("selected");
+        t.classList.add("placed");
+        s.placed = true;
+        sortSel = -1;
+        sortDone++;
+        setSoundFeedback("✅ Correct! " + SOUND_SYM[sound] + " — " + s.ipa);
+        if (sortDone === SOUNDS.length) setSoundFeedback("🎉 Perfect! You can hear the three sounds of -ed: /t/ · /d/ · /ɪd/");
+    } else {
+        t.classList.remove("wrong-shake");
+        void t.offsetWidth;
+        t.classList.add("wrong-shake");
+        setSoundFeedback("❌ Not that one. Say the word out loud: which sound does the -ed make?");
+    }
+}
+
+function resetSort() {
+    SOUNDS.forEach(s => s.placed = false);
+    sortDone = 0;
+    sortSel = -1;
+    ["t", "d", "id"].forEach(k => document.getElementById("bucket-" + k).innerHTML = "");
+    buildSoundPool();
+    setSoundFeedback("");
+}
+
+/* ==================== STEP 5: WAS / WERE ==================== */
+
+const BE = [
+    { s: "I", be: "was", n: "wasn't", q: "Was" },
+    { s: "he", be: "was", n: "wasn't", q: "Was" },
+    { s: "she", be: "was", n: "wasn't", q: "Was" },
+    { s: "it", be: "was", n: "wasn't", q: "Was" },
+    { s: "you", be: "were", n: "weren't", q: "Were" },
+    { s: "we", be: "were", n: "weren't", q: "Were" },
+    { s: "they", be: "were", n: "weren't", q: "Were" }
+];
+const COMP = ["happy", "at school", "a teacher", "tired", "in London", "ready", "10 years old", "at home", "hungry", "sad"];
+let beSel = { sub: 0, comp: 0 };
+const lastShown = {};
+
+function buildBeChips() {
+    const wrap = document.getElementById("beChips");
+    wrap.innerHTML = "";
+    BE.forEach((s, i) => {
+        const b = document.createElement("button");
+        b.className = "chip" + (i === beSel.sub ? " active" : "");
+        b.textContent = s.s;
+        b.onclick = () => { beSel.sub = i; renderAllBe(); };
+        wrap.appendChild(b);
+    });
+}
+
+function renderBe(id, type) {
+    const cur = BE[beSel.sub];
+    const comp = COMP[beSel.comp % COMP.length];
+    const beWord = type === "aff" ? cur.be : type === "neg" ? cur.n : cur.q;
+    const el = document.getElementById(id);
+    el.innerHTML = "";
+
+    const parts = [];
+    if (type === "que") parts.push({ t: cur.q, c: "be", k: null });
+    parts.push({ t: cur.s, c: "subject", k: "sub" });
+    if (type !== "que") parts.push({ t: beWord, c: "be", k: null });
+    parts.push({ t: comp, c: "obj", k: "comp" });
+
+    parts.forEach((p, i) => {
+        const s = document.createElement("div");
+        s.className = "slot " + p.c + (p.k ? "" : " fix");
+        s.textContent = p.t;
+        if (p.c === "be" && lastShown[id] && lastShown[id] !== beWord) s.classList.add("morph");
+        s.style.animationDelay = (i * 70) + "ms";
+        if (p.k === "sub") s.onclick = () => { beSel.sub = (beSel.sub + 1) % BE.length; renderAllBe(); };
+        if (p.k === "comp") s.onclick = () => { beSel.comp = (beSel.comp + 1) % COMP.length; renderAllBe(); };
+        el.appendChild(s);
+    });
+    const punct = document.createElement("span");
+    punct.className = "punct";
+    punct.textContent = type === "que" ? "?" : ".";
+    punct.style.animationDelay = (parts.length * 70) + "ms";
+    el.appendChild(punct);
+    lastShown[id] = beWord;
+
+    const g = document.getElementById(id + "G");
+    if (type === "aff") {
+        g.innerHTML = `<strong>Affirmative:</strong> Subject + <span class="c-be">was / were</span> + complement<br>Example: <strong>${cur.s} ${cur.be} ${comp}.</strong>`;
+    } else if (type === "neg") {
+        g.innerHTML = `<strong>Negative:</strong> Subject + <span class="c-be">wasn't / weren't</span> + complement<br>Example: <strong>${cur.s} ${cur.n} ${comp}.</strong>`;
+    } else {
+        g.innerHTML = `<strong>Question:</strong> <span class="c-be">Was / Were</span> + subject + complement?<br>Example: <strong>${cur.q} ${cur.s} ${comp}?</strong>`;
+    }
+}
+
+function renderAllBe() {
+    buildBeChips();
+    renderBe("beA", "aff");
+    renderBe("beN", "neg");
+    renderBe("beQ", "que");
+}
+
+/* ==================== STEP 6: IRREGULAR VERBS ==================== */
+
+const IRREGULAR = [
+    { base: "cut", past: "cut", group: "same" }, { base: "put", past: "put", group: "same" },
+    { base: "hit", past: "hit", group: "same" }, { base: "let", past: "let", group: "same" },
+    { base: "cost", past: "cost", group: "same" }, { base: "read", past: "read", group: "same" },
+    { base: "build", past: "built", group: "t" }, { base: "send", past: "sent", group: "t" },
+    { base: "spend", past: "spent", group: "t" }, { base: "lend", past: "lent", group: "t" },
+    { base: "feel", past: "felt", group: "t" }, { base: "keep", past: "kept", group: "t" },
+    { base: "sleep", past: "slept", group: "t" }, { base: "meet", past: "met", group: "t" },
+    { base: "eat", past: "ate", group: "vowel" }, { base: "sing", past: "sang", group: "vowel" },
+    { base: "drink", past: "drank", group: "vowel" }, { base: "swim", past: "swam", group: "vowel" },
+    { base: "begin", past: "began", group: "vowel" }, { base: "run", past: "ran", group: "vowel" },
+    { base: "come", past: "came", group: "vowel" }, { base: "see", past: "saw", group: "vowel" },
+    { base: "take", past: "took", group: "vowel" }, { base: "give", past: "gave", group: "vowel" },
+    { base: "write", past: "wrote", group: "vowel" }, { base: "speak", past: "spoke", group: "vowel" },
+    { base: "get", past: "got", group: "vowel" }, { base: "sit", past: "sat", group: "vowel" },
+    { base: "win", past: "won", group: "vowel" },
+    { base: "grow", past: "grew", group: "ew" }, { base: "know", past: "knew", group: "ew" },
+    { base: "throw", past: "threw", group: "ew" }, { base: "blow", past: "blew", group: "ew" },
+    { base: "fly", past: "flew", group: "ew" }, { base: "draw", past: "drew", group: "ew" },
+    { base: "be", past: "was / were", group: "special" }, { base: "have", past: "had", group: "special" },
+    { base: "do", past: "did", group: "special" }, { base: "go", past: "went", group: "special" },
+    { base: "say", past: "said", group: "special" }, { base: "make", past: "made", group: "special" },
+    { base: "buy", past: "bought", group: "special" }, { base: "bring", past: "brought", group: "special" },
+    { base: "think", past: "thought", group: "special" }, { base: "find", past: "found", group: "special" }
+];
+const IR_GROUPS = {
+    same: { label: "No change", color: "#16a085" },
+    t: { label: "Add -t", color: "#2980b9" },
+    vowel: { label: "Vowel change", color: "#e67e22" },
+    ew: { label: "-ew → -ewn", color: "#8e44ad" },
+    special: { label: "Special", color: "#e74c3c" }
+};
+let irFilter = "all";
+let irFlipped = 0;
+
+function buildIrFilter() {
+    const bar = document.getElementById("irFilter");
+    bar.innerHTML = "";
+    const mk = (key, label) => {
+        const b = document.createElement("button");
+        b.className = "fbtn" + (irFilter === key ? " active" : "");
+        b.textContent = label;
+        b.onclick = () => { irFilter = key; buildIrFilter(); buildIrGrid(); };
+        bar.appendChild(b);
+    };
+    mk("all", "⭐ All (" + IRREGULAR.length + ")");
+    mk("same", "No change");
+    mk("t", "Add -t");
+    mk("vowel", "Vowel change");
+    mk("ew", "-ew → -ewn");
+    mk("special", "Special");
+}
+
+function buildIrGrid() {
+    const grid = document.getElementById("irGrid");
+    grid.innerHTML = "";
+    const list = IRREGULAR.filter(v => irFilter === "all" || v.group === irFilter);
+    list.forEach(v => {
+        const g = IR_GROUPS[v.group];
+        const card = document.createElement("div");
+        card.className = "flip-card";
+        card.innerHTML = `<div class="flip-inner">
+            <div class="flip-face" style="border-top:5px solid ${g.color}"><span class="flip-base">${v.base}</span><span class="flip-tag">${g.label}</span></div>
+            <div class="flip-face flip-back" style="background:${g.color}"><span class="flip-past">${v.past}</span></div>
+        </div>`;
+        card.onclick = () => {
+            if (card.classList.contains("flipped")) return;
+            card.classList.add("flipped");
+            irFlipped++;
+            document.getElementById("irCount").textContent = irFlipped >= list.length
+                ? "🎉 Amazing! You've flipped every card in this group!"
+                : "Cards flipped: " + irFlipped + " / " + list.length;
+        };
+        grid.appendChild(card);
+    });
+    irFlipped = 0;
+    document.getElementById("irCount").textContent = "Click a card to flip it! 🃏";
+}
+
+/* ==================== STEP 7: BUILD IT ==================== */
+
+const SUBJECTS = ["I", "you", "he", "she", "it", "we", "they"];
+const VERBS = [
+    { base: "play", past: "played", objs: ["football", "the guitar", "music"] },
+    { base: "watch", past: "watched", objs: ["TV", "a film", "a series"] },
+    { base: "study", past: "studied", objs: ["English", "maths", "for an exam"] },
+    { base: "walk", past: "walked", objs: ["home", "to school", "the dog"] },
+    { base: "visit", past: "visited", objs: ["my grandma", "Paris", "the museum"] },
+    { base: "go", past: "went", objs: ["to Paris", "to school", "home"] },
+    { base: "eat", past: "ate", objs: ["pizza", "breakfast", "dinner"] },
+    { base: "see", past: "saw", objs: ["a film", "my mother", "the doctor"] },
+    { base: "buy", past: "bought", objs: ["a new car", "a present", "bread"] },
+    { base: "have", past: "had", objs: ["breakfast", "a shower", "a great time"] },
+    { base: "make", past: "made", objs: ["a cake", "a mistake", "a phone call"] },
+    { base: "do", past: "did", objs: ["my homework", "the dishes", "exercise"] },
+    { base: "get", past: "got", objs: ["home", "a present", "my keys"] }
+];
+const TIMES = ["yesterday", "last night", "last week", "in 2015", "two days ago", "this morning", "last summer", "on Monday", "five years ago"];
+const WH = ["What", "Where", "When", "Why", "How"];
+let bSel = { sub: 0, verb: 0, obj: 0, time: 0, wh: 0 };
+let builderQ = "yesno";
+
+function setBuilderQ(q) {
+    builderQ = q;
+    document.getElementById("qs-yesno").classList.toggle("active", q === "yesno");
+    document.getElementById("qs-wh").classList.toggle("active", q === "wh");
+    renderBuilder("bQ", "que");
+}
+
+function clickBlock(k) {
+    if (k === "sub") bSel.sub = (bSel.sub + 1) % SUBJECTS.length;
+    if (k === "verb") { bSel.verb = (bSel.verb + 1) % VERBS.length; bSel.obj = 0; }
+    if (k === "obj") bSel.obj++;
+    if (k === "time") bSel.time = (bSel.time + 1) % TIMES.length;
+    if (k === "wh") bSel.wh = (bSel.wh + 1) % WH.length;
+    renderAllBuilders();
+}
+
+function renderBuilder(id, type) {
+    const v = VERBS[bSel.verb];
+    const obj = v.objs[bSel.obj % v.objs.length];
+    const sub = SUBJECTS[bSel.sub];
+    const time = TIMES[bSel.time];
+    const wh = WH[bSel.wh];
+    const vForm = type === "aff" ? v.past : v.base;
+    const isWh = type === "que" && builderQ === "wh";
+
+    const parts = [];
+    if (isWh) parts.push({ t: wh, c: "wh", k: "wh" });
+    if (type === "que") parts.push({ t: "Did", c: "did", k: null });
+    parts.push({ t: sub, c: "subject", k: "sub" });
+    if (type === "neg") parts.push({ t: "didn't", c: "did", k: null });
+    parts.push({ t: vForm, c: "verb", k: "verb" });
+    parts.push({ t: obj, c: "obj", k: "obj" });
+    parts.push({ t: time, c: "time", k: "time" });
+
+    const el = document.getElementById(id);
+    el.innerHTML = "";
+    const prev = lastShown[id];
+    parts.forEach((p, i) => {
+        const s = document.createElement("div");
+        s.className = "slot " + p.c + (p.k ? "" : " fix");
+        s.textContent = p.t;
+        if (p.c === "verb" && prev && prev !== vForm) s.classList.add("morph");
+        s.style.animationDelay = (i * 70) + "ms";
+        if (p.k) s.onclick = () => clickBlock(p.k);
+        el.appendChild(s);
+    });
+    const punct = document.createElement("span");
+    punct.className = "punct";
+    punct.textContent = type === "que" ? "?" : ".";
+    punct.style.animationDelay = (parts.length * 70) + "ms";
+    el.appendChild(punct);
+    lastShown[id] = vForm;
+
+    const g = document.getElementById(id + "G");
+    if (type === "aff") {
+        g.innerHTML = `<strong>Affirmative pattern:</strong><br>Subject + <span class="c-verb">V2 (past form)</span> + object + time<br>Example: <strong>${sub} <span class="c-verb">${v.past}</span> ${obj} <span class="c-time">${time}</span>.</strong>`;
+    } else if (type === "neg") {
+        g.innerHTML = `<strong>Negative pattern:</strong><br>Subject + <span class="c-did">didn't</span> + <span class="c-verb">base verb</span> + object + time<br>Example: <strong>${sub} <span class="c-did">didn't</span> <span class="c-verb">${v.base}</span> ${obj} <span class="c-time">${time}</span>.</strong>`;
+    } else if (isWh) {
+        g.innerHTML = `<strong>Wh- question pattern:</strong><br>Wh-word + <span class="c-did">Did</span> + subject + <span class="c-verb">base verb</span> + object + time?<br>Example: <strong>${wh} <span class="c-did">did</span> ${sub} <span class="c-verb">${v.base}</span> ${obj} <span class="c-time">${time}</span>?</strong>`;
+    } else {
+        g.innerHTML = `<strong>Yes/No question pattern:</strong><br><span class="c-did">Did</span> + subject + <span class="c-verb">base verb</span> + object + time?<br>Example: <strong>Did ${sub} <span class="c-verb">${v.base}</span> ${obj} <span class="c-time">${time}</span>?</strong>`;
+    }
+}
+
+function renderAllBuilders() {
+    renderBuilder("bA", "aff");
+    renderBuilder("bN", "neg");
+    renderBuilder("bQ", "que");
+}
+
+/* ==================== STEP 8: CHALLENGE ==================== */
+
+const ERRORS = [
+    { arr: ["I", "didn't", "watched", "TV", "yesterday", "."], wrong: 2, correct: "watch", msg: "After didn't, the verb is the base form: didn't watch." },
+    { arr: ["Did", "you", "went", "to", "school", "?"], wrong: 2, correct: "go", msg: "After did, use the base verb: Did you go?" },
+    { arr: ["They", "was", "at", "school", "."], wrong: 1, correct: "were", msg: "You, we and they take were, not was." },
+    { arr: ["He", "goed", "home", "yesterday", "."], wrong: 1, correct: "went", msg: "go is irregular. Its past form is went." },
+    { arr: ["I", "play", "football", "yesterday", "."], wrong: 1, correct: "played", msg: "yesterday = a finished time, so use the past form: played." },
+    { arr: ["Did", "he", "ate", "pizza", "?"], wrong: 2, correct: "eat", msg: "After did, use the base form: Did he eat pizza?" }
+];
+let errIndex = 0;
+
+function loadError() {
+    const cur = ERRORS[errIndex];
+    const sentenceEl = document.getElementById("mistakeSentence");
+    sentenceEl.innerHTML = cur.arr.map((w, i) => `<span class="bad-word" data-i="${i}">${w}</span>`).join(" ");
+    document.getElementById("explain").style.display = "none";
+    document.getElementById("nextErr").style.display = "none";
+    sentenceEl.querySelectorAll(".bad-word").forEach(w => {
+        w.onclick = () => {
+            const ex = document.getElementById("explain");
+            if (Number(w.dataset.i) === cur.wrong) {
+                w.classList.add("correct");
+                ex.innerHTML = "✅ Correct! " + cur.msg + " The correct word is <strong>" + cur.correct + "</strong>.";
+                document.getElementById("nextErr").style.display = "inline-block";
+            } else {
+                w.classList.add("wrong");
+                ex.innerHTML = "❌ Not that one. Look at the verb form and the time word. Try again!";
+            }
+            ex.style.display = "block";
+        };
+    });
+}
+
+function nextError() {
+    errIndex = (errIndex + 1) % ERRORS.length;
+    loadError();
+}
+
+const SCRAMBLES = [
+    { words: ["watched", "I", "TV", "yesterday", "didn't"], correct: ["I", "watched", "TV", "yesterday"], intruder: "didn't", mode: "Affirmative" },
+    { words: ["did", "she", "go", "to", "school", "went"], correct: ["Did", "she", "go", "to", "school"], intruder: "went", mode: "Question" },
+    { words: ["wasn't", "he", "happy", "was", "yesterday"], correct: ["He", "wasn't", "happy", "yesterday"], intruder: "was", mode: "Negative (be)" },
+    { words: ["pizza", "I", "ate", "yesterday", "eat"], correct: ["I", "ate", "pizza", "yesterday"], intruder: "eat", mode: "Affirmative" }
+];
+let scrIndex = 0;
+
+function loadScramble() {
+    const cur = SCRAMBLES[scrIndex];
+    document.getElementById("scrMode").textContent = "Build a " + cur.mode + " sentence";
+    document.getElementById("pool").innerHTML = "";
+    document.getElementById("answer").innerHTML = "";
+    document.getElementById("trash").innerHTML = "";
+    document.getElementById("scrFeedback").textContent = "";
+    [...cur.words].sort(() => Math.random() - 0.5).forEach(w => {
+        const t = document.createElement("div");
+        t.className = "scr-tile";
+        t.textContent = w;
+        t.onclick = () => moveTile(t);
+        document.getElementById("pool").appendChild(t);
+    });
+}
+
+function nextScramble() {
+    scrIndex = (scrIndex + 1) % SCRAMBLES.length;
+    loadScramble();
+}
+
+function moveTile(tile) {
+    const cur = SCRAMBLES[scrIndex];
+    const pool = document.getElementById("pool");
+    if (pool.contains(tile)) {
+        if (tile.textContent.toLowerCase() === cur.intruder.toLowerCase()) {
+            document.getElementById("trash").appendChild(tile);
+        } else {
+            document.getElementById("answer").appendChild(tile);
+        }
+    } else {
+        pool.appendChild(tile);
+    }
+}
+
+function checkScramble() {
+    const cur = SCRAMBLES[scrIndex];
+    const ans = [...document.getElementById("answer").children].map(t => t.textContent);
+    const tr = [...document.getElementById("trash").children].map(t => t.textContent);
+    const ok = ans.join(" ").toLowerCase() === cur.correct.join(" ").toLowerCase();
+    const okI = tr.some(w => w.toLowerCase() === cur.intruder.toLowerCase());
+    const fb = document.getElementById("scrFeedback");
+    if (ok && okI) {
+        fb.textContent = "✅ Correct! Well done, time traveller!";
+        setTimeout(nextScramble, 1000);
+    } else {
+        fb.textContent = "❌ Not quite. Check the word order and the intruder word.";
+    }
+}
+
+const QUIZ = [
+    { q: "I ___ to Paris last year.", o: ["went", "go", "goes"], a: 0 },
+    { q: "She ___ TV last night.", o: ["didn't watch", "didn't watched", "not watch"], a: 0 },
+    { q: "___ you ___ the film yesterday?", o: ["Did / see", "Did / saw", "Do / see"], a: 0 },
+    { q: "They ___ happy yesterday.", o: ["were", "was", "are"], a: 0 },
+    { q: "He ___ a car in 2010.", o: ["bought", "buyed", "buys"], a: 0 },
+    { q: "I ___ English for 2 hours.", o: ["studied", "studyed", "studies"], a: 0 },
+    { q: "We ___ football every day.", o: ["played", "play", "plays"], a: 0 },
+    { q: "It ___ yesterday.", o: ["rained", "rain", "rains"], a: 0 },
+    { q: "They ___ at school yesterday.", o: ["weren't", "wasn't", "didn't be"], a: 0 },
+    { q: "___ she ___ pizza?", o: ["Did / eat", "Did / ate", "Was / eat"], a: 0 },
+    { q: "I ___ my keys, then I ___ them!", o: ["lost / found", "lost / finded", "lose / found"], a: 0 },
+    { q: "He ___ a teacher in 2005.", o: ["became", "becomed", "becomes"], a: 0 },
+    { q: "Did you ___ your homework yesterday?", o: ["do", "did", "done"], a: 0 }
+];
+let quizIdx = 0;
+let streak = 0;
+
+function renderQuiz() {
+    const q = QUIZ[quizIdx];
+    document.getElementById("quizStreak").textContent = "🔥 Streak: " + streak + "   ·   Question " + (quizIdx + 1) + " / " + QUIZ.length;
+    document.getElementById("quizQ").textContent = q.q;
+    const opts = document.getElementById("quizOpts");
+    opts.innerHTML = "";
+    q.o.forEach((o, i) => {
+        const b = document.createElement("button");
+        b.className = "quiz-opt";
+        b.textContent = o;
+        b.onclick = () => answerQuiz(i, b);
+        opts.appendChild(b);
+    });
+}
+
+function answerQuiz(i, btn) {
+    const q = QUIZ[quizIdx];
+    const buttons = document.querySelectorAll(".quiz-opt");
+    buttons.forEach(b => b.disabled = true);
+    if (i === q.a) {
+        btn.classList.add("correct");
+        streak++;
+        const wrap = document.getElementById("gameQuiz");
+        const star = document.createElement("span");
+        star.className = "star-pop";
+        star.textContent = "⭐";
+        star.style.left = (40 + Math.random() * 20) + "%";
+        star.style.top = "35%";
+        wrap.appendChild(star);
+        setTimeout(() => star.remove(), 850);
+    } else {
+        btn.classList.add("wrong");
+        buttons[q.a].classList.add("correct");
+        streak = 0;
+    }
+    document.getElementById("quizStreak").textContent = "🔥 Streak: " + streak + "   ·   Question " + (quizIdx + 1) + " / " + QUIZ.length;
+    setTimeout(() => {
+        quizIdx = (quizIdx + 1) % QUIZ.length;
+        renderQuiz();
+    }, 1100);
+}
+
+/* ==================== INIT ==================== */
+
+buildTimeStops();
+moveTime(100);
+buildEdChips();
+showEdMachine();
+buildTry();
+buildSoundPool();
+renderAllBe();
+buildIrFilter();
+buildIrGrid();
+renderAllBuilders();
+renderUses();
+loadError();
+loadScramble();
+renderQuiz();
+hideLastNextButtons();
+showStep(1);
+</script>
+</body>
+</html>
