@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grammar Mastery Lab</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f4f6fb;
+      color: #222;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      text-align: center;
+      color: #555;
+      margin-bottom: 2rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      display: block;
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+    }
+    .card h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
+    }
+    .card p {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Grammar Mastery Lab</h1>
+    <p class="subtitle">Interactive lessons to learn English grammar step by step.</p>
+    <div class="grid" id="topics"></div>
+  </main>
+
+  <script>
+    // Add one entry per topic folder. "folder" must match the folder name exactly.
+    const topics = [
+      {
+        folder: "present-simple-s-es-ies",
+        title: "Present Simple: -s, -es, -ies",
+        description: "Third person singular spelling and endings."
+      },
+      {
+        folder: "present-simple-questions",
+        title: "Present Simple Questions",
+        description: "Forming yes/no and wh- questions."
+      },
+      {
+        folder: "present-perfect-simple",
+        title: "Present Perfect Simple",
+        description: "Experiences, results, and unfinished time."
+      },
+      {
+        folder: "past-simple",
+        title: "Past Simple",
+        description: "Regular and irregular past forms."
+      },
+      {
+        folder: "past-perfect",
+        title: "Past Perfect",
+        description: "Showing which action happened first."
+      }
+    ];
+
+    const container = document.getElementById("topics");
+
+    topics.forEach((topic) => {
+      const link = document.createElement("a");
+      link.className = "card";
+      link.href = topic.folder + "/";
+
+      const heading = document.createElement("h2");
+      heading.textContent = topic.title;
+
+      const text = document.createElement("p");
+      text.textContent = topic.description;
+
+      link.appendChild(heading);
+      link.appendChild(text);
+      container.appendChild(link);
+    });
+  </script>
+</body>
+</html>
