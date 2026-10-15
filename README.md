@@ -24,6 +24,7 @@ No login, no software, and no downloads are needed. It works in any modern web b
 
 | Lesson | Link |
 | --- | --- |
+| Present Simple | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-simple/) |
 | Present Simple: -s, -es, -ies | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-simple-s-es-ies/) |
 | Present Simple Questions | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-simple-questions/) |
 | Past Simple | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/past-simple/) |
