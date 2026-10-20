@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Passive Voice — Step by Step</title>
+<style>
+:root{
+  --bg:#f4f5fa; --ink:#232244; --muted:#6d7090; --card:#ffffff; --line:#e4e5f0;
+  --sub:#ff6b6b; --sub-soft:#ffe4e4; --sub-deep:#d94f4f;
+  --verb:#f0a50a; --verb-soft:#fdf0cf; --verb-deep:#b37400;
+  --obj:#12b5a5; --obj-soft:#d8f5f1; --obj-deep:#0d8d80;
+  --acct:#4f46e5; --acct-deep:#3730c9; --ok:#16a34a; --bad:#dc2626;
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.55; min-height:100vh;
+}
+h1,h2,h3{line-height:1.2;letter-spacing:-.01em}
+button{font-family:inherit;cursor:pointer;border:none;background:none;font-size:inherit;color:inherit}
+button:focus-visible,a:focus-visible{outline:3px solid var(--acct);outline-offset:2px;border-radius:8px}
+
+/* ---------- Header ---------- */
+header{background:#23214a;color:#fff;padding:14px 20px 0;position:sticky;top:0;z-index:50;box-shadow:0 4px 18px rgba(20,18,60,.25)}
+.hdr-top{max-width:1060px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:1.12rem;display:flex;align-items:center;gap:10px}
+.logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--sub),var(--obj));display:grid;place-items:center;font-size:1rem;font-weight:800}
+.hdr-spacer{flex:1}
+.b2wrap{display:flex;align-items:center;gap:8px;font-size:.85rem;color:#cfd0ee}
+.switch{width:44px;height:24px;border-radius:20px;background:#4b4982;position:relative;transition:.2s;flex:0 0 auto}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.switch.on{background:var(--obj)}
+.switch.on::after{left:23px}
+.stepper{max-width:1060px;margin:12px auto 0;display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.step-pill{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:12px;font-size:.82rem;font-weight:600;color:#b9bade;background:rgba(255,255,255,.07);white-space:nowrap;transition:.15s}
+.step-pill:hover{background:rgba(255,255,255,.16);color:#fff}
+.step-pill .num{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:.72rem;font-weight:800}
+.step-pill.done .num{background:var(--obj);color:#fff}
+.step-pill.active{background:#fff;color:var(--ink)}
+.step-pill.active .num{background:var(--acct);color:#fff}
+.progress-wrap{max-width:1060px;margin:10px auto 0;height:5px;background:rgba(255,255,255,.12);border-radius:4px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--sub),var(--verb),var(--obj));transition:width .5s ease;border-radius:4px}
+
+/* ---------- Layout ---------- */
+main{max-width:1060px;margin:0 auto;padding:28px 20px 90px}
+section.step{display:none;animation:fadein .35s ease}
+section.step.show{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--acct);margin-bottom:10px}
+.kicker .bar{width:26px;height:4px;border-radius:3px;background:var(--acct)}
+h2.title{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;margin-bottom:8px}
+.lead{color:var(--muted);max-width:680px;margin-bottom:22px;font-size:1.02rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 2px 10px rgba(35,34,80,.05);margin-bottom:18px}
+.card h3{font-size:1.05rem;margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:13px;font-weight:700;font-size:.95rem;background:var(--acct);color:#fff;box-shadow:0 3px 0 var(--acct-deep);transition:.12s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--acct-deep)}
+.btn:active{transform:translateY(1px);box-shadow:0 1px 0 var(--acct-deep)}
+.btn.ghost{background:#fff;color:var(--acct);box-shadow:0 0 0 2px var(--acct) inset}
+.btn.ghost:hover{background:#eef0ff}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.note{font-size:.85rem;color:var(--muted)}
+.okmsg{color:var(--ok);font-weight:700}
+.badmsg{color:var(--bad);font-weight:700}
+
+/* word coloring */
+.w-sub{background:var(--sub-soft);color:var(--sub-deep);border-bottom:3px solid var(--sub)}
+.w-verb{background:var(--verb-soft);color:var(--verb-deep);border-bottom:3px solid var(--verb)}
+.w-obj{background:var(--obj-soft);color:var(--obj-deep);border-bottom:3px solid var(--obj)}
+.w-agent{background:#e6e4ff;color:#4338ca;border-bottom:3px solid #8b85f0}
+.w-sub,.w-verb,.w-obj,.w-agent{padding:1px 6px;border-radius:6px;font-weight:700}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;font-weight:600;margin-bottom:14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:4px;display:inline-block}
+
+/* sentence stage tokens */
+.stage{background:#23214a;border-radius:var(--radius);padding:34px 20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;min-height:120px;position:relative;overflow:hidden}
+.stage.light{background:#eef0fb;border:1px dashed #c9ccf0}
+.tok{padding:10px 16px;border-radius:12px;font-weight:800;font-size:1.08rem;color:#fff;display:inline-flex;align-items:center;transition:opacity .35s}
+.tok.c-sub{background:var(--sub)}
+.tok.c-verb{background:var(--verb);color:#3d2c00}
+.tok.c-obj{background:var(--obj)}
+.tok.c-by{background:#8b85f0}
+.tok.c-other{background:#5e5f8a}
+.tok.pop-in{animation:pop .45s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.tok.wiggle{animation:wig .5s}
+@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+.tok.flip{animation:flipx .55s ease}
+@keyframes flipx{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+.tok.dim{opacity:.65}
+.caption{margin-top:14px;text-align:center;min-height:28px;font-weight:600;color:#4a4a74;font-size:.98rem}
+.roleline{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:10px;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+
+/* B2 extras */
+.b2flag{display:inline-block;padding:2px 9px;border-radius:8px;background:#312e81;color:#fff;font-size:.68rem;font-weight:800;letter-spacing:.05em;vertical-align:2px}
+.b2-only{display:none !important}
+body.b2 .b2-only{display:revert !important}
+body.b2 li.b2-only{display:list-item !important}
+body.b2 tr.b2-only{display:table-row !important}
+body.b2 span.b2-only{display:inline !important}
+body.b2 button.b2-only{display:inline-flex !important}
+.b2box{border:2px dashed #b9b5f6;background:#f4f3ff}
+
+/* ---------- Step 0 ---------- */
+.hero h1{font-size:clamp(2rem,5.5vw,3rem);font-weight:800}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--sub),var(--verb),var(--obj));-webkit-background-clip:text;background-clip:text;color:transparent}
+.voicetabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.vtab{padding:9px 18px;border-radius:12px;font-weight:800;font-size:.9rem;background:#e9eaf5;color:#7c7ea3}
+.vtab.on{background:#23214a;color:#fff}
+.sent-line{font-size:clamp(1.1rem,2.8vw,1.45rem);font-weight:700;line-height:2.1}
+.qopt{display:block;width:100%;text-align:left;padding:12px 16px;border:2px solid var(--line);border-radius:13px;margin:8px 0;font-weight:600;transition:.15s;background:#fff}
+.qopt:hover:not(:disabled){border-color:var(--acct);background:#f4f5ff}
+.qopt.correct{border-color:var(--ok);background:#eefcf3}
+.qopt.wrong{border-color:var(--bad);background:#fdf0f0}
+.qopt:disabled{cursor:default;opacity:.85}
+.expl{font-size:.9rem;color:var(--muted);margin-top:6px}
+.mini-q{max-width:580px;margin:0 auto}
+
+/* ---------- Steps ---------- */
+.pickrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.wordchip{padding:10px 15px;border-radius:11px;border:2px solid var(--line);background:#fff;font-weight:700;transition:.15s;font-size:1.05rem}
+.wordchip:hover:not(:disabled){border-color:var(--acct)}
+.wordchip.sel{border-color:var(--acct);background:#eef0ff;transform:translateY(-2px)}
+.wordchip.l-sub{background:var(--sub-soft);border-color:var(--sub);color:var(--sub-deep)}
+.wordchip.l-verb{background:var(--verb-soft);border-color:var(--verb);color:var(--verb-deep)}
+.wordchip.l-obj{background:var(--obj-soft);border-color:var(--obj);color:var(--obj-deep)}
+.wordchip.fixed{background:#f1f2f8;color:#a2a5c0;border-style:dashed;cursor:default}
+.subcard{border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
+.factory{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:720px){.factory{grid-template-columns:1fr}}
+.fcol{border:2px solid var(--line);border-radius:14px;padding:12px}
+.fcol h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.fcol.s{border-color:#ffd4d4;background:#fff9f9}.fcol.s h4{color:var(--sub-deep)}
+.fcol.v{border-color:#fbe9bd;background:#fffdf5}.fcol.v h4{color:var(--verb-deep)}
+.fcol.o{border-color:#c2efe9;background:#f7fdfc}.fcol.o h4{color:var(--obj-deep)}
+.fchip{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:10px;margin:6px 0;border:2px solid transparent;background:#fff;font-weight:600;transition:.12s}
+.fchip:hover{border-color:currentColor}
+.fcol.s .fchip.sel{border-color:var(--sub);background:var(--sub-soft)}
+.fcol.v .fchip.sel{border-color:var(--verb);background:var(--verb-soft)}
+.fcol.o .fchip.sel{border-color:var(--obj);background:var(--obj-soft)}
+.score-pill{display:inline-flex;align-items:center;gap:8px;background:#23214a;color:#fff;padding:7px 15px;border-radius:12px;font-weight:800;font-size:.9rem}
+.flash{animation:flashy .6s}
+@keyframes flashy{0%{background:#eef0ff}100%{background:transparent}}
+
+/* tense table */
+table.tensetbl{width:100%;border-collapse:collapse;font-size:.9rem}
+.tensetbl th,.tensetbl td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line)}
+.tensetbl th{background:#f4f5fb;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+.tensetbl tr:hover td{background:#fafbff}
+.tensetbl td.bp{font-weight:800;color:var(--verb-deep);white-space:nowrap}
+
+/* tense machine */
+.tm-grid{display:grid;grid-template-columns:250px 1fr;gap:16px}
+@media(max-width:780px){.tm-grid{grid-template-columns:1fr}}
+.tm-btns{display:flex;flex-direction:column;gap:6px}
+.tmpill{text-align:left;padding:10px 14px;border-radius:11px;font-weight:700;font-size:.9rem;background:#fff;border:2px solid var(--line);transition:.12s}
+.tmpill:hover{border-color:var(--acct)}
+.tmpill.on{background:var(--acct);color:#fff;border-color:var(--acct)}
+.tmpill small{display:block;font-weight:600;opacity:.75;font-size:.72rem}
+.tm-formula{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:16px;font-weight:800}
+.fbox{padding:9px 18px;border-radius:12px;font-size:1.05rem}
+.fbox.f-be{background:var(--verb);color:#3d2c00}
+.fbox.f-pp{background:var(--verb-deep);color:#fff}
+.fbox.f-plus{background:none;color:var(--muted);font-size:1.3rem;padding:0 2px}
+
+/* step 5 agent */
+.agentpill{display:inline-block;padding:9px 16px;border-radius:12px;background:#e6e4ff;color:#4338ca;font-weight:800;border:2px dashed #8b85f0;transition:.25s}
+.agentpill.dropped{opacity:0;transform:scale(.5);padding:9px 0;border-width:0;overflow:hidden}
+.agentpill.kept{border-style:solid;background:var(--obj);color:#fff;border-color:var(--obj)}
+.verdict{border-radius:12px;padding:12px 16px;margin-top:12px;font-size:.92rem;display:none}
+.verdict.show{display:block;animation:fadein .3s}
+.verdict.good{background:#eefcf3;border:1.5px solid var(--ok)}
+.verdict.warn{background:#fff8e8;border:1.5px solid var(--verb)}
+
+/* step 6 process */
+.procstep{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+.procstep:last-child{border-bottom:none}
+.procnum{flex:0 0 30px;height:30px;border-radius:50%;background:var(--acct);color:#fff;display:grid;place-items:center;font-weight:800;font-size:.85rem}
+select.gap{padding:7px 10px;border-radius:9px;border:2px solid var(--line);font-weight:700;font-family:inherit;font-size:.92rem;background:#fff;margin:2px 4px}
+select.gap.ok{border-color:var(--ok);background:#eefcf3}
+select.gap.no{border-color:var(--bad);background:#fdf0f0}
+
+/* games */
+.gamecard{border:2px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff;margin-bottom:18px}
+.gamehead{display:flex;align-items:center;gap:12px;padding:15px 20px;background:#23214a;color:#fff;width:100%;text-align:left}
+.gamehead .gicon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:1rem;font-weight:800;color:#fff;flex:0 0 auto}
+.gamehead h3{color:#fff;font-size:1rem;flex:1}
+.gamehead .chev{transition:transform .25s}
+.gamecard.open .chev{transform:rotate(180deg)}
+.gamebody{display:none;padding:20px}
+.gamecard.open .gamebody{display:block;animation:fadein .3s}
+.streak{font-weight:800;color:var(--verb-deep)}
+.tilerow{display:flex;gap:8px;flex-wrap:wrap;min-height:56px;padding:12px;border:2px dashed var(--line);border-radius:12px;margin-bottom:10px;align-items:center}
+.tile{padding:10px 15px;border-radius:11px;background:#fff;border:2px solid var(--line);font-weight:700;transition:.15s}
+.tile:hover:not(.used){border-color:var(--acct);transform:translateY(-2px)}
+.tile.used{opacity:.25;pointer-events:none}
+.tile.placed{background:#eef0ff;border-color:var(--acct)}
+.poolrow{display:flex;gap:8px;flex-wrap:wrap}
+.gopt{padding:14px 18px;border:2px solid var(--line);border-radius:13px;font-weight:700;width:100%;text-align:center;margin:7px 0;transition:.12s;font-size:1rem;background:#fff}
+.gopt:hover:not(:disabled){border-color:var(--acct);background:#f4f5ff}
+.gopt.correct{border-color:var(--ok);background:#eefcf3}
+.gopt.wrong{border-color:var(--bad);background:#fdf0f0}
+.timerbar{height:8px;border-radius:5px;background:#e9eaf5;overflow:hidden;margin:10px 0}
+.timerfill{height:100%;background:linear-gradient(90deg,var(--obj),var(--verb),var(--sub));width:100%}
+
+/* badges */
+.badgebar{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:10px 0 16px}
+.badge{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px 18px;text-align:center;min-width:120px}
+.badge .b-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:800}
+.badge .b-val{font-size:1.5rem;font-weight:800}
+.finale{text-align:center;padding:30px 20px}
+
+/* confetti */
+.conf{position:fixed;width:9px;height:13px;border-radius:3px;z-index:999;pointer-events:none;animation:cfall 1s ease-out forwards}
+@keyframes cfall{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+
+footer{max-width:1060px;margin:0 auto;padding:0 20px 26px;display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.navbtns{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:26px;flex-wrap:wrap}
+.linkish{color:var(--muted);font-size:.82rem;text-decoration:underline}
+
+/* cheat sheet print */
+#cheatsheet{display:none}
+@media print{
+  body *{visibility:hidden}
+  #cheatsheet,#cheatsheet *{visibility:visible}
+  #cheatsheet{display:block;position:absolute;left:0;top:0;width:100%;padding:10px}
+  @page{margin:12mm}
+}
+.cheat{border:2px solid var(--ink);border-radius:14px;padding:18px;font-size:.85rem}
+.cheat h3{margin:10px 0 4px}
+.cheat ul{padding-left:18px}
+
+@media(max-width:640px){
+  .stage{padding:22px 10px}
+  .tok{font-size:.95rem;padding:8px 12px}
+  main{padding:20px 14px 70px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-top">
+    <div class="logo"><span class="mark">PV</span> The Passive Voice <span style="opacity:.6;font-weight:600;font-size:.85rem">— step by step</span></div>
+    <div class="hdr-spacer"></div>
+    <div class="b2wrap">
+      <span>Show <strong>B2 extras</strong></span>
+      <button class="switch" id="b2switch" role="switch" aria-checked="false" aria-label="Toggle B2 extras"></button>
+    </div>
+  </div>
+  <nav class="stepper" id="stepper" aria-label="Steps"></nav>
+  <div class="progress-wrap"><div class="progress-bar" id="pbar"></div></div>
+</header>
+
+<main>
+<!-- ============ STEP 0 : WELCOME ============ -->
+<section class="step" id="step0">
+  <div class="hero">
+    <div class="kicker"><span class="bar"></span> Welcome</div>
+    <h1>Master the <em>Passive Voice</em>, step by step.</h1>
+    <p class="lead">Eight short steps. You'll start by reading sentences — and finish by building, transforming and really using the passive voice yourself. Your progress is saved automatically in this browser.</p>
+    <div class="badgebar" style="justify-content:flex-start">
+      <div class="badge"><div class="b-title">Steps</div><div class="b-val">8</div></div>
+      <div class="badge"><div class="b-title">Time</div><div class="b-val">~40m</div></div>
+      <div class="badge"><div class="b-title">Level</div><div class="b-val">A2–B2</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Two voices — same event</h3>
+    <p class="note" style="margin-bottom:14px">Watch the same small event told two ways. Notice <strong>who is in front</strong>.</p>
+    <div class="voicetabs">
+      <button class="vtab on" id="vtA">Active voice</button>
+      <button class="vtab" id="vtP">Passive voice</button>
+    </div>
+    <div class="sent-line" id="voicedemo" aria-live="polite" style="min-height:60px"></div>
+    <p class="caption" id="voicecap"></p>
+  </div>
+
+  <div class="card">
+    <h3>A common mix-up: voice is not a tense</h3>
+    <p class="note" style="margin-bottom:12px">Quick check — answer both, then we begin.</p>
+    <div class="mini-q" id="s0q1"></div>
+    <div class="mini-q" id="s0q2" style="margin-top:18px"></div>
+  </div>
+
+  <div class="navbtns">
+    <span class="note">Ready? Step 2 is where everyone starts: <strong>the parts of a sentence</strong>.</span>
+    <button class="btn" onclick="goto(1)">Start Step 2 &rarr;</button>
+  </div>
+</section>
+
+<!-- ============ STEP 1 : PARTS ============ -->
+<section class="step" id="step1">
+  <div class="kicker"><span class="bar"></span> Step 2 of 8</div>
+  <h2 class="title">The parts of a sentence</h2>
+  <p class="lead">Before we can talk about active and passive, we need to know the jobs words do. Almost every sentence we need here has three stars: a <b style="color:var(--sub-deep)">subject</b> (the doer), a <b style="color:var(--verb-deep)">verb</b> (the action) and an <b style="color:var(--obj-deep)">object</b> (the receiver of the action).</p>
+
+  <div class="card">
+    <div class="legend">
+      <span><span class="dot" style="background:var(--sub)"></span> Subject — the doer</span>
+      <span><span class="dot" style="background:var(--verb)"></span> Verb — the action</span>
+      <span><span class="dot" style="background:var(--obj)"></span> Object — the receiver</span>
+    </div>
+    <h3>Explore: click any key word to reveal its job</h3>
+    <p class="note" style="margin-bottom:6px">The grey words are little helpers (like <i>the</i> and <i>a</i>) — click the coloured candidates instead.</p>
+    <div id="explore"></div>
+  </div>
+
+  <div class="card">
+    <h3>Practice: give each word its job <span id="lab-score" class="note"></span></h3>
+    <p class="note" style="margin-bottom:8px">Click a word, then choose its job. Label all nine key words to finish this step.</p>
+    <div id="labellist"></div>
+    <div id="label-feedback"></div>
+  </div>
+
+  <div class="card b2-only b2box">
+    <h3>B2: not every verb can go passive <span class="b2flag">B2</span></h3>
+    <p class="note" style="margin-bottom:10px">A verb can only become passive if it has an object — the <strong>object becomes the new subject</strong>. Verbs with no object are called <em>intransitive</em>.</p>
+    <div id="transquiz"></div>
+  </div>
+
+  <div class="navbtns">
+    <button class="btn ghost" onclick="goto(0)">&larr; Back</button>
+    <button class="btn" onclick="goto(2)">Next: Active sentences &rarr;</button>
+  </div>
+</section>
+
+<!-- ============ STEP 2 : ACTIVE ============ -->
+<section class="step" id="step2">
+  <div class="kicker"><span class="bar"></span> Step 3 of 8</div>
+  <h2 class="title">Active sentences</h2>
+  <p class="lead">A sentence is <b>active</b> when the subject is <b>doing</b> the action: <span class="w-sub">the doer</span> + <span class="w-verb">does</span> + <span class="w-obj">something to someone</span>. Build some below and watch the pattern.</p>
+
+  <div class="card">
+    <h3>The Sentence Factory</h3>
+    <p class="note" style="margin-bottom:12px">Pick one block from each machine, then press <strong>Build sentence</strong>.</p>
+    <div class="factory" id="factory"></div>
+    <div style="text-align:center;margin-top:14px">
+      <button class="btn" id="buildbtn" onclick="buildSentence()">Build sentence</button>
+    </div>
+    <div id="factory-out" style="margin-top:14px"></div>
+  </div>
+
+  <div class="card">
+    <h3>Spot the doer</h3>
+    <p class="note" style="margin-bottom:10px">In an active sentence, the doer sits at the front. Can you spot it? Three questions.</p>
+    <div id="spotdoer"></div>
+  </div>
+
+  <div class="card b2-only b2box">
+    <h3>B2: longer actives work the same way <span class="b2flag">B2</span></h3>
+    <p class="note">Two extra blocks have been added to each machine above. Even in a longer sentence — <span class="w-sub">The writers of the report</span> <span class="w-verb">have recommended</span> <span class="w-obj">new safety rules</span> — the pattern is identical: <b>doer &rarr; action &rarr; receiver</b>. This matters later: any active sentence with an object can become passive.</p>
+  </div>
+
+  <div class="navbtns">
+    <button class="btn ghost" onclick="goto(1)">&larr; Back</button>
+    <button class="btn" onclick="goto(3)">Next: The Great Transformation &rarr;</button>
+  </div>
+</section>
+
+<!-- ============ STEP 3 : TRANSFORMATION ============ -->
+<section class="step" id="step3">
+  <div class="kicker"><span class="bar"></span> Step 4 of 8</div>
+  <h2 class="title">The Great Transformation</h2>
+  <p class="lead">This is the heart of it. A passive sentence is <b>built from</b> an active one in three moves. Watch it happen — then drive it yourself.</p>
+
+  <div class="card">
+    <div class="voicetabs">
+      <button class="vtab on" id="mvWatch">Watch it happen</button>
+      <button class="vtab" id="mvDrive">You drive</button>
+      <button class="btn ghost" id="replayBtn" onclick="startTransform()" style="padding:7px 14px;margin-left:auto">Replay</button>
+    </div>
+    <div class="stage light" id="stage3" aria-live="polite" style="min-height:130px"></div>
+    <div class="roleline">
+      <span style="color:var(--obj-deep)">&#9650; old object &mdash; now the new subject</span>
+      <span style="color:var(--verb-deep)">&#9650; the verb splits in two</span>
+      <span style="color:var(--sub-deep)">&#9650; old subject &mdash; now the agent</span>
+    </div>
+    <p class="caption" id="stage3cap"></p>
+    <div id="drivecontrols" style="display:none;text-align:center"></div>
+  </div>
+
+  <div class="card">
+    <h3>The recipe (memorise this)</h3>
+    <div class="tm-formula" style="margin:6px 0 12px">
+      <span class="fbox" style="background:var(--obj-soft);color:var(--obj-deep);border:2px solid var(--obj)">OBJECT</span>
+      <span class="fbox f-plus">+</span>
+      <span class="fbox f-be">be</span>
+      <span class="fbox f-plus">+</span>
+      <span class="fbox f-pp">PAST PARTICIPLE</span>
+      <span class="fbox f-plus">+</span>
+      <span class="fbox" style="background:#efeaff;color:#4338ca;border:2px dashed #8b85f0">(+ by &hellip;)</span>
+    </div>
+    <ul class="note" style="padding-left:18px">
+      <li>The old <b>object becomes the new subject</b> — it moves to the front.</li>
+      <li>The verb becomes <b>be + past participle</b> (<i>wrote &rarr; was written</i>).</li>
+      <li>The old subject becomes the <b>agent</b>, after <b>by</b> — and pronouns change form (<i>he &rarr; him</i>).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Transform three yourself</h3>
+    <p class="note" style="margin-bottom:10px">For each active sentence, choose the right pieces. Correct choices build the passive step by step.</p>
+    <div id="guided3"></div>
+  </div>
+
+  <div class="card">
+    <h3>Quickfire: pick the correct passive</h3>
+    <div id="quickfire3"></div>
+  </div>
+
+  <div class="card b2-only b2box">
+    <h3>B2: watch the pronoun change <span class="b2flag">B2</span></h3>
+    <table class="tensetbl">
+      <tr><th>Subject</th><th>Agent after "by"</th><th>Example</th></tr>
+      <tr><td>I</td><td class="bp">me</td><td>They invited me. &rarr; <i>I was invited.</i></td></tr>
+      <tr><td>he / she</td><td class="bp">him / her</td><td>He fixed the car. &rarr; <i>The car was fixed by him.</i></td></tr>
+      <tr><td>they</td><td class="bp">them</td><td>They arrested him. &rarr; <i>He was arrested by them.</i></td></tr>
+    </table>
+  </div>
+
+  <div class="navbtns">
+    <button class="btn ghost" onclick="goto(2)">&larr; Back</button>
+    <button class="btn" onclick="goto(4)">Next: The Tense Machine &rarr;</button>
+  </div>
+</section>
+
+<!-- ============ STEP 4 : TENSES ============ -->
+<section class="step" id="step4">
+  <div class="kicker"><span class="bar"></span> Step 5 of 8</div>
+  <h2 class="title">The Tense Machine</h2>
+  <p class="lead">Here's the good news: in a passive sentence, the tense lives inside one small word — <b>be</b>. The past participle never changes. Change the tense, and only <b>be</b> moves.</p>
+
+  <div class="tm-grid">
+    <aside class="tm-btns" id="tmBtns"></aside>
+    <div class="tm-display">
+      <div class="score-pill" style="margin-bottom:12px" id="tmName">—</div>
+      <div class="tm-formula" id="tmFormula">
+        <span class="fbox" style="background:#eef0fb;color:#555a8c">SUBJECT</span><span class="fbox f-plus">+</span>
+        <span class="fbox f-be" id="tmBe">—</span><span class="fbox f-plus">+</span>
+        <span class="fbox f-pp">PAST PARTICIPLE</span>
+      </div>
+      <div class="stage" id="tmStage" aria-live="polite" style="min-height:150px"></div>
+      <p class="caption" id="tmCap"></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Fix the <span style="color:var(--verb-deep)">be</span> — six gaps</h3>
+    <p class="note" style="margin-bottom:10px">Pick the correct <b>be</b> form for each tense. It doesn't matter what the main verb is: <b>be</b> carries the tense.</p>
+    <div id="befix"></div>
+  </div>
+
+  <div class="card b2-only">
+    <h3>The full table — every common passive form <span class="b2flag">B2</span></h3>
+    <p class="note" style="margin-bottom:8px">All twelve passive forms from the reference material, using one example family.</p>
+    <table class="tensetbl" id="tmTable"></table>
+  </div>
+
+  <div class="card b2-only b2box">
+    <h3>B2: fix the <span style="color:var(--verb-deep)">be</span> — the harder four <span class="b2flag">B2</span></h3>
+    <div id="befixB2"></div>
+  </div>
+
+  <div class="navbtns">
+    <button class="btn ghost" onclick="goto(3)">&larr; Back</button>
+    <button class="btn" onclick="goto(5)">Next: By … or not by …? &rarr;</button>
+  </div>
+</section>
+
+<!-- ============ STEP 5 : AGENT ============ -->
+<section class="step" id="step5">
+  <div class="kicker"><span class="bar"></span> Step 6 of 8</div>
+  <h2 class="title">"By X" &hellip; or not "by X"?</h2>
+  <p class="lead">The passive lets you <b>leave out the agent</b> — the person who did it. In fact, most passive sentences in real life have no "by" phrase at all. But when must you keep it? Be the editor and decide.</p>
+
+  <div class="card">
+    <h3>Three good reasons to drop "by X"</h3>
+    <ul style="padding-left:18px" class="note">
+      <li><b style="color:var(--sub-deep)">Unknown</b> — we don't know who did it. <i>My wallet was stolen.</i></li>
+      <li><b style="color:var(--sub-deep)">Obvious</b> — everyone can guess. <i>You will be asked to show your ID</i> (by test-centre staff).</li>
+      <li><b style="color:var(--sub-deep)">Unimportant</b> — the action or result is what matters. <i>The streets are cleaned every morning.</i></li>
+    </ul>
+    <p class="note" style="margin-top:8px">Keep it only when the agent is <b>new and important information</b> — often a name, or a surprising performer of the action.</p>
+  </div>
+
+  <div class="card">
+    <h3>You're the editor <span id="ed-score" class="note"></span></h3>
+    <p class="note" style="margin-bottom:12px">Decide: keep the agent, or drop it? The reason appears after your call.</p>
+    <div id="editor"></div>
+  </div>
+
+  <div class="navbtns">
+    <button class="btn ghost" onclick="goto(4)">&larr; Back</button>
+    <button class="btn" onclick="goto(6)">Next: Why we use it &rarr;</button>
+  </div>
+</section>
+
+<!-- ============ STEP 6 : WHY ============ -->
+<section class="step" id="step6">
+  <div class="kicker"><span class="bar"></span> Step 7 of 8</div>
+  <h2 class="title">Why we use the passive</h2>
+  <p class="lead">Choosing the passive is a <b>choice about what's important</b>. Active puts the doer in front. Passive puts the action — and the receiver — in front. Read the context, choose the voice.</p>
+
+  <div class="card">
+    <h3>Choose the right voice</h3>
+    <p class="note" style="margin-bottom:10px">Both options are usually grammatically fine. Pick the one that fits the situation.</p>
+    <div id="whychoose"></div>
+  </div>
+
+  <div class="card">
+    <h3>Mini task: describe a process</h3>
+    <p class="note" style="margin-bottom:10px">This is the classic exam use — describing how something is made, step by step. Fill the gaps.</p>
+    <div class="subcard">
+      <h3 style="font-size:.95rem">How paper is recycled</h3>
+      <div id="process"></div>
+      <button class="btn" style="margin-top:12px" onclick="checkProcess()">Check answers</button>
+      <div id="processfb" style="margin-top:10px"></div>
+    </div>
+  </div>
+
+  <div class="navbtns">
+    <button class="btn ghost" onclick="goto(5)">&larr; Back</button>
+    <button class="btn" onclick="goto(7)">Next: Boss Level &rarr;</button>
+  </div>
+</section>
+
+<!-- ============ STEP 7 : GAMES ============ -->
+<section class="step" id="step7">
+  <div class="kicker"><span class="bar"></span> Step 8 of 8</div>
+  <h2 class="title">Boss Level: games &amp; final check</h2>
+  <p class="lead">Three games to make it stick. Best scores are saved — beat your own record.</p>
+
+  <div class="card">
+    <div class="badgebar" id="finalBadges"></div>
+    <div style="text-align:center">
+      <button class="btn ghost" onclick="printSheet()">Print the one-page cheat sheet</button>
+    </div>
+  </div>
+
+  <div class="gamecard open">
+    <button class="gamehead" onclick="toggleGame(this)">
+      <span class="gicon" style="background:var(--sub)">A</span>
+      <h3>Active or Passive? — rapid fire</h3>
+      <span id="hiA" class="note" style="color:#cfd0ee"></span><span class="chev">&#9662;</span>
+    </button>
+    <div class="gamebody" id="gameA"></div>
+  </div>
+
+  <div class="gamecard">
+    <button class="gamehead" onclick="toggleGame(this)">
+      <span class="gicon" style="background:var(--verb);color:#3d2c00">B</span>
+      <h3>Sentence Surgery — rebuild the passive</h3>
+      <span id="hiB" class="note" style="color:#cfd0ee"></span><span class="chev">&#9662;</span>
+    </button>
+    <div class="gamebody" id="gameB"></div>
+  </div>
+
+  <div class="gamecard">
+    <button class="gamehead" onclick="toggleGame(this)">
+      <span class="gicon" style="background:var(--obj)">C</span>
+      <h3>Tense Tornado — beat the clock</h3>
+      <span id="hiC" class="note" style="color:#cfd0ee"></span><span class="chev">&#9662;</span>
+    </button>
+    <div class="gamebody" id="gameC"></div>
+  </div>
+
+  <div class="card finale" id="finale" style="display:none">
+    <h2 style="font-size:1.6rem">You've completed the course.</h2>
+    <p class="note" style="max-width:480px;margin:10px auto 16px">You can now form the passive, change tenses, choose when to name the agent — and explain why you did. That is the complete passive voice.</p>
+    <button class="btn" onclick="goto(0)">Back to the start</button>
+  </div>
+
+  <div class="navbtns">
+    <button class="btn ghost" onclick="goto(6)">&larr; Back</button>
+    <span></span>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span class="note">Passive Voice Trainer &middot; single-file site &middot; works offline on GitHub Pages</span>
+  <button class="linkish" onclick="resetProgress()">Reset my progress</button>
+</footer>
+
+<div id="cheatsheet">
+  <div class="cheat">
+    <h2>The Passive Voice — Cheat Sheet</h2>
+    <p><b>Formula:</b> OBJECT + <b>be</b> + PAST PARTICIPLE (+ by &hellip;)</p>
+    <h3>How to transform (3 moves)</h3>
+    <ul>
+      <li>The object moves to the front and becomes the new subject.</li>
+      <li>The verb becomes <b>be + past participle</b> (the tense lives in <b>be</b>).</li>
+      <li>The old subject goes to the end after <b>by</b> (pronouns change: I&rarr;me, he&rarr;him). Often omitted!</li>
+    </ul>
+    <h3>Be forms by tense</h3>
+    <ul>
+      <li>Present simple: am / is / are &nbsp;&middot;&nbsp; Present continuous: am/is/are <b>being</b></li>
+      <li>Past simple: was / were &nbsp;&middot;&nbsp; Past continuous: was/were <b>being</b></li>
+      <li>Present perfect: have/has <b>been</b> &nbsp;&middot;&nbsp; Past perfect: had <b>been</b></li>
+      <li>will: will <b>be</b> &nbsp;&middot;&nbsp; going to: am/is/are <b>going to be</b> &nbsp;&middot;&nbsp; modals: must/can/may <b>be</b></li>
+      <li>Infinitive: <b>(to) be</b> &nbsp;&middot;&nbsp; -ing form: <b>being</b> &nbsp;&middot;&nbsp; used to: <b>used to be</b></li>
+    </ul>
+    <h3>Drop or keep "by X"?</h3>
+    <ul>
+      <li><b>Drop:</b> agent unknown, obvious, or unimportant.</li>
+      <li><b>Keep:</b> agent is new, important information (e.g. <i>Hamlet was written by Shakespeare</i>).</li>
+    </ul>
+    <h3>When do we use the passive?</h3>
+    <ul>
+      <li>The action/object matters more than the doer.</li>
+      <li>Formal, impersonal writing (impersonal <i>it</i>: It is argued that&hellip;).</li>
+      <li>Describing (human) processes — natural processes usually stay active.</li>
+    </ul>
+    <h3>Remember</h3>
+    <ul><li>Only verbs <b>with an object</b> can go passive. Voice is not a tense — it's a different way of presenting the same event.</li></ul>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   STATE & PROGRESS
+============================================================ */
+var KEY="pvtrainer-v1";
+var state={done:[false,false,false,false,false,false,false,false],b2:false,hi:{A:0,B:0,C:0}};
+try{var raw=localStorage.getItem(KEY);if(raw){var saved=JSON.parse(raw);
+  if(saved&&saved.done&&saved.hi){state=Object.assign(state,saved);}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function markDone(i){if(!state.done[i]){state.done[i]=true;save();}renderStepper();}
+function resetProgress(){
+  if(confirm("Reset all progress and best scores?")){
+    state={done:[false,false,false,false,false,false,false,false],b2:false,hi:{A:0,B:0,C:0}};
+    save();location.reload();
+  }
+}
+
+var STEP_NAMES=["Welcome","Parts of a sentence","Active sentences","The Transformation","The Tense Machine","By X or not?","Why we use it","Boss Level"];
+var stepperEl=document.getElementById("stepper");
+var cur=0;
+function renderStepper(){
+  stepperEl.innerHTML="";
+  STEP_NAMES.forEach(function(n,i){
+    var b=document.createElement("button");
+    b.className="step-pill"+(i===cur?" active":"")+(state.done[i]?" done":"");
+    b.innerHTML='<span class="num">'+(state.done[i]?"\u2713":(i+1))+"</span>"+n;
+    b.onclick=function(){goto(i);};
+    stepperEl.appendChild(b);
+  });
+  var n=state.done.filter(Boolean).length;
+  document.getElementById("pbar").style.width=(n/8*100)+"%";
+}
+function applyB2(){
+  document.body.classList.toggle("b2",state.b2);
+  var sw=document.getElementById("b2switch");
+  sw.classList.toggle("on",state.b2);
+  sw.setAttribute("aria-checked",state.b2?"true":"false");
+}
+document.getElementById("b2switch").addEventListener("click",function(){
+  state.b2=!state.b2;save();applyB2();
+  if(typeof onB2Toggle==="function")onB2Toggle();
+  if(state.b2)burstAt(this,14);
+});
+var onB2Toggle=null;
+
+function goto(i){
+  cur=i;
+  var secs=document.querySelectorAll("section.step");
+  for(var k=0;k<secs.length;k++){secs[k].classList.toggle("show",k===i);}
+  renderStepper();
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(i===7)renderFinalBadges();
+}
+
+/* ============================================================
+   HELPERS
+============================================================ */
+function el(tag,cls,html){
+  var e=document.createElement(tag);
+  if(cls)e.className=cls;
+  if(html!==undefined)e.innerHTML=html;
+  return e;
+}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function sentenceHTML(str){
+  return str.split(" ").map(function(w){
+    var p=w.split("|");
+    if(p.length===2)return '<span class="w-'+p[1]+'">'+esc(p[0])+"</span>";
+    return esc(w);
+  }).join(" ");
+}
+function plain(str){
+  return str.split(" ").map(function(w){var p=w.split("|");return p[0];}).join(" ");
+}
+function burstAt(domNode,n){
+  n=n||22;
+  var r=domNode&&domNode.getBoundingClientRect?domNode.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
+  var cx=r.left+r.width/2,cy=r.top+r.height/2;
+  var colors=["#ff6b6b","#f0a50a","#12b5a5","#4f46e5","#8b85f0"];
+  for(var i=0;i<n;i++){
+    var c=el("div","conf");
+    c.style.left=cx+"px";c.style.top=cy+"px";
+    c.style.background=colors[i%colors.length];
+    c.style.setProperty("--dx",(Math.random()*220-110)+"px");
+    c.style.setProperty("--dy",(Math.random()*-160-40)+"px");
+    c.style.setProperty("--rot",(Math.random()*720-360)+"deg");
+    document.body.appendChild(c);
+    (function(node){setTimeout(function(){node.remove();},1000);})(c);
+  }
+}
+/* items: {q, opts[], correct, expl} */
+function mkQuiz(container,items,onAllCorrect){
+  var inner=el("div");
+  container.appendChild(inner);
+  var correctCount=0;
+  items.forEach(function(it){
+    var wrap=el("div","mini-q");
+    wrap.style.margin="14px 0";
+    wrap.innerHTML='<p style="font-weight:700;margin:6px 0">'+sentenceHTML(it.q)+"</p>";
+    var optwrap=el("div");
+    var fb=el("div","expl");
+    it.opts.forEach(function(o,oi){
+      var b=el("button","qopt",sentenceHTML(o));
+      b.onclick=function(){
+        var kids=optwrap.children;
+        for(var i=0;i<kids.length;i++)kids[i].disabled=true;
+        if(oi===it.correct){
+          b.classList.add("correct");
+          b.innerHTML="\u2713 "+b.innerHTML;
+          fb.innerHTML=it.expl||"";
+          burstAt(b,12);
+          correctCount++;
+          if(correctCount===items.length&&onAllCorrect)onAllCorrect();
+        }else{
+          b.classList.add("wrong");
+          kids[it.correct].classList.add("correct");
+          fb.innerHTML=(it.expl||"")+' <span class="badmsg">Try to remember this one.</span>';
+        }
+      };
+      optwrap.appendChild(b);
+    });
+    wrap.appendChild(optwrap);
+    wrap.appendChild(fb);
+    inner.appendChild(wrap);
+  });
+}
+
+/* ============================================================
+   STEP 0 — WELCOME
+============================================================ */
+(function(){
+  var activeToks=[["The","sub"],["dog","sub"],["chased","verb"],["the","obj"],["ball","obj"],[".","fix"]];
+  var passiveToks=[["The","obj"],["ball","obj"],["was","verb"],["chased","verb"],["by","fix"],["the","sub"],["dog","sub"],[".","fix"]];
+  var demo=document.getElementById("voicedemo");
+  var cap=document.getElementById("voicecap");
+  function renderVoice(which){
+    demo.innerHTML="";
+    var toks=which==="A"?activeToks:passiveToks;
+    toks.forEach(function(t,i){
+      var s=el("span");
+      if(t[1]!=="fix")s.className="w-"+t[1];
+      s.textContent=t[0]+" ";
+      s.style.animation="pop .4s both";
+      s.style.animationDelay=(i*0.06)+"s";
+      demo.appendChild(s);
+    });
+  }
+  var vtA=document.getElementById("vtA"),vtP=document.getElementById("vtP");
+  function setVoice(which){
+    vtA.classList.toggle("on",which==="A");
+    vtP.classList.toggle("on",which==="P");
+    cap.textContent=which==="A"
+      ?"ACTIVE: the subject — the dog — is doing the action."
+      :"PASSIVE: the ball is now the subject… but the ball isn't doing anything. It's receiving the action.";
+    renderVoice(which);
+  }
+  vtA.addEventListener("click",function(){setVoice("A");});
+  vtP.addEventListener("click",function(){setVoice("P");});
+  setVoice("A");
+
+  var welcomeDone=0;
+  function tick(){welcomeDone++;if(welcomeDone===2)markDone(0);}
+  mkQuiz(document.getElementById("s0q1"),[
+    {q:'"The window was broken." — who is doing the action?',
+     opts:["The window","We don't say — it's not the focus"],correct:1,
+     expl:"In the passive, the subject <b>receives</b> the action. The doer isn't the focus — and here we don't even know it."}
+  ],tick);
+  mkQuiz(document.getElementById("s0q2"),[
+    {q:'"She writes emails." vs "Emails are written by her." — what changed?',
+     opts:["The tense changed","Only the voice changed"],correct:1,
+     expl:"Both are present simple. Same tense, same event — only the <b>voice</b> changed: who stands in front."}
+  ],tick);
+})();
+
+/* ============================================================
+   STEP 1 — PARTS OF A SENTENCE
+============================================================ */
+(function(){
+  /* explore sentences */
+  var expDocs=[
+    "The chef|sub cooked|verb a|fix delicious|obj meal|obj",
+    "My sister|sub painted|verb the|obj fence|obj last week|fix",
+    "The loud music|sub annoys|verb the|obj neighbours|obj"
+  ];
+  var roleInfo={
+    sub:{cls:"l-sub",name:"Subject — the doer"},
+    verb:{cls:"l-verb",name:"Verb — the action"},
+    obj:{cls:"l-obj",name:"Object — the receiver"}
+  };
+  var expWrap=document.getElementById("explore");
+  expDocs.forEach(function(doc){
+    var row=el("div");
+    row.style.margin="8px 0";
+    doc.split(" ").forEach(function(w){
+      var p=w.split("|");
+      var chip=el("button","wordchip",esc(p[0]));
+      if(p[1]==="fix"||p.length===1){
+        chip.classList.add("fixed");
+        chip.disabled=true;
+        chip.title="helper word";
+      }else{
+        var info=roleInfo[p[1]];
+        chip.addEventListener("click",function(){
+          chip.classList.add(info.cls);
+          chip.title=info.name;
+          burstAt(chip,6);
+        });
+      }
+      row.appendChild(chip);
+    });
+    expWrap.appendChild(row);
+  });
+
+  /* label practice */
+  var tasks=[
+    [["The","fix"],["chef","sub"],["cooked","verb"],["a","fix"],["meal","obj"]],
+    [["The","fix"],["students","sub"],["cleaned","verb"],["the","fix"],["classroom","obj"]],
+    [["My","fix"],["sister","sub"],["painted","verb"],["the","fix"],["fence","obj"]]
+  ];
+  var wrap=document.getElementById("labellist");
+  var fb=document.getElementById("label-feedback");
+  var scoreEl=document.getElementById("lab-score");
+  var selWord=null,doneCount=0;
+  var btns=el("div","pickrow");
+  btns.style.display="none";
+  [
+    ["Subject","sub","l-sub","Subject — the doer"],
+    ["Verb","verb","l-verb","Verb — the action"],
+    ["Object","obj","l-obj","Object — the receiver"]
+  ].forEach(function(r){
+    var b=el("button","btn ghost",r[0]);
+    b.addEventListener("click",function(){
+      if(!selWord)return;
+      if(r[1]===selWord.role){
+        var chip=selWord.chip;
+        chip.classList.remove("sel");
+        chip.classList.add(r[2]);
+        chip.disabled=true;
+        chip.title=r[3];
+        burstAt(chip,10);
+        fb.innerHTML='<span class="okmsg">\u2713 Yes! '+r[3]+".</span>";
+        doneCount++;
+        scoreEl.textContent="("+doneCount+"/9)";
+        selWord=null;
+        btns.style.display="none";
+        if(doneCount===9){
+          markDone(1);
+          fb.innerHTML+='<div class="okmsg">All labelled! You now know the three stars of a sentence. Next: build active sentences.</div>';
+          burstAt(fb,26);
+        }
+      }else{
+        fb.innerHTML='<span class="badmsg">Not quite — click the word again and try a different job.</span>';
+      }
+    });
+    btns.appendChild(b);
+  });
+  wrap.appendChild(btns);
+  tasks.forEach(function(t){
+    var row=el("div","subcard");
+    var line=el("div");
+    line.style.cssText="display:flex;gap:8px;flex-wrap:wrap";
+    t.forEach(function(w){
+      var chip=el("button","wordchip",esc(w[0]));
+      if(w[1]==="fix"){chip.classList.add("fixed");chip.disabled=true;}
+      else{
+        chip.addEventListener("click",function(){
+          if(chip.disabled)return;
+          var all=wrap.querySelectorAll(".wordchip.sel");
+          for(var i=0;i<all.length;i++)all[i].classList.remove("sel");
+          chip.classList.add("sel");
+          selWord={chip:chip,role:w[1],word:w[0]};
+          fb.innerHTML="Now give <b>"+esc(w[0])+"</b> its job:";
+          btns.style.display="flex";
+        });
+      }
+      line.appendChild(chip);
+    });
+    row.appendChild(line);
+    wrap.appendChild(row);
+  });
+
+  /* B2 transitive quiz */
+  mkQuiz(document.getElementById("transquiz"),[
+    {q:'"The train arrived at six." — can this become passive?',
+     opts:['Yes — "The six was arrived by the train."','No — "arrived" has no object to become the new subject.'],
+     correct:1,
+     expl:'"Arrive" takes no object. No object \u2192 nothing to move to the front \u2192 no passive possible.'}
+  ]);
+})();
+
+/* ============================================================
+   STEP 2 — ACTIVE SENTENCES (factory)
+============================================================ */
+(function(){
+  var baseCols={
+    s:["The chef","The dog","Maria","The students","My brother"],
+    v:["baked","chased","painted","watched","wrote"],
+    o:["a cake","the ball","a picture","the match","a letter"]
+  };
+  var b2cols={
+    s:["The writers of the report","Our new neighbour"],
+    v:["have recommended","has invited"],
+    o:["new safety rules","us to dinner"]
+  };
+  var colDefs=[["s","Subject / doer","fcol s"],["v","Verb / action","fcol v"],["o","Object / receiver","fcol o"]];
+  var factory=document.getElementById("factory");
+  var sel={s:null,v:null,o:null};
+
+  function initFactory(){
+    factory.innerHTML="";
+    sel={s:null,v:null,o:null};
+    colDefs.forEach(function(c){
+      var col=el("div",c[2]);
+      col.innerHTML="<h4>"+c[1]+"</h4>";
+      var items=baseCols[c[0]].concat(state.b2?b2cols[c[0]]:[]);
+      items.forEach(function(word){
+        var b=el("button","fchip",esc(word));
+        b.addEventListener("click",function(){
+          var kids=col.querySelectorAll(".fchip");
+          for(var i=0;i<kids.length;i++)kids[i].classList.remove("sel");
+          b.classList.add("sel");
+          sel[c[0]]=word;
+        });
+        col.appendChild(b);
+      });
+      factory.appendChild(col);
+    });
+  }
+  onB2Toggle=function(){
+    initFactory();
+    document.getElementById("factory-out").innerHTML="";
+  };
+  initFactory();
+
+  window.buildSentence=function(){
+    var out=document.getElementById("factory-out");
+    if(!sel.s||!sel.v||!sel.o){
+      out.innerHTML='<p class="badmsg" style="text-align:center">Pick one block from each machine first!</p>';
+      return;
+    }
+    out.innerHTML="";
+    var stage=el("div","stage");
+    [["c-sub",sel.s],["c-verb",sel.v],["c-obj",sel.o]].forEach(function(t,i){
+      var tok=el("span","tok pop-in "+t[0],esc(t[1]));
+      tok.style.animationDelay=(i*0.12)+"s";
+      stage.appendChild(tok);
+    });
+    out.appendChild(stage);
+    out.innerHTML+='<p class="caption"><b>'+esc(sel.s)+"</b> (the doer) + <b>"+esc(sel.v)+"</b> (the action) + <b>"+esc(sel.o)+"</b> (the receiver). This sentence is <b>active</b> — perfectly normal, perfectly useful.</p>";
+    /* smart feedback for mismatched combos */
+    if((sel.v==="wrote"&&sel.o!=="a letter"&&sel.o!=="a picture")||(sel.v!=="wrote"&&sel.o==="a letter")){
+      out.innerHTML+='<p class="note" style="text-align:center">…unusual choice of words, but grammatically perfect!</p>';
+    }
+    burstAt(document.getElementById("buildbtn"),18);
+  };
+
+  mkQuiz(document.getElementById("spotdoer"),[
+    {q:'"The manager approved the request." — who does the action?',
+     opts:["the request","the manager"],correct:1,
+     expl:"Doer first. The manager approved; the request only received the action."},
+    {q:'"Millions of people watched the final." — what received the action?',
+     opts:["the final","millions of people"],correct:0,
+     expl:"The final was watched — it's the object. Remember this sentence; it returns in Step 5."},
+    {q:'"The gardener trimmed the hedge." — the doer is…',
+     opts:["the hedge","the gardener"],correct:1,
+     expl:"Doer first — that's exactly what makes a sentence active."}
+  ],function(){markDone(2);burstAt(document.getElementById("spotdoer"),24);});
+})();
+
+/* ============================================================
+   STEP 3 — THE GREAT TRANSFORMATION
+============================================================ */
+(function(){
+  var sentences=[
+    {a:[["The","sub"],["dog","sub"],["chased","verb"],["the","obj"],["ball","obj"]],
+     pVerb:["was","chased"],agent:["the","dog"]},
+    {a:[["Maria","sub"],["wrote","verb"],["the","obj"],["letter","obj"]],
+     pVerb:["was","written"],agent:["Maria"]},
+    {a:[["The","sub"],["chef","sub"],["baked","verb"],["a","obj"],["cake","obj"]],
+     pVerb:["was","baked"],agent:["the","chef"]},
+    {a:[["The","sub"],["students","sub"],["cleaned","verb"],["the","obj"],["classroom","obj"]],
+     pVerb:["was","cleaned"],agent:["the","students"]}
+  ];
+  var stage=document.getElementById("stage3");
+  var cap=document.getElementById("stage3cap");
+  var driveC=document.getElementById("drivecontrols");
+  var mvWatch=document.getElementById("mvWatch");
+  var mvDrive=document.getElementById("mvDrive");
+  var curToks=[];
+  var runId=0;
+  var mode="watch";
+  var si=0;
+
+  function makeTok(word,color){
+    var e=el("span","tok "+color);
+    e.textContent=word;
+    e._c=color;
+    return e;
+  }
+  function renderSeq(stagger){
+    stage.innerHTML="";
+    curToks.forEach(function(t,i){
+      if(stagger){t.style.animationDelay=(i*0.05)+"s";}
+      stage.appendChild(t);
+    });
+  }
+  function initStage(){
+    stage.innerHTML="";
+    curToks=sentences[si].a.map(function(t){return makeTok(t[0]+" ","c-"+t[1]);});
+    curToks.forEach(function(t,i){t.classList.add("pop-in");t.style.animationDelay=(i*0.07)+"s";});
+    curToks.forEach(function(t){stage.appendChild(t);});
+  }
+  function move1(){
+    var objs=curToks.filter(function(t){return t._c==="c-obj";});
+    var rest=curToks.filter(function(t){return t._c!=="c-obj";});
+    curToks=objs.concat(rest);
+    renderSeq(false);
+    objs.forEach(function(t){t.classList.add("wiggle");});
+    /* the fronted object becomes the sentence subject: capitalise + spacing */
+    if(objs.length){
+      var f=objs[0];
+      f.textContent=f.textContent.charAt(0).toUpperCase()+f.textContent.slice(1);
+      f._cap=true;
+      var l=objs[objs.length-1];
+      if(!/\s$/.test(l.textContent))l.textContent=l.textContent+" ";
+    }
+  }
+  function move2(){
+    var idx=-1;
+    for(var i=0;i<curToks.length;i++){if(curToks[i]._c==="c-verb"){idx=i;break;}}
+    var be=makeTok(sentences[si].pVerb[0]+" ","c-verb");be.classList.add("pop-in","flip");
+    var pp=makeTok(sentences[si].pVerb[1]+" ","c-verb");pp.classList.add("pop-in");
+    curToks.splice(idx,1,be,pp);
+    renderSeq(false);
+  }
+  function move3(){
+    var subs=curToks.filter(function(t){return t._c==="c-sub";});
+    var rest=curToks.filter(function(t){return t._c!=="c-sub";});
+    var by=makeTok("by ","c-by");by.classList.add("pop-in");
+    curToks=rest.concat([by]).concat(subs.map(function(t){var n=makeTok(t.textContent,t._c);if(!/\s$/.test(n.textContent))n.textContent=n.textContent+" ";n.classList.add("pop-in");return n;}));
+    /* the old object reverts to mid-sentence: lower-case again */
+    curToks.forEach(function(t){
+      if(t._c==="c-obj"&&t._cap){
+        t.textContent=t.textContent.charAt(0).toLowerCase()+t.textContent.slice(1);
+        t._cap=false;
+      }
+    });
+    /* the old subject sits mid-sentence now too: "The dog" -> "the dog"
+       (proper nouns like Maria stay capitalized) */
+    var artRe=/^(The |A |An )/;
+    curToks.forEach(function(t){
+      if(t._c==="c-sub"&&artRe.test(t.textContent)){
+        t.textContent=t.textContent.charAt(0).toLowerCase()+t.textContent.slice(1);
+      }
+    });
+    renderSeq(false);
+  }
+
+  function runWatch(){
+    var id=++runId;
+    driveC.style.display="none";
+    cap.textContent="Move 1: the object fronts the sentence — it becomes the new subject.";
+    move1();
+    setTimeout(function(){
+      if(id!==runId)return;
+      move2();
+      cap.textContent="Move 2: the verb splits — "+sentences[si].pVerb[0]+" "+sentences[si].pVerb[1]+" (be + past participle, same tense).";
+    },1800);
+    setTimeout(function(){
+      if(id!==runId)return;
+      move3();
+      cap.textContent="Move 3: the old subject goes to the end, after by. You now have a complete passive sentence!";
+      burstAt(stage,24);
+      markDone(3);
+    },3700);
+  }
+  function runDrive(){
+    var id=++runId;
+    driveC.style.display="block";
+    driveC.innerHTML='<p class="note" style="margin-bottom:6px">Press the moves in the right order:</p>';
+    var doneMoves=0;
+    var defs=[
+      [move1,"1. Front the object","The object is now the subject of the sentence."],
+      [move2,"2. Split the verb: be + past participle","be carries the tense; the participle never changes."],
+      [move3,'3. Add "by" + the old subject',"The old subject is now called the agent."]
+    ];
+    var btns=defs.map(function(d,i){
+      var b=el("button","btn ghost",esc(d[1]));
+      b.style.margin="4px";
+      b.disabled=i!==0;
+      b.addEventListener("click",function(){
+        if(b.disabled||id!==runId)return;
+        d[0]();
+        b.disabled=true;
+        doneMoves++;
+        cap.textContent=d[2];
+        if(doneMoves===3){
+          burstAt(stage,26);
+          markDone(3);
+        }
+        if(btns[doneMoves])btns[doneMoves].disabled=false;
+      });
+      driveC.appendChild(b);
+      return b;
+    });
+  }
+  function show(){
+    stage.innerHTML="";cap.textContent="";driveC.innerHTML="";driveC.style.display="none";
+    initStage();
+    cap.textContent="ACTIVE: someone did something. "+(mode==="watch"?"Now watch the three moves…":"Now you press the three moves.");
+    if(mode==="watch")runWatch();else runDrive();
+  }
+  mvWatch.addEventListener("click",function(){
+    mode="watch";mvWatch.classList.add("on");mvDrive.classList.remove("on");show();
+  });
+  mvDrive.addEventListener("click",function(){
+    mode="drive";mvDrive.classList.add("on");mvWatch.classList.remove("on");show();
+  });
+  window.startTransform=function(){show();};
+  show();
+})();
+
+/* guided transformation practice */
+(function(){
+  var data=[
+    {a:"Tom carved|verb a spoon|obj",doer:"Tom",obj:"a spoon",be:"was",p:"A spoon|obj was|verb carved|verb by|fix Tom|sub"},
+    {a:"The raccoons ate|verb the sandwiches|obj",doer:"The raccoons",obj:"the sandwiches",be:"were",p:"The sandwiches|obj were|verb eaten|verb by|fix the raccoons|sub"},
+    {a:"Someone has stolen|verb my bike|obj",doer:"Someone",obj:"my bike",be:"has been",p:"My bike|obj has been|verb stolen|verb by|fix someone|sub"}
+  ];
+  var wrap=document.getElementById("guided3");
+  var flags=data.map(function(){return false;});
+  data.forEach(function(G,gi){
+    var card=el("div","subcard");
+    card.innerHTML='<p style="font-weight:700">'+sentenceHTML(G.a)+"</p>";
+    /* phase 1 */
+    var q1=el("p","note","Q1 — what becomes the new subject (moves to the front)?");
+    card.appendChild(q1);
+    var opts1=[G.obj,"the doer ("+G.doer+")","the verb"];
+    opts1.forEach(function(o){
+      var b=el("button","qopt",esc(o));
+      b.addEventListener("click",function(){
+        var kids=card.querySelectorAll(".qopt");
+        for(var i=0;i<kids.length;i++)kids[i].disabled=true;
+        if(o===G.obj){
+          b.classList.add("correct");
+          b.innerHTML="\u2713 "+b.innerHTML;
+          burstAt(b,12);
+          buildPhase2();
+        }else{
+          b.classList.add("wrong");
+          q1.innerHTML='<span class="badmsg">Not that one — the <b>object</b> becomes the new subject. It has nothing else to do!</span>';
+          var kids2=card.querySelectorAll(".qopt");
+          for(var j=0;j<kids2.length;j++)kids2[j].disabled=false;
+        }
+      });
+      card.appendChild(b);
+    });
+    function buildPhase2(){
+      var old=card.querySelectorAll(".qopt,.expl");
+      for(var i=0;i<old.length;i++)old[i].remove();
+      q1.innerHTML='Q2 — choose the correct <b>be</b> to complete the passive:';
+      var finalLine=el("div","sent-line");
+      finalLine.style.margin="8px 0";
+      finalLine.innerHTML=sentenceHTML(G.p.replace(/^(\S+ \S+) (\S+)\|verb/,function(m,head,be){return head+" ____|fix";}));
+      card.appendChild(finalLine);
+      var opts=[G.be,G.be==="was"?"is":(G.be==="were"?"are":"was"),G.be==="has been"?"have been":"has been"];
+      opts.forEach(function(o){
+        var b=el("button","qopt",esc(o));
+        b.addEventListener("click",function(){
+          var kids=card.querySelectorAll(".qopt");
+          for(var i=0;i<kids.length;i++)kids[i].disabled=true;
+          if(o===G.be){
+            b.classList.add("correct");
+            b.innerHTML="\u2713 "+b.innerHTML;
+            finalLine.innerHTML=sentenceHTML(G.p);
+            finalLine.classList.add("flash");
+            burstAt(finalLine,20);
+            card.appendChild(el("p","okmsg","\u2713 Complete: "+plain(G.p)));
+            flags[gi]=true;
+            if(flags.filter(Boolean).length===data.length){
+              card.appendChild(el("p","okmsg","All three transformed — you have officially built passives from scratch."));
+              burstAt(wrap,26);
+            }
+          }else{
+            b.classList.add("wrong");
+            var kids2=card.querySelectorAll(".qopt");
+            for(var j=0;j<kids2.length;j++)kids2[j].disabled=false;
+          }
+        });
+        card.appendChild(b);
+      });
+    }
+    wrap.appendChild(card);
+  });
+
+  mkQuiz(document.getElementById("quickfire3"),[
+    {q:'"The company will send the parcel." — passive?',
+     opts:["The parcel will send by the company.","The parcel will be sent by the company."],correct:1,
+     expl:"will + <b>be</b> + sent. \"be\" carries the future; \"sent\" is the past participle."},
+    {q:'"They built the bridge in 1932." — passive?',
+     opts:["The bridge was built in 1932.","The bridge is built in 1932."],correct:0,
+     expl:"built is past simple, so be \u2192 <b>was</b>."},
+    {q:'"People grow rice in China." — passive?',
+     opts:["Rice grown in China.","Rice is grown in China."],correct:1,
+     expl:"Never drop \"be\"! It is always <b>be + past participle</b>."},
+    {q:'"She has solved the problem." — passive?',
+     opts:["The problem has been solved by her.","The problem has solved by her."],correct:0,
+     expl:"has + <b>been</b> + solved: have/has + been + past participle."}
+  ],function(){burstAt(document.getElementById("quickfire3"),22);});
+})();
+
+/* ============================================================
+   STEP 4 — TENSE MACHINE
+============================================================ */
+(function(){
+  var tenses=[
+    {name:"present simple",be:"are",short:"am / is / are",b2:false,cap:"Habits and facts: the bottles <b>are left</b> there again and again."},
+    {name:"present continuous",be:"are being",short:"am/is/are + being",b2:false,cap:"Happening now: add <b>being</b> after are."},
+    {name:"past simple",be:"were",short:"was / were",b2:false,cap:"Finished past: is \u2192 <b>was</b>, are \u2192 <b>were</b>."},
+    {name:"past continuous",be:"were being",short:"was/were + being",b2:false,cap:"In progress at a past moment: <b>were being</b> left."},
+    {name:"present perfect",be:"have been",short:"have/has + been",b2:false,cap:"Past with present result: <b>have been</b> left. (been is the participle of be itself!)"},
+    {name:"will (future)",be:"will be",short:"will + be",b2:false,cap:"<b>will</b> never changes — be follows it in every voice."},
+    {name:"going to (future)",be:"are going to be",short:"am/is/are + going to be",b2:false,cap:"Planned future: <b>are going to be</b> left."},
+    {name:"modals",be:"must be",short:"can / must / may + be",b2:false,cap:"Modal + <b>be</b> + participle: must be left, can be left…"},
+    {name:"past perfect",be:"had been",short:"had + been",b2:true,cap:"The past before the past: <b>had been</b> left."},
+    {name:"infinitive",be:"to be",short:"to + be",b2:true,cap:'After "are (not)": The bottles are <b>not to be</b> left here.'},
+    {name:"-ing form",be:"being",short:"being",b2:true,cap:"The -ing form of be: <b>being</b> left on the beach, they attract flies."},
+    {name:"used to",be:"used to be",short:"used to + be",b2:true,cap:"Past habit: plastic bottles <b>used to be</b> left here."}
+  ];
+  var active="Visitors leave plastic bottles on the beach.";
+  var btnWrap=document.getElementById("tmBtns");
+  var stage=document.getElementById("tmStage");
+  var capEl=document.getElementById("tmCap");
+  var beBox=document.getElementById("tmBe");
+  var nameEl=document.getElementById("tmName");
+
+  function renderPassive(be){
+    stage.innerHTML="";
+    [["Plastic ","c-sub"],["bottles ","c-sub"]].forEach(function(t){
+      stage.appendChild(el("span","tok "+t[1],esc(t[0])));
+    });
+    var beTok=el("span","tok pop-in flip c-verb",esc(be)+" ");
+    stage.appendChild(beTok);
+    stage.appendChild(el("span","tok c-verb","left "));
+    stage.appendChild(el("span","tok c-other","on the beach."));
+    var agent=el("span","tok c-by dim"," (by visitors)");
+    agent.title="optional agent — more in Step 6";
+    stage.appendChild(agent);
+  }
+  function select(t){
+    var pills=btnWrap.querySelectorAll(".tmpill");
+    for(var i=0;i<pills.length;i++)pills[i].classList.toggle("on",pills[i]._t===t);
+    nameEl.textContent=t.name.toUpperCase()+" \u2014 "+t.short;
+    beBox.textContent=t.be;
+    beBox.classList.remove("flip");void beBox.offsetWidth;beBox.classList.add("flip");
+    renderPassive(t.be);
+    capEl.innerHTML=t.cap+' &nbsp;<span class="note">Active: <i>'+esc(active)+"</i></span>";
+  }
+  tenses.forEach(function(t){
+    var b=el("button","tmpill"+(t.b2?" b2-only":""));
+    b.innerHTML=esc(t.name)+(t.b2?' <span class="b2flag">B2</span>':"")+"<small>"+esc(t.short)+"</small>";
+    b._t=t;
+    b.addEventListener("click",function(){select(t);});
+    btnWrap.appendChild(b);
+  });
+  select(tenses[0]);
+
+  mkQuiz(document.getElementById("befix"),[
+    {q:"Tea ___ in India and Kenya. (present simple)",opts:["is grown","are grown","is grow"],correct:0,
+     expl:"Tea is singular \u2192 <b>is</b>. Grown is the past participle of grow."},
+    {q:"The bridge ___ in 1900. (past simple)",opts:["is built","was built","be built"],correct:1,
+     expl:"Past simple \u2192 <b>was</b> + built."},
+    {q:"The road ___ right now. (present continuous)",opts:["is repairing","is being repaired","is been repaired"],correct:1,
+     expl:"present be + <b>being</b> + participle: is being repaired. (The road can't repair anything itself!)"},
+    {q:"My phone ___! (present perfect)",opts:["has stolen","has being stolen","has been stolen"],correct:2,
+     expl:"have/has + <b>been</b> + participle. And note: the phone didn't steal anything."},
+    {q:"The results ___ tomorrow. (will)",opts:["will announce","will be announced","will been announced"],correct:1,
+     expl:"will + <b>be</b> + participle."},
+    {q:"This form ___ signed by a doctor. (modal: must)",opts:["must be","must been","must being"],correct:0,
+     expl:"Modal + <b>be</b> + participle."}
+  ],function(){markDone(4);burstAt(document.getElementById("befix"),24);});
+
+  mkQuiz(document.getElementById("befixB2"),[
+    {q:"The letter ___ before I arrived. (past perfect)",opts:["has been sent","had been sent","was been sent"],correct:1,
+     expl:"had + <b>been</b> + participle = past perfect passive."},
+    {q:"These documents ___ destroyed. (infinitive: are not to…)",opts:["are not to been","are not to be","not are to be"],correct:1,
+     expl:"are (not) <b>to be</b> + participle."},
+    {q:"I hate ___ woken up at 6 a.m. (-ing form)",opts:["being","been","to being"],correct:0,
+     expl:"hate + <b>being</b> + participle."},
+    {q:"The beach ___ cleaner before littering was banned. (used to)",opts:["used to being","used to be","use to be"],correct:1,
+     expl:"<b>used to be</b> + participle."}
+  ],function(){burstAt(document.getElementById("befixB2"),22);});
+
+  /* full B2 table */
+  var tableData=[
+    ["present simple","are",false],
+    ["present continuous","are being",false],
+    ["past simple","were",false],
+    ["past continuous","were being",false],
+    ["present perfect","have been",false],
+    ["past perfect","had been",true],
+    ["going to","are going to be",false],
+    ["will","will be",false],
+    ["infinitive","are (not) to be",true],
+    ["-ing form","being",true],
+    ["used to","used to be",true],
+    ["modals","must (not) be",false]
+  ];
+  var tbl=document.getElementById("tmTable");
+  var html="<tr><th>Tense</th><th>be + participle</th><th>Example</th></tr>";
+  tableData.forEach(function(r){
+    html+='<tr class="'+(r[2]?"b2-only":"")+'"><td>'+esc(r[0])+'</td><td class="bp">'+esc(r[1])+"</td><td>Plastic bottles "+esc(r[1])+" left on the beach (by visitors).</td></tr>";
+  });
+  tbl.innerHTML=html;
+})();
+
+/* ============================================================
+   STEP 5 — AGENT (BY X)
+============================================================ */
+(function(){
+  var cards=[
+    {s:"My wallet was stolen",agent:"by someone",ans:"drop",
+     why:"<b>Dropped — correct.</b> The agent is <b>unknown</b>. A wallet thief hardly leaves a business card, so \u201Cby someone\u201D adds nothing."},
+    {s:"Hamlet was written",agent:"by Shakespeare",ans:"keep",
+     why:"<b>Kept — correct.</b> WHO wrote it is <b>new, important information</b>. Without Shakespeare the sentence loses most of its meaning."},
+    {s:"The streets are cleaned every morning",agent:"by street cleaners",ans:"drop",
+     why:"<b>Dropped — correct.</b> The agent is <b>obvious</b> — everyone knows a cleaning crew does it. The interesting fact is that the streets ARE clean."},
+    {s:"You will be asked to show your ID at the test centre",agent:"by the staff",ans:"drop",
+     why:"<b>Dropped — correct.</b> Obvious again — of course it's the <b>staff</b>. Naming them adds nothing."},
+    {s:"The summaries were analysed",agent:"by a group of teachers",ans:"keep",
+     why:"<b>Kept — correct.</b> \u201CA group of teachers\u201D is real information about the quality of the analysis. Formal writing keeps by-phrases like this."},
+    {s:"This bridge was designed",agent:"by a famous architect",ans:"keep",
+     why:"<b>Kept — correct.</b> The designer is the interesting part — that's information, not filler."}
+  ];
+  var wrap=document.getElementById("editor");
+  var score=0,answered=0;
+  var scoreEl=document.getElementById("ed-score");
+  scoreEl.textContent="(0/"+cards.length+")";
+  cards.forEach(function(c){
+    var card=el("div","subcard");
+    var line=el("div");
+    line.style.cssText="display:flex;gap:10px;flex-wrap:wrap;align-items:center";
+    var sent=el("span","sent-line");
+    sent.style.fontSize="1.05rem";
+    sent.textContent=c.s+" ";
+    var pill=el("span","agentpill",esc(c.agent));
+    line.appendChild(sent);
+    line.appendChild(pill);
+    card.appendChild(line);
+    var v=el("div","verdict");
+    var btns=el("div","pickrow");
+    var answeredCard=false;
+    [["Keep \u201Cby X\u201D","keep"],["Drop \u201Cby X\u201D","drop"]].forEach(function(opt){
+      var b=el("button","btn ghost",opt[0]);
+      b.addEventListener("click",function(){
+        if(answeredCard)return;
+        answeredCard=true;
+        var good=(opt[1]===c.ans);
+        var all=btns.querySelectorAll("button");
+        for(var i=0;i<all.length;i++){all[i].disabled=true;}
+        if(good){b.classList.remove("ghost");b.style.background="var(--ok)";b.style.color="#fff";b.style.boxShadow="none";score++;burstAt(b,14);}
+        if(opt[1]==="keep")pill.classList.add("kept");
+        else pill.classList.add("dropped");
+        v.className="verdict show "+(good?"good":"warn");
+        v.innerHTML=(good?"":'<span class="badmsg">The usual choice is the opposite.</span><br>')+c.why;
+        answered++;
+        scoreEl.textContent="("+score+"/"+cards.length+")";
+        if(answered===cards.length){
+          markDone(5);
+          var msg=el("p","okmsg","You made "+score+"/"+cards.length+" calls like a real editor. Most real-world passives drop the agent — but names and surprising agents stay in.");
+          wrap.appendChild(msg);
+          burstAt(wrap,24);
+        }
+      });
+      btns.appendChild(b);
+    });
+    card.appendChild(btns);
+    card.appendChild(v);
+    wrap.appendChild(card);
+  });
+})();
+
+/* ============================================================
+   STEP 6 — WHY WE USE IT
+============================================================ */
+(function(){
+  mkQuiz(document.getElementById("whychoose"),[
+    {q:"A formal exam notice: \u201C___\u201D",
+     opts:["We advise all students to bring ID.","Students are advised to bring ID."],correct:1,
+     expl:"The passive is <b>formal and impersonal</b> — nobody personally lectures you; a rule simply exists."},
+    {q:"A science textbook on plants: \u201C___\u201D",
+     opts:["Water is absorbed by plant roots.","Plants absorb water through their roots."],correct:1,
+     expl:"Careful! <b>Natural processes stay active</b> — plants really do act. The passive is mainly for human processes."},
+    {q:"An exam essay describing how chocolate is made: \u201C___\u201D",
+     opts:["The beans are roasted before they are ground.","Workers roast the beans and then they grind them."],correct:0,
+     expl:"In a process description the <b>process is the star</b>, not the workers. The passive keeps attention on each step."},
+    {q:"A text message to a friend: \u201C___\u201D",
+     opts:["I made pancakes!","Pancakes have been made!"],correct:0,
+     expl:"Casual speech prefers the active. The passive sounds formal — that's its personality."},
+    {q:"The news: \u201CLast night, ___\u201D (police, arrest, suspect)",
+     opts:["police arrested a suspect","a suspect was arrested"],correct:1,
+     expl:"The passive works when <b>who</b> doesn't matter (which police? doesn't matter) — the event is the news."}
+  ],function(){burstAt(document.getElementById("whychoose"),22);});
+
+  var steps=[
+    {txt:"Old paper ___ from homes and offices.",opts:["collects","is collected","collected is"],correct:1},
+    {txt:"It ___ to the factory by truck.",opts:["takes","is taken","is taking"],correct:1},
+    {txt:"Workers sort it by hand; staples ___ out.",opts:["are pulled","pull","are pulling"],correct:0},
+    {txt:"The paper ___ in water until it breaks apart.",opts:["boils","is boiled","is boil"],correct:1},
+    {txt:"Clean sheets ___ into new rolls.",opts:["are pressed","press","being press"],correct:0},
+    {txt:"Finally, the new paper ___ to shops.",opts:["ships","is shipping","is shipped"],correct:2}
+  ];
+  var wrap=document.getElementById("process");
+  var sels=[];
+  steps.forEach(function(s,i){
+    var row=el("div","procstep");
+    row.appendChild(el("div","procnum",String(i+1)));
+    var p=el("div");
+    p.style.paddingTop="3px";
+    var parts=s.txt.split("___");
+    var html="";
+    if(parts[0])html+=esc(parts[0]);
+    html+='<select class="gap"><option value="-1">— choose —</option>'+s.opts.map(function(o,oi){return '<option value="'+oi+'">'+esc(o)+"</option>";}).join("")+"</select>";
+    if(parts[1])html+=esc(parts[1]);
+    p.innerHTML=html;
+    row.appendChild(p);
+    wrap.appendChild(row);
+    sels.push(p.querySelector("select"));
+  });
+  window.checkProcess=function(){
+    var right=0;
+    sels.forEach(function(s,i){
+      s.classList.remove("ok","no");
+      if(parseInt(s.value,10)===steps[i].correct){s.classList.add("ok");right++;}
+      else s.classList.add("no");
+    });
+    var fb=document.getElementById("processfb");
+    if(right===steps.length){
+      fb.innerHTML='<span class="okmsg">\u2713 Perfect — six passive steps, one smooth process. Notice the process does the talking, not the workers.</span>';
+      markDone(6);
+      burstAt(fb,24);
+    }else{
+      fb.innerHTML='<span class="badmsg">'+right+"/"+steps.length+" correct. Hint: every gap needs <b>be + past participle</b> — the process happens <i>to</i> the paper.</span>";
+    }
+  };
+})();
+
+/* ============================================================
+   STEP 7 — GAMES
+============================================================ */
+function toggleGame(head){head.parentNode.classList.toggle("open");}
+(function(){
+  function hiTxt(id,v){var e=document.getElementById(id);if(e)e.textContent=v>0?("best: "+v):"";}
+  function updateHi(){hiTxt("hiA",state.hi.A);hiTxt("hiB",state.hi.B);hiTxt("hiC",state.hi.C);}
+  window.updateHi=updateHi;
+  updateHi();
+
+  /* ---- Game A : active or passive ---- */
+  (function(){
+    var ga=document.getElementById("gameA");
+    var items=[
+      ["The window was broken.","P"],["She sings beautifully.","A"],["The emails were sent this morning.","P"],
+      ["My brother makes amazing pancakes.","A"],["This song is played on the radio every day.","P"],
+      ["The kids broke the window.","A"],["Dinner is being cooked right now.","P"],
+      ["The company will hire new staff next month.","A"],["The thief was caught by the police.","P"],
+      ["They have cancelled the concert.","A"],["The house was built in 1985.","P"],
+      ["Errors must be reported immediately.","P"],["I lost my keys yesterday.","A"],
+      ["The new library will be opened by the mayor.","P"],["The engine is being repaired at the moment.","P"],
+      ["We watched a great film last night.","A"]
+    ];
+    function renderA(){
+      ga.innerHTML="";
+      var top=el("div");
+      top.style.marginBottom="10px";
+      top.innerHTML='<span class="score-pill" id="gA-score">0 / '+items.length+'</span> <span class="streak" id="gA-streak"></span>';
+      ga.appendChild(top);
+      var q=el("p","sent-line");
+      q.style.textAlign="center";q.style.minHeight="48px";
+      var row=el("div","grid2");
+      var bA=el("button","gopt",'\u26A1 <b>ACTIVE</b><br><small style="font-weight:600;color:#6d7090">the subject acts</small>');
+      var bP=el("button","gopt",'\u25CE <b>PASSIVE</b><br><small style="font-weight:600;color:#6d7090">be + past participle</small>');
+      row.appendChild(bA);row.appendChild(bP);
+      var fb=el("p","expl");
+      fb.style.textAlign="center";
+      ga.appendChild(q);ga.appendChild(row);ga.appendChild(fb);
+      var idx=0,streak=0,score=0;
+      function show(){
+        if(idx>=items.length){
+          q.innerHTML="<b>Deck finished: "+score+"/"+items.length+"</b>";
+          fb.textContent="Shuffling a fresh deck\u2026";
+          if(score>state.hi.A){state.hi.A=score;save();updateHi();}
+          markDone(7);
+          burstAt(q,24);
+          setTimeout(renderA,1600);
+          return;
+        }
+        q.innerHTML=esc(items[idx][0])+' <span class="note">('+(idx+1)+"/"+items.length+")</span>";
+        bA.disabled=false;bP.disabled=false;
+        bA.className="gopt";bP.className="gopt";
+        document.getElementById("gA-streak").textContent=streak>=3?("streak: "+streak+"\u00D7"):"";
+      }
+      function answer(g){
+        var correct=items[idx][1]===g;
+        (g==="A"?bA:bP).className="gopt "+(correct?"correct":"wrong");
+        fb.innerHTML=correct
+          ?"\u2713 Correct — "+(g==="P"?"be + past participle spotted.":"a doer in action.")
+          :"\u2717 It was "+(items[idx][1]==="P"?"<b>passive</b> (be + past participle).":"<b>active</b> (the subject acts).");
+        if(correct){score++;streak++;if(streak===5)burstAt(q,20);}else streak=0;
+        document.getElementById("gA-score").textContent=score+" / "+items.length;
+        bA.disabled=true;bP.disabled=true;
+        idx++;
+        setTimeout(show,950);
+      }
+      bA.addEventListener("click",function(){if(!bA.disabled)answer("A");});
+      bP.addEventListener("click",function(){if(!bP.disabled)answer("P");});
+      show();
+    }
+    renderA();
+  })();
+
+  /* ---- Game B : sentence surgery ---- */
+  (function(){
+    var gb=document.getElementById("gameB");
+    var puzzles=[
+      {pool:["The window","was","broken","by the ball"],trap:"is",
+       why:'Formula: object + be + past participle (+ by agent). "is" is wrong — the event is past, so be \u2192 was.'},
+      {pool:["My phone","has been","stolen"],trap:"was",
+       why:"present perfect passive: have/has + been + stolen."},
+      {pool:["The results","will be","announced","tomorrow"],trap:"announcing",
+       why:"will + be + past participle. \"announcing\" is an -ing form, not a participle."},
+      {pool:["The bills","are","paid","every month"],trap:"is",
+       why:'"bills" is plural \u2192 are, not is.'}
+    ];
+    var pi=0,scoreB=0;
+    function renderB(){
+      gb.innerHTML="";
+      var P=puzzles[pi];
+      gb.appendChild(el("p","note","Puzzle "+(pi+1)+" of "+puzzles.length+" — click the tiles in the correct order. One tile is a trap!"));
+      var answerRow=el("div","tilerow");
+      var pool=el("div","poolrow");
+      var tiles=P.pool.concat([P.trap]).slice().sort(function(){return Math.random()-0.5;});
+      tiles.forEach(function(t){
+        var b=el("button","tile",esc(t));
+        b.addEventListener("click",function(){
+          var slot=el("span","tile placed",esc(t));
+          answerRow.appendChild(slot);
+          b.classList.add("used");
+        });
+        pool.appendChild(b);
+      });
+      gb.appendChild(answerRow);
+      gb.appendChild(pool);
+      var ctrl=el("div","pickrow");
+      var check=el("button","btn","Check");
+      var reset=el("button","btn ghost","Reset tiles");
+      var fb=el("p","expl");
+      fb.style.marginTop="10px";
+      check.addEventListener("click",function(){
+        var slots=answerRow.children,got=[];
+        for(var i=0;i<slots.length;i++)got.push(slots[i].textContent);
+        if(got.length===P.pool.length&&got.join(" ")===P.pool.join(" ")){
+          fb.innerHTML="<span class='okmsg'>\u2713 "+P.why+"</span>";
+          burstAt(check,20);
+          scoreB++;
+          if(scoreB>state.hi.B){state.hi.B=scoreB;save();updateHi();}
+          setTimeout(function(){
+            pi++;
+            if(pi>=puzzles.length){
+              markDone(7);
+              gb.appendChild(el("p","okmsg","Surgery complete — four passives rebuilt. Starting a fresh deck\u2026"));
+              burstAt(gb,24);
+              setTimeout(function(){pi=0;scoreB=0;renderB();},1800);
+            }else renderB();
+          },1500);
+        }else{
+          fb.innerHTML="<span class='badmsg'>Not the right assembly. Formula: <b>OBJECT + be + PAST PARTICIPLE (+ by X)</b>.</span>";
+        }
+      });
+      reset.addEventListener("click",renderB);
+      ctrl.appendChild(check);ctrl.appendChild(reset);
+      gb.appendChild(ctrl);
+      gb.appendChild(fb);
+    }
+    renderB();
+  })();
+
+  /* ---- Game C : tense tornado ---- */
+  (function(){
+    var gc=document.getElementById("gameC");
+    var bank=[
+      {q:"English ___ spoken here.",opts:["is","are","am"],correct:0},
+      {q:"The letters ___ sent yesterday.",opts:["was","were","are"],correct:1},
+      {q:"My car ___ repaired at the moment.",opts:["is being","is be","been is"],correct:0},
+      {q:"Dinner ___ already been cooked.",opts:["has","have","is"],correct:0},
+      {q:"The results ___ be published soon.",opts:["will","will being","will been"],correct:0},
+      {q:"The thief ___ arrested last night.",opts:["was","were","is"],correct:0},
+      {q:"These forms ___ be signed today.",opts:["must","must being","must been"],correct:0},
+      {q:"The house ___ painted before we moved in.",opts:["had been","has being","was been"],correct:0},
+      {q:"Tickets ___ going to be sold online.",opts:["are","is","be"],correct:0},
+      {q:"His bike ___ stolen twice this year.",opts:["has been","have been","had being"],correct:0},
+      {q:"All the work ___ finished by Friday.",opts:["will be","will being","will been"],correct:0},
+      {q:"Rice ___ grown in China.",opts:["is","are","be"],correct:0}
+    ];
+    var DURATION=60;
+    function renderC(){
+      gc.innerHTML="";
+      var intro=el("div","finale");
+      intro.style.padding="10px";
+      intro.innerHTML="<p class='note' style='margin-bottom:12px'>"+DURATION+" seconds on the clock. How many <b>be</b>-forms can you nail?</p>";
+      var start=el("button","btn","Start the tornado");
+      start.addEventListener("click",runC);
+      intro.appendChild(start);
+      gc.appendChild(intro);
+    }
+    function runC(){
+      var timeLeft=DURATION,score=0,idx=0;
+      var order=bank.slice().sort(function(){return Math.random()-0.5;});
+      gc.innerHTML="";
+      var top=el("div");
+      top.innerHTML="<span class='score-pill' id='gC-score'>0</span>";
+      gc.appendChild(top);
+      var barWrap=el("div","timerbar");
+      var fill=el("div","timerfill");
+      barWrap.appendChild(fill);
+      gc.appendChild(barWrap);
+      var q=el("p","sent-line");
+      q.style.textAlign="center";q.style.minHeight="44px";
+      var optWrap=el("div");
+      var fb=el("p","expl");
+      fb.style.textAlign="center";
+      gc.appendChild(q);gc.appendChild(optWrap);gc.appendChild(fb);
+      var timer=setInterval(function(){
+        timeLeft--;
+        fill.style.width=Math.max(0,(timeLeft/DURATION*100))+"%";
+        if(timeLeft<=0){clearInterval(timer);finish();}
+      },1000);
+      function finish(){
+        if(score>state.hi.C){state.hi.C=score;save();}
+        if(score>0)markDone(7);
+        gc.innerHTML="<div class='finale' style='padding:14px'><h3>Time!</h3><p style='font-size:1.6rem;font-weight:800'>"+score+" correct</p><p class='note'>Best: "+state.hi.C+"</p></div>";
+        var again=el("button","btn","Go again");
+        again.addEventListener("click",renderC);
+        gc.lastChild.appendChild(again);
+        burstAt(gc,Math.min(34,10+score*2));
+        updateHi();
+      }
+      function show(){
+        if(idx>=order.length){
+          order=bank.slice().sort(function(){return Math.random()-0.5;});
+          idx=0;
+        }
+        var it=order[idx];
+        q.innerHTML=esc(it.q).replace("___","<span style='color:var(--verb-deep)'>___</span>");
+        optWrap.innerHTML="";
+        fb.textContent="";
+        it.opts.forEach(function(o){
+          var b=el("button","gopt",esc(o));
+          b.addEventListener("click",function(){
+            var kids=optWrap.children;
+            for(var i=0;i<kids.length;i++)kids[i].disabled=true;
+            if(o===it.opts[it.correct]){
+              score++;
+              b.classList.add("correct");
+              burstAt(b,8);
+            }else{
+              b.classList.add("wrong");
+            }
+            document.getElementById("gC-score").textContent=String(score);
+            idx++;
+            setTimeout(show,380);
+          });
+          optWrap.appendChild(b);
+        });
+      }
+      show();
+    }
+    renderC();
+  })();
+})();
+
+/* ============================================================
+   FINAL BADGES & PRINT
+============================================================ */
+function renderFinalBadges(){
+  var n=state.done.filter(Boolean).length;
+  var bar=document.getElementById("finalBadges");
+  bar.innerHTML="";
+  [["Steps done",n+"/8"],["Game A best",state.hi.A],["Game B best",state.hi.B],["Game C best",state.hi.C]].forEach(function(b){
+    var d=el("div","badge");
+    d.innerHTML="<div class='b-title'>"+b[0]+"</div><div class='b-val'>"+b[1]+"</div>";
+    bar.appendChild(d);
+  });
+  document.getElementById("finale").style.display=(n===8)?"block":"none";
+}
+function printSheet(){window.print();}
+
+/* boot */
+applyB2();
+goto(0);
+renderStepper();
+</script>
+</body>
+</html>
