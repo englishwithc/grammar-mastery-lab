@@ -3,117 +3,426 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grammar Mastery Lab</title>
+  <title>Grammar Mastery Lab — Lesson Menu</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #f4f6fb;
-      color: #222;
-      margin: 0;
-      padding: 2rem 1rem;
+    :root {
+      --bg: #f0f2f7;
+      --card: #ffffff;
+      --ink: #1a1a2e;
+      --muted: #555770;
+      --accent: #4f46e5;
+      --accent-light: #eef0ff;
+      --tense-color: #f59e0b;
+      --voice-color: #10b981;
+      --other-color: #8b5cf6';
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+      --radius: 16px;
     }
-    main {
-      max-width: 900px;
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Hero Header ── */
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #4f46e5 50%, #7c3aed 100%);
+      color: #fff;
+      padding: 3rem 1.5rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60%;
+      left: -20%;
+      width: 140%;
+      height: 200%;
+      background: radial-gradient(ellipse at 30% 50%, rgba(79,70,229,0.3) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(124,58,237,0.2) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      max-width: 500px;
       margin: 0 auto;
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 0.25rem;
+
+    .hero .badge-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
     }
-    .subtitle {
-      text-align: center;
-      color: #555;
-      margin-bottom: 2rem;
+
+    .hero .badge {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
+
+    /* ── Main Container ── */
+    main {
+      max-width: 1000px;
+      margin: -2rem auto 3rem;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── Section Headers ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 3px solid transparent;
+    }
+
+    .section-header.tenses { border-color: var(--tense-color); }
+    .section-header.voice { border-color: var(--voice-color); }
+    .section-header.other { border-color: var(--other-color); }
+
+    .section-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .section-header.tenses .section-icon { background: #fef3c7; }
+    .section-header.voice .section-icon { background: #d1fae5; }
+    .section-header.other .section-icon { background: #ede9fe; }
+
+    .section-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .section-header .count {
+      margin-left: auto;
+      font-size: 0.8rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* ── Card Grid ── */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1rem;
     }
+
     .card {
       display: block;
-      background: #fff;
-      border-radius: 12px;
-      padding: 1.25rem;
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
       text-decoration: none;
       color: inherit;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
     }
+
     .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
     }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+
+    .card.tense::before { background: var(--tense-color); }
+    .card.voice::before { background: var(--voice-color); }
+    .card.other::before { background: var(--other-color); }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-emoji {
+      font-size: 2rem;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .card.tense .card-emoji { background: #fef3c7; }
+    .card.voice .card-emoji { background: #d1fae5; }
+    .card.other .card-emoji { background: #ede9fe; }
+
     .card h2 {
-      margin: 0 0 0.5rem;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.3;
+      flex: 1;
     }
+
+    .card .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .card.tense .tag { background: #fef3c7; color: #b45309; }
+    .card.voice .tag { background: #d1fae5; color: #047857; }
+    .card.other .tag { background: #ede9fe; color: #6d28d9; }
+
     .card p {
-      margin: 0;
-      color: #666;
+      color: var(--muted);
       font-size: 0.9rem;
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .card-arrow {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 1.2rem;
+      color: #ccc;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .card:hover .card-arrow {
+      transform: translateX(4px);
+      color: var(--accent);
+    }
+
+    /* ── Coming Soon Card ── */
+    .coming-soon {
+      border: 2px dashed #d1d5db;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(0,0,0,0.01) 10px,
+        rgba(0,0,0,0.01) 20px
+      );
+    }
+
+    .coming-soon .card-emoji { background: #f3f4f6; color: #9ca3af; }
+    .coming-soon h2 { color: #9ca3af; }
+    .coming-soon p { color: #9ca3af; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .hero { padding: 2rem 1rem 3rem; }
+      main { padding: 0 1rem; }
+      .grid { grid-template-columns: 1fr; }
+      .section-header { flex-wrap: wrap; }
     }
   </style>
 </head>
 <body>
+
+  <!-- ═══ HERO ═══ -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1>🎓 Grammar Mastery Lab</h1>
+      <p class="subtitle">Interactive, visual grammar lessons for the modern classroom — no login or downloads needed.</p>
+      <div class="badge-row">
+        <span class="badge">✨ Step-by-step animations</span>
+        <span class="badge">🖥️ Screen-share ready</span>
+        <span class="badge">📱 Works on any device</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
   <main>
-    <h1>Grammar Mastery Lab</h1>
-    <p class="subtitle">Interactive lessons to learn English grammar step by step.</p>
-    <div class="grid" id="topics"></div>
+    <!-- ── Tenses Section ── -->
+    <div class="section-header tenses">
+      <div class="section-icon">🕐</div>
+      <h2>Tenses</h2>
+      <span class="count">6 lessons</span>
+    </div>
+
+    <div class="grid" id="tense-grid"></div>
+
+    <!-- ── Voice Section ── -->
+    <div class="section-header voice">
+      <div class="section-icon">🔊</div>
+      <h2>Voice</h2>
+      <span class="count">1 lesson</span>
+    </div>
+
+    <div class="grid" id="voice-grid"></div>
+
+    <!-- ── Other Topics Section ── -->
+    <div class="section-header other">
+      <div class="section-icon">📚</div>
+      <h2>Other Grammar Topics</h2>
+      <span class="count">Coming soon</span>
+    </div>
+
+    <div class="grid" id="other-grid"></div>
   </main>
 
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <p>Built with ❤️ for English teachers &middot; <a href="https://github.com/englishwithc/grammar-mastery-lab">GitHub</a></p>
+  </footer>
+
   <script>
-    // Add one entry per topic folder. "folder" must match the folder name exactly.
-    const topics = [
-      {
-        folder: "present-simple",
-        title: "Present Simple",
-        description: "Affirmative, negative, am/is/are - comprehensive guide."
-      },
-      {
-        folder: "present-simple-s-es-ies",
-        title: "Present Simple: -s, -es, -ies",
-        description: "Third person singular spelling and endings."
-      },
-      {
-        folder: "present-simple-questions",
-        title: "Present Simple Questions",
-        description: "Forming yes/no and wh- questions."
-      },
-      {
-        folder: "present-perfect-simple",
-        title: "Present Perfect Simple",
-        description: "Experiences, results, and unfinished time."
-      },
-      {
-        folder: "past-simple",
-        title: "Past Simple",
-        description: "Regular and irregular past forms."
-      },
-      {
-        folder: "past-perfect",
-        title: "Past Perfect",
-        description: "Showing which action happened first."
+    // ── Lesson Data ──
+    const lessons = {
+      tenses: [
+        {
+          folder: "present-simple",
+          title: "Present Simple",
+          emoji: "📍",
+          description: "Affirmative, negative, am/is/are — comprehensive guide."
+        },
+        {
+          folder: "present-simple-s-es-ies",
+          title: "Present Simple: -s, -es, -ies",
+          emoji: "✍️",
+          description: "Third person singular spelling and endings."
+        },
+        {
+          folder: "present-simple-questions",
+          title: "Present Simple Questions",
+          emoji: "❓",
+          description: "Forming yes/no and wh- questions."
+        },
+        {
+          folder: "past-simple",
+          title: "Past Simple",
+          emoji: "⏪",
+          description: "Regular and irregular past forms."
+        },
+        {
+          folder: "present-perfect-simple",
+          title: "Present Perfect Simple",
+          emoji: "🔗",
+          description: "Experiences, results, and unfinished time."
+        },
+        {
+          folder: "past-perfect",
+          title: "Past Perfect",
+          emoji: "⏮️",
+          description: "Showing which action happened first."
+        }
+      ],
+      voice: [
+        {
+          folder: "passive-voice",
+          title: "The Passive Voice 🆕",
+          emoji: "🔄",
+          description: "Form, transform, and master the passive — from basics to boss level."
+        }
+      ],
+      other: []  // Add future topics here as they are created
+    };
+
+    // ── Render Cards ──
+    function renderCards(containerId, items, category) {
+      const container = document.getElementById(containerId);
+
+      if (items.length === 0 && category === "other") {
+        // Coming soon placeholder
+        const card = document.createElement("div");
+        card.className = "card coming-soon";
+        card.innerHTML = `
+          <div class="card-top">
+            <div class="card-emoji">🚧</div>
+            <h2>More topics coming soon!</h2>
+          </div>
+          <p>We're adding lessons on modals, conditionals, articles, and more. Check back for updates.</p>
+        `;
+        container.appendChild(card);
       }
-    ];
 
-    const container = document.getElementById("topics");
+      items.forEach(item => {
+        const card = document.createElement("a");
+        card.className = `card ${category}`;
+        card.href = item.folder + "/";
 
-    topics.forEach((topic) => {
-      const link = document.createElement("a");
-      link.className = "card";
-      link.href = topic.folder + "/";
+        card.innerHTML = `
+          <span class="card-arrow">→</span>
+          <div class="card-top">
+            <div class="card-emoji">${item.emoji}</div>
+            <div>
+              <h2>${item.title}</h2>
+              <span class="tag">${category === 'tenses' ? 'Tense' : category === 'voice' ? 'Voice' : 'Grammar'}</span>
+            </div>
+          </div>
+          <p>${item.description}</p>
+        `;
 
-      const heading = document.createElement("h2");
-      heading.textContent = topic.title;
+        container.appendChild(card);
+      });
+    }
 
-      const text = document.createElement("p");
-      text.textContent = topic.description;
-
-      link.appendChild(heading);
-      link.appendChild(text);
-      container.appendChild(link);
-    });
+    renderCards("tense-grid", lessons.tenses, "tense");
+    renderCards("voice-grid", lessons.voice, "voice");
+    renderCards("other-grid", lessons.other, "other");
   </script>
+
 </body>
 </html>
