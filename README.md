@@ -1,3 +1,4 @@
+[README.md](https://github.com/user-attachments/files/33904612/README.md)
 # Grammar Mastery Lab
 
 Free, interactive English grammar lessons that you can show on screen in your classroom or in an online lesson.
@@ -22,6 +23,8 @@ No login, no software, and no downloads are needed. It works in any modern web b
 
 ## Available lessons
 
+### 🕐 Tenses
+
 | Lesson | Link |
 | --- | --- |
 | Present Simple | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-simple/) |
@@ -31,6 +34,16 @@ No login, no software, and no downloads are needed. It works in any modern web b
 | Present Perfect Simple | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-perfect-simple/) |
 | Past Perfect | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/past-perfect/) |
 
+### 🔊 Voice
+
+| Lesson | Link |
+| --- | --- |
+| The Passive Voice 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/passive-voice/) |
+
+### 📚 Other Grammar Topics
+
+> More topics coming soon — keep an eye on this page!
+
 New lessons are added regularly. Check this list, or the menu on the main page, for the latest additions.
 
 ## Tips for teachers
@@ -38,22 +51,3 @@ New lessons are added regularly. Check this list, or the menu on the main page, 
 - Use full screen mode (usually the F11 key on Windows, or the green button on a Mac) for a cleaner view.
 - Lessons work offline once they have loaded, but an internet connection is needed the first time.
 - If a lesson looks wrong or does not load, try refreshing the page once. If it still does not work, see the section below.
-
-## Need help?
-
-If something is not working, or you have an idea for a new lesson, please get in touch:
-
-- Open an issue on this GitHub page (click the **Issues** tab at the top, then **New issue**), or
-- Contact the author: English with C
-
-## For the repository owner
-
-To add a new lesson:
-
-1. Create a new folder in this repository named after the topic, using lowercase letters and hyphens (for example, `present-continuous`).
-2. Add an `index.html` file to that folder. This is the lesson page.
-3. Add the lesson to the menu on the main `index.html` file, in the `topics` list.
-4. Add a row to the table in this README with the new link.
-
-Lesson links follow this pattern:
-`https://englishwithc.github.io/grammar-mastery-lab/[folder-name]/`
