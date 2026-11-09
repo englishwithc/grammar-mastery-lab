@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Measuring the Gap — Degree Modifiers (B1–B2)</title>
+<style>
+  :root{
+    --paper:#fbf9f6;
+    --ink:#161a21;
+    --muted:#5f6673;
+    --line:#e6e0d7;
+    --card:#ffffff;
+    --accent:#b45309;
+    --accent-2:#d97706;
+    --accent-soft:#fdf3e7;
+    --good:#137a52;
+    --good-soft:#eaf6f0;
+    --bad:#b3261e;
+    --bad-soft:#fdecea;
+    --warn:#96620a;
+    --warn-soft:#fdf6e3;
+    --radius:16px;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font:17px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:#f6d9b6}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-0.01em;line-height:1.15}
+  p{max-width:66ch;margin:0 0 14px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+
+  /* ---------- top bar ---------- */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(251,249,246,.9);
+    backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topbar .inner{max-width:1080px;margin:0 auto;padding:9px 24px;display:flex;align-items:center;gap:18px}
+  .brand{font-family:var(--serif);font-size:15px;font-weight:600;white-space:nowrap;letter-spacing:.01em}
+  .brand i{color:var(--accent);font-style:normal}
+  .nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav a{font-size:12.5px;color:var(--muted);text-decoration:none;padding:6px 10px;
+    border-radius:99px;white-space:nowrap;transition:.15s}
+  .nav a:hover{background:#efe9df;color:var(--ink)}
+  .nav a.active{background:var(--ink);color:#fff}
+
+  /* ---------- layout ---------- */
+  .hero{max-width:1080px;margin:0 auto;padding:60px 24px 40px;
+    background:radial-gradient(900px 320px at 15% -10%,#f7e9d6 0%,transparent 70%)}
+  section{max-width:1080px;margin:0 auto;padding:56px 24px;border-top:1px solid var(--line)}
+  .eyebrow{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;
+    font-weight:800;color:var(--accent);margin:0 0 14px}
+  h1{font-size:clamp(34px,5.4vw,58px);margin:0 0 18px}
+  .lede{font-size:19.5px;color:var(--muted);max-width:60ch}
+  .secnum{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+    font-weight:800;color:var(--muted);margin:0 0 10px}
+  h2{font-size:clamp(25px,3.4vw,36px);margin:0 0 14px;max-width:24ch}
+  h3{font-size:19px;margin:26px 0 10px}
+  .sub{font-size:17px;color:var(--muted);max-width:66ch}
+
+  /* ---------- cards & callouts ---------- */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;box-shadow:0 1px 0 rgba(0,0,0,.02),0 18px 40px -34px rgba(20,25,35,.55)}
+  .callout{border-radius:12px;padding:14px 18px;margin:18px 0;font-size:16px;max-width:70ch}
+  .callout b{font-weight:700}
+  .callout.rule{background:var(--accent-soft);border-left:3px solid var(--accent)}
+  .callout.plain{background:#f4f1ec;border-left:3px solid #c9c2b6}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+  .mini{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .mini h4{margin:0 0 6px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .mini .ex{font-family:var(--serif);font-size:18px;margin:0 0 6px}
+  .mini .ex b{background:var(--accent-soft);padding:0 .15em;border-radius:4px}
+  .mini p{font-size:14.5px;color:var(--muted);margin:0}
+  .list{list-style:none;padding:0;margin:0 0 8px}
+  .list li{padding:9px 0 9px 22px;position:relative;border-bottom:1px dashed #ece6dc;font-family:var(--serif);font-size:18px}
+  .list li:last-child{border-bottom:0}
+  .list li::before{content:"›";position:absolute;left:2px;color:var(--accent);font-weight:700}
+  .list b{background:var(--accent-soft);padding:0 .14em;border-radius:4px}
+
+  /* ---------- controls ---------- */
+  button{font:inherit;cursor:pointer;color:inherit}
+  button:focus-visible{outline:3px solid #f0c08a;outline-offset:2px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:99px;
+    padding:9px 18px;font-size:16px;transition:.16s}
+  .chip:hover{border-color:#cbbfae;background:#fdfaf6}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip.sm{padding:6px 13px;font-size:13.5px}
+  .seg{display:inline-flex;background:#f0ebe3;border-radius:99px;padding:4px;gap:2px;margin:0 0 6px}
+  .seg button{border:0;background:transparent;border-radius:99px;padding:8px 16px;
+    font-size:14px;color:var(--muted);transition:.16s}
+  .seg button.active{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.13)}
+  .btn{border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:99px;
+    padding:11px 22px;font-size:15px;transition:.16s}
+  .btn:hover{background:#2b323d;border-color:#2b323d}
+  .btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+  .btn.ghost:hover{background:#f7f2ea;border-color:#cbbfae}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+
+  /* ---------- sentence + feedback ---------- */
+  .sentence{font-family:var(--serif);font-size:clamp(20px,2.6vw,27px);line-height:1.5;
+    margin:18px 0 0;min-height:2.9em;transition:color .2s}
+  .sentence b{background:var(--accent-soft);border-bottom:2px solid var(--accent);
+    padding:0 .16em;border-radius:4px 4px 0 0}
+  .sentence.bad{color:#8a2a22}
+  .sentence.bad b{background:var(--bad-soft);border-bottom-color:var(--bad)}
+  .fb{margin-top:14px;border-radius:10px;padding:12px 15px;font-size:15.5px;display:none}
+  .fb.show{display:block}
+  .fb.ok{background:var(--good-soft);color:#0b5136;border:1px solid #bfe3d2}
+  .fb.no{background:var(--bad-soft);color:#7a1a15;border:1px solid #f1c9c6}
+  .fb.warn{background:var(--warn-soft);color:#6d4708;border:1px solid #eddcb2}
+
+  /* ---------- gap explorer ---------- */
+  .explorer{margin-top:26px}
+  .scale{position:relative;height:180px;border-radius:14px;
+    background:linear-gradient(#fff,#fdfbf7);border:1px solid var(--line);overflow:hidden}
+  .axis{position:absolute;left:0;right:0;top:50%;height:2px;background:#ded7cb}
+  .band{position:absolute;top:50%;height:10px;margin-top:-5px;border-radius:99px;
+    background:linear-gradient(90deg,var(--accent),#e8ae72);transition:left .28s,width .28s,background .28s}
+  .band.low{background:linear-gradient(90deg,#e8b0aa,var(--bad))}
+  .band.flat{background:linear-gradient(90deg,#9cc9b6,var(--good))}
+  .stem{position:absolute;width:0;border-left:2px dotted #d6cfc2;z-index:1}
+  .dot{position:absolute;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
+    font-weight:700;font-size:17px;transform:translate(-50%,-50%);z-index:2;transition:left .28s}
+  .dot.a{top:26%;background:var(--accent);color:#fff;box-shadow:0 8px 20px -10px rgba(180,83,9,.9)}
+  .dot.b{top:74%;background:#fff;border:2px solid var(--ink)}
+  .slider{margin:16px 0 4px;width:100%;accent-color:var(--accent);height:28px}
+  .presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .verdict{margin-top:20px;padding:4px 0 4px 18px;border-left:3px solid var(--accent);transition:.2s}
+  .verdict .vk{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+    font-weight:800;color:var(--muted)}
+  .verdict .vt{font-family:var(--serif);font-size:clamp(20px,2.5vw,25px);margin:2px 0 4px}
+  .verdict .vt b{background:var(--accent-soft);padding:0 .15em;border-radius:4px}
+  .verdict .ve{font-size:15.5px;color:var(--muted)}
+
+  /* ---------- bars ---------- */
+  .bars{display:flex;align-items:flex-end;gap:30px;height:165px;max-width:390px;margin:24px auto 0}
+  .bars .col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+  .bars .bar{width:100%;border-radius:10px 10px 3px 3px;min-height:5px;
+    transition:height .5s cubic-bezier(.4,0,.2,1)}
+  .bar.a{background:linear-gradient(180deg,#f1b479,var(--accent))}
+  .bar.b{background:linear-gradient(180deg,#b9c5d3,#6b7788)}
+  .barcaps{display:flex;gap:30px;max-width:390px;margin:10px auto 0}
+  .barcaps div{flex:1;text-align:center;font-size:13px;color:var(--muted);line-height:1.35}
+  .barcaps div b{color:var(--ink)}
+  .cap{text-align:center;font-size:14.5px;color:var(--muted);margin:16px 0 0}
+
+  /* ---------- rank ladder ---------- */
+  .rank{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:8px;max-width:560px}
+  .rank li{display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:14px;
+    padding:13px 16px;border:1px solid var(--line);border-radius:11px;background:#fff;
+    transition:.28s;animation:pop .3s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .rank li .pos{font-family:var(--serif);font-size:19px;color:var(--muted);text-align:center}
+  .rank li .name{font-weight:600}
+  .rank li .h{font-variant-numeric:tabular-nums;font-size:14px;color:var(--muted)}
+  .rank li.pick{border-color:var(--accent);background:var(--accent-soft);
+    box-shadow:0 0 0 3px #fbeada}
+  .rank li.pick .pos{color:var(--accent);font-weight:700}
+
+  /* ---------- table ---------- */
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+  table{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+    background:#f7f3ec;font-weight:800;white-space:nowrap}
+  td:first-child{font-weight:600;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover{background:#fdfbf8}
+
+  /* ---------- try it ---------- */
+  .tryit{margin-top:30px;background:linear-gradient(180deg,#fffdf9,#fdf7ec);
+    border:1px solid #ecdcc4;border-radius:var(--radius);padding:20px 22px}
+  .tryit .tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    font-weight:800;color:var(--accent);margin:0 0 4px}
+  .tryit h3{margin:0 0 10px;font-size:21px}
+  .tryit p{margin:0 0 12px;max-width:70ch}
+  details{border:1px solid #e9dcc6;border-radius:11px;background:#fff;padding:13px 16px;margin-top:10px}
+  details summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;
+    align-items:center;gap:16px;font-size:15.5px;font-weight:600}
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:"Reveal";font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;font-weight:800;color:var(--accent);white-space:nowrap}
+  details[open] summary::after{content:"Hide"}
+  details .ans{margin-top:10px;padding-top:10px;border-top:1px dashed #eadfcd;font-size:15.5px;color:#333}
+  details .ans b{background:var(--accent-soft);padding:0 .14em;border-radius:4px}
+
+  /* ---------- mistake cards ---------- */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+  .cards details{margin-top:0;border-color:var(--line)}
+  .cards summary{font-family:var(--serif);font-size:17.5px}
+  .cards .wrongx{color:#a8322a;text-decoration:line-through;text-decoration-thickness:1.5px}
+  .cards .ans{font-family:var(--serif);font-size:17px}
+
+  /* ---------- quiz ---------- */
+  .qhead{display:flex;align-items:center;gap:16px;margin:0 0 18px}
+  .qhead h2{margin:0}
+  .scorepill{margin-left:auto;background:#efe9df;border-radius:99px;padding:7px 16px;
+    font-size:13.5px;font-weight:700;white-space:nowrap}
+  .qcard{background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin-bottom:14px}
+  .qnum{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;
+    color:var(--accent);margin-bottom:4px}
+  .qtext{font-family:var(--serif);font-size:19px;margin-bottom:6px}
+  .opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;
+    border-radius:10px;padding:12px 15px;margin-top:9px;font-size:15.5px;transition:.16s}
+  .opt:hover{border-color:#cbbfae;background:#fdfaf6}
+  .opt.correct{border-color:#8fd0b4;background:var(--good-soft);font-weight:600}
+  .opt.wrong{border-color:#eeb7b2;background:var(--bad-soft);opacity:.65;text-decoration:line-through}
+  .opt:disabled{cursor:default}
+  .opt:disabled:hover{background:inherit;border-color:inherit}
+
+  footer{max-width:1080px;margin:0 auto;padding:40px 24px 70px;color:var(--muted);font-size:14px;
+    border-top:1px solid var(--line)}
+
+  @media (max-width:760px){
+    body{font-size:16px}
+    .topbar .inner{padding:8px 14px;gap:10px}
+    .brand{display:none}
+    .hero,section,footer{padding-left:16px;padding-right:16px}
+    .two,.cards{grid-template-columns:1fr}
+    .panel{padding:18px}
+    .bars{gap:18px}
+    .barcaps{gap:18px}
+    .sentence{min-height:3.4em}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="inner">
+    <div class="brand">Measuring the <i>gap</i></div>
+    <nav class="nav">
+      <a href="#gap">The idea</a>
+      <a href="#big">Big gaps</a>
+      <a href="#small">Small gaps</a>
+      <a href="#almost">Almost same</a>
+      <a href="#muchless">Much less</a>
+      <a href="#byfar">By far</a>
+      <a href="#ordinal">Second, third</a>
+      <a href="#reference">Reference</a>
+      <a href="#clinic">Mistakes</a>
+      <a href="#quiz">Quiz</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <div class="hero">
+    <p class="eyebrow">Degree modifiers · B1–B2</p>
+    <h1>Measuring the gap.</h1>
+    <p class="lede">A comparative tells you <em>which</em> one is more. It doesn't tell you <em>by how much</em>.
+      These small words — <strong>much</strong>, <strong>slightly</strong>, <strong>nearly</strong>,
+      <strong>by far</strong> — measure the gap. Choose by size, then check where the word sits.</p>
+  </div>
+
+  <!-- ============ 01 ============ -->
+  <section id="gap">
+    <p class="secnum">01 — the big idea</p>
+    <h2>How big is the gap?</h2>
+    <p class="sub">Move A. The gap changes, and so does the sentence you need.</p>
+
+    <div class="panel explorer">
+      <div class="scale" id="scale">
+        <div class="axis"></div>
+        <div class="band" id="band"></div>
+        <div class="stem" id="stemA"></div>
+        <div class="stem" id="stemB"></div>
+        <div class="dot a" id="ptA">A</div>
+        <div class="dot b" id="ptB">B</div>
+      </div>
+
+      <input class="slider" id="gapSlider" type="range" min="0" max="100" value="82"
+             aria-label="Position of A on the scale">
+
+      <div class="presets">
+        <button class="chip sm" data-snap="86">Big gap</button>
+        <button class="chip sm" data-snap="56">Small gap</button>
+        <button class="chip sm" data-snap="42">Almost level</button>
+        <button class="chip sm" data-snap="14">Far below</button>
+      </div>
+
+      <div class="verdict" id="verdict" aria-live="polite"></div>
+    </div>
+
+    <div class="callout plain">
+      The scale isn't in metres or degrees. It's whatever property you're comparing:
+      height, price, speed, difficulty, age.
+    </div>
+
+    <h3>The second question: where does the word go?</h3>
+    <div class="two">
+      <div class="mini">
+        <h4>After the verb (predicative)</h4>
+        <p class="ex">That tower is <b>a lot</b> taller.</p>
+        <p>Almost every modifier is happy here. This is the safe position.</p>
+      </div>
+      <div class="mini">
+        <h4>Before the noun (attributive)</h4>
+        <p class="ex">a <b>much</b> taller tower</p>
+        <p>Stricter. Some modifiers are blocked here and need a new structure.</p>
+      </div>
+    </div>
+
+    <div class="tryit">
+      <p class="tag">Now do it yourself</p>
+      <h3>Read the situation. Which group of words do you need?</h3>
+      <p>Say it out loud first, then reveal.</p>
+      <details>
+        <summary>Your phone cost 300. That one costs 900.</summary>
+        <div class="ans">Big gap → <b>much / far / a lot</b> more expensive.<br>
+          “That phone is <b>much more expensive</b> than mine.”</div>
+      </details>
+      <details>
+        <summary>Two jackets: 80 euros and 78 euros.</summary>
+        <div class="ans">Small gap → <b>slightly / a little / a bit</b>.<br>
+          “This one is <b>slightly more expensive</b>.”</div>
+      </details>
+      <details>
+        <summary>A weighs 20 kg. B weighs 45 kg.</summary>
+        <div class="ans">A is far below B → <b>not nearly as…as</b>.<br>
+          “A is <b>not nearly as heavy as</b> B.”</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 02 ============ -->
+  <section id="big">
+    <p class="secnum">02 — big differences</p>
+    <h2>Much, far, a lot</h2>
+    <p class="sub">All three say the same thing: the gap is large. The difference is style and position.</p>
+
+    <ul class="list">
+      <li>This exam was <b>much harder</b> than the last one.</li>
+      <li>The new system is <b>far more reliable</b> than the old one.</li>
+      <li>She looks <b>a lot happier</b> today.</li>
+    </ul>
+
+    <div class="panel tester" id="testerBig" style="margin-top:22px">
+      <div class="chips">
+        <button class="chip" data-mod="much">much</button>
+        <button class="chip" data-mod="far">far</button>
+        <button class="chip" data-mod="a lot">a lot</button>
+      </div>
+      <div class="seg">
+        <button data-mode="pred">after the verb</button>
+        <button data-mode="attr">before the noun</button>
+      </div>
+      <div class="sentence"></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="callout rule">
+      <b>The one restriction:</b> <b>a lot</b> can't sit before a noun.
+      Use <b>much</b> / <b>far</b> there, or rebuild with a relative clause:
+      <em>a tower <b>that is a lot taller</b></em>.
+    </div>
+
+    <div class="tryit">
+      <p class="tag">Now do it yourself</p>
+      <h3>Fix these three. One word, or one small restructure each.</h3>
+      <details>
+        <summary>This bag is very heavier than mine.</summary>
+        <div class="ans"><s>very heavier</s> → <b>much heavier</b> (or far heavier / a lot heavier).
+          “Very” cannot modify a comparative.</div>
+      </details>
+      <details>
+        <summary>They live in a lot bigger house than us.</summary>
+        <div class="ans"><s>a lot bigger house</s> → <b>a much bigger house</b><br>
+          or: <b>a house that is a lot bigger</b></div>
+      </details>
+      <details>
+        <summary>This version is more better than the first.</summary>
+        <div class="ans"><s>more better</s> → <b>much better</b>. “Better” is already a comparative.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 03 ============ -->
+  <section id="small">
+    <p class="secnum">03 — small differences</p>
+    <h2>Slightly, a little, a bit</h2>
+    <p class="sub">The difference is real, but it's small. Often it's a difference that doesn't really matter.</p>
+
+    <ul class="list">
+      <li>The second test was <b>slightly easier</b>.</li>
+      <li>I feel <b>a little better</b> today.</li>
+      <li>The weather was <b>a bit nicer</b> than we expected.</li>
+    </ul>
+
+    <div class="panel tester" id="testerSmall" style="margin-top:22px">
+      <div class="chips">
+        <button class="chip" data-mod="slightly">slightly</button>
+        <button class="chip" data-mod="a little">a little</button>
+        <button class="chip" data-mod="a bit">a bit</button>
+      </div>
+      <div class="seg">
+        <button data-mode="pred">after the verb</button>
+        <button data-mode="attr">before the noun</button>
+      </div>
+      <div class="sentence"></div>
+      <div class="fb"></div>
+    </div>
+
+    <div class="callout rule">
+      <b>Classroom shortcut:</b> <b>slightly</b> is the safe choice before a noun.
+      <b>A little</b> and <b>a bit</b> belong after the verb — or inside a longer phrase:
+      <em>a performance <b>a bit longer than expected</b></em>.
+      <br><br>
+      Why? “a bit” already contains the article <em>a</em>, so it clashes with the noun's own article.
+    </div>
+
+    <div class="tryit">
+      <p class="tag">Now do it yourself</p>
+      <h3>Correct or not? Say yes or no, then check.</h3>
+      <details>
+        <summary>It was a bit longer film than I expected.</summary>
+        <div class="ans">✗ → <b>a slightly longer film</b> / <b>a film a bit longer than I expected</b></div>
+      </details>
+      <details>
+        <summary>The soup was a little hotter than yesterday.</summary>
+        <div class="ans">✓ Correct. It comes after the verb, so “a little” is fine.</div>
+      </details>
+      <details>
+        <summary>We booked a slightly more expensive room.</summary>
+        <div class="ans">✓ Correct. “Slightly” works before a noun.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 04 ============ -->
+  <section id="almost">
+    <p class="secnum">04 — almost the same</p>
+    <h2>Nearly as…as, almost as…as</h2>
+    <p class="sub">The equative pattern is <strong>as + adjective + as</strong>. Add <em>nearly</em> or
+      <em>almost</em> and you say: close to the same, but a little below.</p>
+
+    <div class="panel">
+      <div class="bars">
+        <div class="col"><div class="bar a" id="barA" style="height:69%"></div></div>
+        <div class="col"><div class="bar b" id="barB" style="height:74%"></div></div>
+      </div>
+      <div class="barcaps">
+        <div><b>A</b><br>the new material</div>
+        <div><b>B</b><br>steel</div>
+      </div>
+      <p class="cap" id="eqCap">A sits just below B — the gap is tiny.</p>
+
+      <div class="chips" style="margin-top:22px">
+        <button class="chip" data-mod="nearly">nearly</button>
+        <button class="chip" data-mod="almost">almost</button>
+      </div>
+      <div class="seg">
+        <button data-neg="0">positive</button>
+        <button data-neg="1">with “not”</button>
+      </div>
+      <div class="sentence" id="eqSent"></div>
+      <div class="fb" id="eqFb"></div>
+    </div>
+
+    <div class="callout plain">
+      <b>A useful tendency:</b> <em>nearly</em> is common with numbers and measurements
+      (<em>nearly as tall as</em>); <em>almost</em> is common with abstract qualities and manner
+      (<em>almost as important as</em>, <em>almost as quickly as</em>). In positive sentences,
+      the meaning is the same.
+    </div>
+
+    <div class="tryit">
+      <p class="tag">Now do it yourself</p>
+      <h3>Nearly, almost, or neither?</h3>
+      <details>
+        <summary>The copy is ______ as good as the original.</summary>
+        <div class="ans">Either: <b>almost</b> or <b>nearly</b>. Both are natural here.</div>
+      </details>
+      <details>
+        <summary>It is not ______ as cold as yesterday.</summary>
+        <div class="ans">Only <b>not nearly as cold as</b>. “not almost as” is ungrammatical.</div>
+      </details>
+      <details>
+        <summary>He finished ______ as quickly as his brother.</summary>
+        <div class="ans"><b>almost as quickly as</b> sounds most natural (manner). “Nearly” is possible but less common.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 05 ============ -->
+  <section id="muchless">
+    <p class="secnum">05 — a big gap downwards</p>
+    <h2>Not nearly as…as, nowhere near as…as</h2>
+    <p class="sub">This is one of the most useful spoken patterns in English. It replaces
+      <em>much less … than</em> in everyday conversation.</p>
+
+    <div class="panel">
+      <div class="sentence" id="convSent"></div>
+      <div class="fb show ok" id="convFb"></div>
+      <div style="margin-top:18px">
+        <button class="btn" id="convBtn">Make it spoken →</button>
+      </div>
+    </div>
+
+    <h3>Two strengths</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Form</th><th>Meaning</th><th>Register</th></tr></thead>
+        <tbody>
+          <tr><td>not nearly as…as</td><td>much less — strong</td><td>neutral, emphatic</td></tr>
+          <tr><td>nowhere near as…as</td><td>much less — very strong</td><td>informal, conversational</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout rule">
+      <b>Never build it from “almost”.</b> Teach it as one fixed chunk:
+      <b>not nearly as … as</b>. It also stands alone: <em>We are <b>nowhere near</b> finished.</em>
+    </div>
+
+    <div class="tryit">
+      <p class="tag">Now do it yourself</p>
+      <h3>Say the same thing the conversational way.</h3>
+      <details>
+        <summary>The new laptop is much slower than the old one.</summary>
+        <div class="ans">“The new laptop is <b>not nearly as fast as</b> the old one.”
+          Stronger: “<b>nowhere near as fast as</b>”.</div>
+      </details>
+      <details>
+        <summary>Our flat is much smaller than theirs.</summary>
+        <div class="ans">“Our flat is <b>not nearly as big as</b> theirs.”</div>
+      </details>
+      <details>
+        <summary>The second trial was much less successful than the first.</summary>
+        <div class="ans">“The second trial was <b>not nearly as successful as</b> the first.”</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 06 ============ -->
+  <section id="byfar">
+    <p class="secnum">06 — clearly number one</p>
+    <h2>By far + superlative</h2>
+    <p class="sub">A superlative already says “number one”. <strong>By far</strong> adds:
+      number one <em>by a large distance</em>.</p>
+
+    <div class="panel">
+      <div class="bars" style="height:145px">
+        <div class="col"><div class="bar a" style="height:100%"></div></div>
+        <div class="col"><div class="bar b" style="height:56%"></div></div>
+      </div>
+      <div class="barcaps">
+        <div><b>the best candidate</b></div>
+        <div><b>the second best</b></div>
+      </div>
+      <p class="cap">The gap between number one and number two is what “by far” describes.</p>
+
+      <div class="chips" style="margin-top:24px">
+        <button class="chip" data-mod="by far">by far</button>
+        <button class="chip" data-mod="far and away">far and away</button>
+        <button class="chip" data-mod="easily">easily</button>
+      </div>
+      <div class="seg">
+        <button data-pos="pre">before “the”</button>
+        <button data-pos="post">at the end</button>
+      </div>
+      <div class="sentence" id="bfSent"></div>
+      <div class="fb" id="bfFb"></div>
+    </div>
+
+    <div class="callout rule">
+      <b>by far</b> is flexible: <em>by far the best</em> or <em>the best by far</em>.<br>
+      <b>far and away</b> is fixed: only before <em>the</em>.<br>
+      Don't blend them: <s>by far and wide</s>, <s>by far and away</s>.
+    </div>
+
+    <div class="tryit">
+      <p class="tag">Now do it yourself</p>
+      <h3>Where does it go?</h3>
+      <details>
+        <summary>It is the best solution ______. (by far)</summary>
+        <div class="ans">✓ <b>at the end</b>: “It is the best solution <b>by far</b>.”</div>
+      </details>
+      <details>
+        <summary>______ the most convincing explanation. (far and away)</summary>
+        <div class="ans">✓ <b>before “the”</b>: “<b>Far and away the</b> most convincing explanation.”</div>
+      </details>
+      <details>
+        <summary>She is the best by far and away.</summary>
+        <div class="ans">✗ Choose one: <b>She is by far the best.</b> / <b>She is far and away the best.</b></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 07 ============ -->
+  <section id="ordinal">
+    <p class="secnum">07 — ranked position</p>
+    <h2>The second highest, the third fastest</h2>
+    <p class="sub">Put an ordinal number between <strong>the</strong> and the superlative.
+      “The second highest” means: exactly one thing is above it, and nothing else.</p>
+
+    <div class="panel">
+      <ul class="rank" id="peakList"></ul>
+      <p class="cap" id="peakCaption"></p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+        <button class="btn" id="peakRemove">Take the top one out</button>
+        <button class="btn ghost" id="peakReset">Reset</button>
+      </div>
+    </div>
+
+    <div class="callout plain">
+      <b>Ties:</b> if two trains arrive at the same time, they share a rank —
+      <em>the second earliest trains</em> can mean a tied pair.<br><br>
+      <b>Two readings:</b> <em>John climbed the third highest mountain</em> can mean
+      third in the world, or third among the mountains his group climbed. Context decides.
+    </div>
+
+    <div class="tryit">
+      <p class="tag">Now do it yourself</p>
+      <h3>Say it with an ordinal.</h3>
+      <details>
+        <summary>Everest is 8,849 m. K2 is 8,611 m. What is K2?</summary>
+        <div class="ans">K2 is <b>the second highest mountain</b> in the world.</div>
+      </details>
+      <details>
+        <summary>Runners: A 9.8 s, B 9.9 s, C 10.1 s. What is B?</summary>
+        <div class="ans">B is <b>the second fastest</b> runner.</div>
+      </details>
+      <details>
+        <summary>Fix the word order: “the highest second mountain”</summary>
+        <div class="ans"><b>the second highest mountain</b> — the ordinal goes after “the”.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 08 ============ -->
+  <section id="reference">
+    <p class="secnum">08 — one page</p>
+    <h2>Quick reference</h2>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>What you want to say</th><th>Use</th><th>Watch out</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>a big difference</td><td>much / far / a lot + comparative</td>
+              <td>“a lot” cannot go before a noun</td></tr>
+          <tr><td>a small difference</td><td>slightly / a little / a bit + comparative</td>
+              <td>“a bit” cannot go before a noun</td></tr>
+          <tr><td>almost the same</td><td>nearly / almost as…as</td>
+              <td>positive sentences only</td></tr>
+          <tr><td>much less</td><td>not nearly as…as / nowhere near as…as</td>
+              <td>never “not almost as”</td></tr>
+          <tr><td>clearly number one</td><td>by far + superlative</td>
+              <td>“by far” can also go at the end</td></tr>
+          <tr><td>second, third, etc.</td><td>the + ordinal + superlative</td>
+              <td>the ordinal sits right after “the”</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 09 ============ -->
+  <section id="clinic">
+    <p class="secnum">09 — mistake clinic</p>
+    <h2>Eight errors, eight fixes</h2>
+    <p class="sub">Click a card to reveal the correction. Ask your student to fix it before you click.</p>
+
+    <div class="cards">
+      <details><summary><span class="wrongx">very taller</span></summary>
+        <div class="ans">→ <b>much taller</b></div></details>
+
+      <details><summary><span class="wrongx">a lot taller tower</span></summary>
+        <div class="ans">→ <b>a much taller tower</b> / <b>a tower that is a lot taller</b></div></details>
+
+      <details><summary><span class="wrongx">a bit longer performance</span></summary>
+        <div class="ans">→ <b>a slightly longer performance</b></div></details>
+
+      <details><summary><span class="wrongx">not almost as big as</span></summary>
+        <div class="ans">→ <b>not nearly as big as</b></div></details>
+
+      <details><summary><span class="wrongx">the best far and away</span></summary>
+        <div class="ans">→ <b>far and away the best</b> / <b>the best by far</b></div></details>
+
+      <details><summary><span class="wrongx">by far and wide</span></summary>
+        <div class="ans">→ <b>by far</b> or <b>far and away</b> — never a blend</div></details>
+
+      <details><summary><span class="wrongx">the highest second mountain</span></summary>
+        <div class="ans">→ <b>the second highest mountain</b></div></details>
+
+      <details><summary><span class="wrongx">a little more cheaper</span></summary>
+        <div class="ans">→ <b>a little cheaper</b></div></details>
+    </div>
+  </section>
+
+  <!-- ============ 10 ============ -->
+  <section id="quiz">
+    <div class="qhead">
+      <div>
+        <p class="secnum">10 — check yourself</p>
+        <h2>Six questions</h2>
+      </div>
+      <div class="scorepill" id="score">0 / 6 correct</div>
+    </div>
+    <p class="sub">Read the question aloud. Students call out; you click. Wrong answers stay clickable.</p>
+    <div id="quizBody" style="margin-top:22px"></div>
+  </section>
+
+</main>
+
+<footer>
+  Measuring the Gap · degree modifiers for B1–B2 · every demo is clickable, so it works over a screen share.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- nav highlighting ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+  var secs = links.map(function(a){
+    return document.querySelector(a.getAttribute('href'));
+  }).filter(Boolean);
+
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){
+          links.forEach(function(l){
+            l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id);
+          });
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    secs.forEach(function(s){ io.observe(s); });
+  }
+
+  /* =========================================================
+     01 — GAP EXPLORER
+     ========================================================= */
+  var B = 45;
+  var slider = document.getElementById('gapSlider');
+  var ptA = document.getElementById('ptA');
+  var ptB = document.getElementById('ptB');
+  var band = document.getElementById('band');
+  var stemA = document.getElementById('stemA');
+  var stemB = document.getElementById('stemB');
+  var verdict = document.getElementById('verdict');
+
+  function renderGap(raw){
+    var a = Math.min(96, Math.max(4, Number(raw) || 0));
+    var lo = Math.min(a, B), hi = Math.max(a, B);
+    var d = a - B;
+
+    ptA.style.left = a + '%';
+    ptB.style.left = B + '%';
+    stemA.style.left = a + '%';
+    stemB.style.left = B + '%';
+    band.style.left = lo + '%';
+    band.style.width = (hi - lo) + '%';
+
+    var cls = 'band', kicker, words, ex;
+
+    if (d >= 18){
+      kicker = 'A big gap';
+      words = 'much · far · a lot';
+      ex = '“That tower is <b>much</b> taller.”';
+    } else if (d >= 5){
+      kicker = 'A small gap';
+      words = 'slightly · a little · a bit';
+      ex = '“That tower is <b>slightly</b> taller.”';
+    } else if (d >= -8){
+      kicker = 'Almost level';
+      words = 'nearly · almost as … as';
+      ex = '“That tower is <b>almost as tall as</b> that one.”';
+      cls += ' flat';
+    } else {
+      kicker = 'A is far below B';
+      words = 'not nearly as … as · nowhere near as … as';
+      ex = '“That tower is <b>not nearly as tall as</b> that one.”';
+      cls += ' low';
+    }
+
+    band.className = cls;
+    verdict.innerHTML =
+      '<div class="vk">' + kicker + '</div>' +
+      '<div class="vt">' + words + '</div>' +
+      '<div class="ve">' + ex + '</div>';
+  }
+
+  slider.addEventListener('input', function(e){ renderGap(e.target.value); });
+
+  document.querySelectorAll('[data-snap]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      slider.value = btn.getAttribute('data-snap');
+      renderGap(slider.value);
+    });
+  });
+
+  /* positions for the two stems */
+  stemA.style.top = '26%'; stemA.style.height = '24%';
+  stemB.style.top = '50%'; stemB.style.height = '24%';
+  renderGap(slider.value);
+
+  /* =========================================================
+     02 + 03 — POSITION TESTERS
+     ========================================================= */
+  function initTester(id, cfg){
+    var root = document.getElementById(id);
+    if (!root) return;
+    var chips = Array.prototype.slice.call(root.querySelectorAll('.chip'));
+    var segs = Array.prototype.slice.call(root.querySelectorAll('.seg button'));
+    var sent = root.querySelector('.sentence');
+    var fb = root.querySelector('.fb');
+    var mod = chips[0].getAttribute('data-mod');
+    var mode = 'pred';
+
+    function draw(){
+      var m = cfg[mod];
+
+      chips.forEach(function(c){
+        c.classList.toggle('active', c.getAttribute('data-mod') === mod);
+      });
+      segs.forEach(function(s){
+        s.classList.toggle('active', s.getAttribute('data-mode') === mode);
+      });
+
+      fb.className = 'fb';
+      sent.classList.remove('bad');
+
+      if (mode === 'pred'){
+        sent.innerHTML = m.pred;
+        fb.classList.add('ok', 'show');
+        fb.innerHTML = '✓ Natural in every register.';
+        return;
+      }
+
+      if (m.attr){
+        sent.innerHTML = m.attr;
+        fb.classList.add('ok', 'show');
+        fb.innerHTML = '✓ Natural before a noun.';
+      } else {
+        sent.innerHTML = m.bad;
+        sent.classList.add('bad');
+        var warn = m.state === 'warn';
+        fb.classList.add(warn ? 'warn' : 'no', 'show');
+        fb.innerHTML = (warn ? '⚠ ' : '✗ ') + m.fix;
+      }
+    }
+
+    chips.forEach(function(c){
+      c.addEventListener('click', function(){
+        mod = c.getAttribute('data-mod');
+        draw();
+      });
+    });
+    segs.forEach(function(s){
+      s.addEventListener('click', function(){
+        mode = s.getAttribute('data-mode');
+        draw();
+      });
+    });
+
+    draw();
+  }
+
+  initTester('testerBig', {
+    'much': {
+      pred: 'That tower is <b>much</b> taller.',
+      attr: 'a <b>much</b> taller tower'
+    },
+    'far': {
+      pred: 'That tower is <b>far</b> taller.',
+      attr: 'a <b>far</b> taller tower'
+    },
+    'a lot': {
+      pred: 'That tower is <b>a lot</b> taller.',
+      bad: 'a <b>a lot</b> taller tower',
+      state: 'bad',
+      fix: 'Not possible. Say <b>a tower that is a lot taller</b>, or switch to <b>much</b>.'
+    }
+  });
+
+  initTester('testerSmall', {
+    'slightly': {
+      pred: 'The film was <b>slightly</b> longer.',
+      attr: 'a <b>slightly</b> longer film'
+    },
+    'a little': {
+      pred: 'The film was <b>a little</b> longer.',
+      bad: 'a <b>a little</b> longer film',
+      state: 'warn',
+      fix: 'Understandable, but native speakers avoid it. Use <b>slightly</b> before a noun.'
+    },
+    'a bit': {
+      pred: 'The film was <b>a bit</b> longer.',
+      bad: 'a <b>a bit</b> longer film',
+      state: 'bad',
+      fix: 'Not possible. Say <b>a film that is a bit longer</b>, or use <b>slightly</b>.'
+    }
+  });
+
+  /* =========================================================
+     04 — EQUATIVE: nearly / almost  (+ negation)
+     ========================================================= */
+  var barA = document.getElementById('barA');
+  var barB = document.getElementById('barB');
+  var eqSent = document.getElementById('eqSent');
+  var eqFb = document.getElementById('eqFb');
+  var eqCap = document.getElementById('eqCap');
+  var eqChips = Array.prototype.slice.call(
+    document.querySelectorAll('#almost .chip[data-mod]')
+  );
+  var eqSegs = Array.prototype.slice.call(
+    document.querySelectorAll('#almost .seg button')
+  );
+  var eqMod = 'nearly';
+  var eqNeg = false;
+
+  function renderEq(){
+    barB.style.height = '74%';
+    barA.style.height = eqNeg ? '34%' : '69%';
+    eqCap.textContent = eqNeg
+      ? 'A is far below B — the gap is large.'
+      : 'A sits just below B — the gap is tiny.';
+
+    eqChips.forEach(function(c){
+      c.classList.toggle('active', c.getAttribute('data-mod') === eqMod);
+    });
+    eqSegs.forEach(function(s){
+      s.classList.toggle('active', (s.getAttribute('data-neg') === '1') === eqNeg);
+    });
+
+    eqSent.classList.remove('bad');
+    eqFb.className = 'fb';
+
+    if (!eqNeg){
+      eqSent.innerHTML = 'The new material is <b>' + eqMod + ' as strong as</b> steel.';
+      eqFb.classList.add('ok', 'show');
+      eqFb.innerHTML = '✓ Correct. Meaning: close to the same strength, but slightly below.';
+      return;
+    }
+
+    eqSent.innerHTML = 'The new material is <b>not ' + eqMod + ' as strong as</b> steel.';
+
+    if (eqMod === 'almost'){
+      eqSent.classList.add('bad');
+      eqFb.classList.add('no', 'show');
+      eqFb.innerHTML = '✗ <b>not almost as … as</b> does not exist in normal English. ' +
+                      'Use <b>not nearly as strong as</b>.';
+    } else {
+      eqFb.classList.add('ok', 'show');
+      eqFb.innerHTML = '✓ Correct. Meaning: the new material is much less strong than steel.';
+    }
+  }
+
+  eqChips.forEach(function(c){
+    c.addEventListener('click', function(){
+      eqMod = c.getAttribute('data-mod');
+      renderEq();
+    });
+  });
+  eqSegs.forEach(function(s){
+    s.addEventListener('click', function(){
+      eqNeg = s.getAttribute('data-neg') === '1';
+      renderEq();
+    });
+  });
+  renderEq();
+
+  /* =========================================================
+     05 — CONVERSATIONAL UPGRADE
+     ========================================================= */
+  var convStates = [
+    {
+      html: 'The second trial was <b>much less successful than</b> the first.',
+      note: '✓ Correct, but formal — typical of reports and written English.',
+      tone: 'ok',
+      label: 'Make it spoken →'
+    },
+    {
+      html: 'The second trial was <b>not nearly as successful as</b> the first.',
+      note: '✓ Standard spoken English. This is what people actually say.',
+      tone: 'ok',
+      label: 'Make it stronger →'
+    },
+    {
+      html: 'The second trial was <b>nowhere near as successful as</b> the first.',
+      note: '✓ Informal and very emphatic — the gap is huge.',
+      tone: 'ok',
+      label: 'Back to formal →'
+    }
+  ];
+  var convIdx = 0;
+  var convSent = document.getElementById('convSent');
+  var convFb = document.getElementById('convFb');
+  var convBtn = document.getElementById('convBtn');
+
+  function renderConv(){
+    var s = convStates[convIdx];
+    convSent.innerHTML = s.html;
+    convFb.className = 'fb show ' + s.tone;
+    convFb.innerHTML = s.note;
+    convBtn.textContent = s.label;
+  }
+  convBtn.addEventListener('click', function(){
+    convIdx = (convIdx + 1) % convStates.length;
+    renderConv();
+  });
+  renderConv();
+
+  /* =========================================================
+     06 — BY FAR POSITION
+     ========================================================= */
+  var bfSent = document.getElementById('bfSent');
+  var bfFb = document.getElementById('bfFb');
+  var bfChips = Array.prototype.slice.call(
+    document.querySelectorAll('#byfar .chip[data-mod]')
+  );
+  var bfSegs = Array.prototype.slice.call(
+    document.querySelectorAll('#byfar .seg button')
+  );
+  var bfMod = 'by far';
+  var bfPos = 'pre';
+
+  function renderBf(){
+    bfChips.forEach(function(c){
+      c.classList.toggle('active', c.getAttribute('data-mod') === bfMod);
+    });
+    bfSegs.forEach(function(s){
+      s.classList.toggle('active', s.getAttribute('data-pos') === bfPos);
+    });
+
+    bfSent.classList.remove('bad');
+    bfFb.className = 'fb';
+
+    var pre = {
+      'by far': 'It is <b>by far the</b> best solution.',
+      'far and away': 'It is <b>far and away the</b> best solution.',
+      'easily': 'It is <b>easily the</b> best solution.'
+    };
+    var post = {
+      'by far': 'It is the best solution <b>by far</b>.',
+      'far and away': 'It is the best solution <b>far and away</b>.',
+      'easily': 'It is the best solution <b>easily</b>.'
+    };
+
+    bfSent.innerHTML = bfPos === 'pre' ? pre[bfMod] : post[bfMod];
+
+    if (bfPos === 'pre'){
+      bfFb.classList.add('ok', 'show');
+      bfFb.innerHTML = '✓ Correct before the noun phrase.';
+      return;
+    }
+
+    if (bfMod === 'by far'){
+      bfFb.classList.add('ok', 'show');
+      bfFb.innerHTML = '✓ Correct. “By far” is the only one of the three that moves freely.';
+    } else if (bfMod === 'far and away'){
+      bfSent.classList.add('bad');
+      bfFb.classList.add('no', 'show');
+      bfFb.innerHTML = '✗ “Far and away” is fixed before “the”. You cannot move it to the end.';
+    } else {
+      bfSent.classList.add('bad');
+      bfFb.classList.add('warn', 'show');
+      bfFb.innerHTML = '⚠ Understandable, but it sounds off. Keep “easily” before “the”.';
+    }
+  }
+
+  bfChips.forEach(function(c){
+    c.addEventListener('click', function(){
+      bfMod = c.getAttribute('data-mod');
+      renderBf();
+    });
+  });
+  bfSegs.forEach(function(s){
+    s.addEventListener('click', function(){
+      bfPos = s.getAttribute('data-pos');
+      renderBf();
+    });
+  });
+  renderBf();
+
+  /* =========================================================
+     07 — ORDINAL LADDER
+     ========================================================= */
+  var PEAKS = [
+    ['Mount Everest', '8,849 m'],
+    ['K2', '8,611 m'],
+    ['Kangchenjunga', '8,586 m'],
+    ['Lhotse', '8,516 m'],
+    ['Makalu', '8,485 m']
+  ];
+  var removed = 0;
+  var peakList = document.getElementById('peakList');
+  var peakCaption = document.getElementById('peakCaption');
+  var peakRemove = document.getElementById('peakRemove');
+  var peakReset = document.getElementById('peakReset');
+
+  function renderPeaks(){
+    var rest = PEAKS.slice(removed);
+    var pickIndex = removed === 0 ? 1 : 0;
+
+    peakList.innerHTML = rest.map(function(p, i){
+      return '<li class="' + (i === pickIndex ? 'pick' : '') + '">' +
+               '<span class="pos">' + (i + 1) + '</span>' +
+               '<span class="name">' + p[0] + '</span>' +
+               '<span class="h">' + p[1] + '</span>' +
+             '</li>';
+    }).join('');
+
+    if (removed === 0){
+      peakCaption.innerHTML =
+        'Everest is the highest. <b>K2 is the second highest</b> — one mountain above it, nothing between them.';
+    } else {
+      peakCaption.innerHTML =
+        'Everest is out of the comparison. Now <b>K2 is the highest</b> of what is left — ' +
+        'a moment ago it was the second highest. That is all the pattern does: remove the top, then look again.';
+    }
+
+    peakRemove.disabled = removed >= PEAKS.length - 1;
+  }
+
+  peakRemove.addEventListener('click', function(){
+    if (removed < PEAKS.length - 1){ removed++; renderPeaks(); }
+  });
+  peakReset.addEventListener('click', function(){
+    removed = 0;
+    renderPeaks();
+  });
+  renderPeaks();
+
+  /* =========================================================
+     10 — QUIZ
+     ========================================================= */
+  var QUIZ = [
+    {
+      q: 'Which sentence is natural?',
+      opts: ['It is a lot bigger garden than ours.', 'It is a much bigger garden than ours.'],
+      correct: 1,
+      why: '“a lot” cannot sit before a noun. Use much — or rebuild: a garden that is a lot bigger.'
+    },
+    {
+      q: 'This exam was ______ harder than the last one.',
+      opts: ['very', 'much'],
+      correct: 1,
+      why: '“Very” never modifies a comparative. Use much / far / a lot.'
+    },
+    {
+      q: 'The second trial was ______ as successful as the first.',
+      opts: ['not almost', 'not nearly'],
+      correct: 1,
+      why: '“not almost as…as” is ungrammatical. The fixed chunk is “not nearly as…as”.'
+    },
+    {
+      q: 'Which one is wrong?',
+      opts: ['She is the best by far.', 'She is the best far and away.'],
+      correct: 1,
+      why: '“Far and away” only works before “the”: far and away the best.'
+    },
+    {
+      q: 'Tokyo is the ______ largest city in the world.',
+      opts: ['two', 'second'],
+      correct: 1,
+      why: 'The ordinal goes between “the” and the superlative: the second largest.'
+    },
+    {
+      q: 'Which sentence is correct?',
+      opts: ['The performance was a bit longer than expected.',
+             'It was a bit longer performance than expected.'],
+      correct: 0,
+      why: '“a bit” belongs after the verb. Before a noun, use slightly.'
+    }
+  ];
+
+  var quizBody = document.getElementById('quizBody');
+  var scoreEl = document.getElementById('score');
+  var score = 0;
+  var total = QUIZ.length;
+
+  QUIZ.forEach(function(item, qi){
+    var card = document.createElement('div');
+    card.className = 'qcard';
+
+    var head = document.createElement('div');
+    head.className = 'qnum';
+    head.textContent = 'Question ' + (qi + 1);
+    card.appendChild(head);
+
+    var qt = document.createElement('div');
+    qt.className = 'qtext';
+    qt.textContent = item.q;
+    card.appendChild(qt);
+
+    var fb = document.createElement('div');
+    fb.className = 'fb';
+    var done = false;
+
+    item.opts.forEach(function(text, oi){
+      var btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.type = 'button';
+      btn.textContent = text;
+
+      btn.addEventListener('click', function(){
+        if (done) return;
+
+        if (oi === item.correct){
+          btn.classList.add('correct');
+          btn.disabled = true;
+          card.querySelectorAll('.opt').forEach(function(b){
+            if (b !== btn) b.disabled = true;
+          });
+          fb.className = 'fb show ok';
+          fb.innerHTML = '✓ ' + item.why;
+          done = true;
+          score++;
+          scoreEl.textContent = score + ' / ' + total + ' correct';
+        } else {
+          btn.classList.add('wrong');
+          btn.disabled = true;
+          fb.className = 'fb show no';
+          fb.innerHTML = 'Not quite — try the other option.';
+        }
+      });
+
+      card.appendChild(btn);
+    });
+
+    card.appendChild(fb);
+    quizBody.appendChild(card);
+  });
+
+  scoreEl.textContent = '0 / ' + total + ' correct';
+
+})();
+</script>
+</body>
+</html>
