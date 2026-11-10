@@ -44,7 +44,8 @@ No login, no software, and no downloads are needed. It works in any modern web b
 
 | Lesson | Link |
 | --- | --- |
-| Modifying Comparatives & Superlatives 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/modifying-comparatives-superlatives/) |
+| Modifying Comparatives & Superlatives 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/modifying-comparatives-superlatives/ |
+| [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/second-third-conditionals/)) |
 
 > More topics coming soon — keep an eye on this page!
 
