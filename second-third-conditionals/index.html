@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>If things were different — 2nd &amp; 3rd conditionals (B1)</title>
+<style>
+  :root{
+    --bg:#eef1f7;
+    --card:#ffffff;
+    --ink:#151b2b;
+    --muted:#5b6579;
+    --line:#d5dce9;
+    --brand:#4b45c9;
+    --brand-soft:#edecfd;
+    --now:#0e8878;
+    --now-soft:#e3f4f0;
+    --past:#7434c9;
+    --past-soft:#f1e9fd;
+    --good:#0f7a52;
+    --good-soft:#e7f6ee;
+    --bad:#b8271f;
+    --bad-soft:#fdecea;
+    --warn:#8a5a06;
+    --warn-soft:#fdf4e0;
+    --dark:#151b2b;
+    --dark-2:#1d2537;
+    --dark-line:#2f3a52;
+    --r:10px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;color:var(--ink);
+    font:16.5px/1.62 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background-color:var(--bg);
+    background-image:
+      linear-gradient(rgba(21,27,43,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(21,27,43,.045) 1px,transparent 1px);
+    background-size:26px 26px;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:#c7f0e8}
+  h1,h2,h3{font-weight:800;letter-spacing:-.025em;line-height:1.12;margin:0}
+  p{margin:0 0 14px;max-width:64ch}
+  b{font-weight:700}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;font-weight:700}
+
+  /* ---------- shell ---------- */
+  .shell{max-width:1180px;margin:0 auto;display:grid;
+    grid-template-columns:230px minmax(0,1fr);gap:36px;padding:0 26px}
+  .rail{position:sticky;top:22px;align-self:start;padding:18px 0 40px}
+  .rail .rlabel{margin:0 0 12px;color:var(--muted)}
+  .rail nav{display:flex;flex-direction:column;gap:1px}
+  .rail a{display:flex;gap:9px;text-decoration:none;color:var(--muted);
+    font-size:13.5px;padding:7px 10px;border-radius:7px;border-left:2px solid transparent;
+    transition:.15s;line-height:1.3}
+  .rail a span{font-family:ui-monospace,Menlo,monospace;font-size:11px;opacity:.65;padding-top:2px}
+  .rail a:hover{background:#e3e8f2;color:var(--ink)}
+  .rail a.on{background:#fff;color:var(--ink);font-weight:700;border-left-color:var(--brand);
+    box-shadow:2px 2px 0 rgba(21,27,43,.05)}
+
+  main{min-width:0;padding-bottom:60px}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 46px;border-bottom:1.5px solid var(--line)}
+  .hero .kicker{color:var(--brand);margin:0 0 16px}
+  .hero h1{font-size:clamp(36px,5.6vw,62px);max-width:15ch}
+  .hero .lede{font-size:19px;color:var(--muted);margin-top:20px;max-width:56ch}
+  .hero .lede b{color:var(--ink);background:#fff;padding:0 .2em;border-radius:4px}
+
+  section{padding:52px 0;border-bottom:1.5px solid var(--line);scroll-margin-top:18px}
+  .kicker{display:flex;align-items:center;gap:12px;margin:0 0 12px;color:var(--muted)}
+  .kicker .num{display:inline-grid;place-items:center;min-width:26px;height:22px;
+    background:var(--ink);color:#fff;border-radius:5px;font-size:11px}
+  h2{font-size:clamp(26px,3.5vw,38px);margin:0 0 14px;max-width:26ch}
+  h3{font-size:17px;margin:26px 0 8px;letter-spacing:-.01em}
+  .sub{font-size:17px;color:var(--muted);max-width:62ch}
+
+  /* ---------- cards / blocks ---------- */
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);
+    padding:22px;box-shadow:5px 5px 0 rgba(21,27,43,.05);margin-top:22px}
+  .note{border-radius:8px;padding:13px 16px;margin-top:18px;font-size:15.5px;max-width:66ch;
+    background:#e6eaf3;border-left:3px solid #9aa6bf}
+  .note.rule{background:var(--brand-soft);border-left-color:var(--brand)}
+  .note.warn{background:var(--warn-soft);border-left-color:#d9a531}
+  .note b{background:#fff;padding:0 .15em;border-radius:3px}
+
+  .formstrip{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px}
+  .fp{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;
+    padding:9px 14px;border-radius:7px;border:1.5px solid}
+  .fp.ifp{background:var(--now-soft);border-color:#a9d9d1;color:#0a5f54}
+  .fp.thp{background:var(--past-soft);border-color:#c7abe9;color:#4f2185}
+  .farrow{color:var(--muted);font-size:18px}
+
+  /* ---------- step ladder ---------- */
+  .steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .step{text-align:left;background:#f7f9fc;border:1.5px solid var(--line);border-radius:8px;
+    padding:13px 14px;transition:.16s;cursor:pointer;color:var(--ink)}
+  .step:hover{background:#fff;border-color:#b9c3d6}
+  .step .stk{display:block;font-family:ui-monospace,Menlo,monospace;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .step .stt{display:block;font-weight:800;font-size:15px;letter-spacing:-.01em}
+  .step.on{background:var(--ink);border-color:var(--ink);color:#fff;
+    box-shadow:4px 4px 0 rgba(21,27,43,.14)}
+  .step.on .stk{color:#9fb0cc}
+  .step[data-step="1"].on{background:var(--now);border-color:var(--now)}
+  .step[data-step="2"].on{background:var(--past);border-color:var(--past)}
+  .bigsent{font-size:clamp(21px,2.9vw,29px);font-weight:700;letter-spacing:-.02em;
+    line-height:1.4;margin:26px 0 0;min-height:2.6em;transition:color .2s}
+  .bigsent b{background:var(--brand-soft);padding:0 .18em;border-radius:4px;
+    border-bottom:2px solid var(--brand)}
+  .bigsent.zero b{background:var(--now-soft);border-bottom-color:var(--now)}
+  .bigsent.two b{background:var(--past-soft);border-bottom-color:var(--past)}
+  .truthline{margin-top:12px;font-size:15px;color:var(--muted)}
+  .truthline b{color:var(--ink);background:#fff;padding:0 .18em;border-radius:3px}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .tag{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;padding:4px 9px;border-radius:4px;background:#e6eaf3;color:#41506b}
+  .tag.teal{background:var(--now-soft);color:#0a5f54}
+  .tag.violet{background:var(--past-soft);color:#4f2185}
+
+  /* ---------- truth/dream pairs ---------- */
+  .switch{display:inline-flex;background:#e3e8f2;border-radius:7px;padding:3px;gap:3px;margin-top:4px}
+  .switch button{border:0;background:transparent;border-radius:5px;padding:8px 15px;
+    font:inherit;font-size:14px;color:var(--muted);cursor:pointer;transition:.15s}
+  .switch button.on{background:#fff;color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(21,27,43,.16)}
+  .pairs{margin-top:20px;display:grid;gap:10px}
+  .pair{border:1.5px solid var(--line);border-radius:8px;padding:14px 16px;background:#fff;
+    transition:.2s;font-size:17px;line-height:1.5}
+  .pair .real{display:block}
+  .pair .dream{display:none}
+  .pairs.dream .pair{background:#fbfaff;border-color:#cbb6ef}
+  .pairs.dream .real{display:none}
+  .pairs.dream .dream{display:block}
+  .pair .dream b{background:var(--past-soft);padding:0 .18em;border-radius:4px}
+  .pair .real b{background:#e6eaf3;padding:0 .18em;border-radius:4px}
+  .pairs .hint{font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+
+  /* ---------- buttons + chips ---------- */
+  button{font:inherit;color:inherit;cursor:pointer}
+  button:focus-visible{outline:3px solid #a99ff5;outline-offset:2px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:7px;padding:9px 15px;
+    font-size:15px;transition:.15s}
+  .chip:hover{border-color:#aab6cc;background:#f8fafd}
+  .chip.on{background:var(--brand);border-color:var(--brand);color:#fff;
+    box-shadow:3px 3px 0 rgba(75,69,201,.22)}
+  .btn{border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:7px;
+    padding:10px 18px;font-size:14.5px;font-weight:600;transition:.15s}
+  .btn:hover{background:#262f45;border-color:#262f45}
+  .btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+  .btn.ghost:hover{background:#f4f7fb;border-color:#aab6cc}
+
+  /* ---------- feedback ---------- */
+  .fb{margin-top:14px;border-radius:8px;padding:12px 15px;font-size:15px;display:none;
+    line-height:1.5}
+  .fb.show{display:block}
+  .fb.ok{background:var(--good-soft);color:#0a5136;border:1px solid #b6e0c9}
+  .fb.no{background:var(--bad-soft);color:#7d1c16;border:1px solid #f2c4c0}
+  .fb.warn{background:var(--warn-soft);color:#6b4606;border:1px solid #eedcb0}
+  .fb b{background:#fff;padding:0 .15em;border-radius:3px}
+
+  /* ---------- regret machine ---------- */
+  .regret{display:grid;gap:8px;margin-top:20px}
+  .rbtn{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:8px;
+    padding:12px 15px;font-size:16px;transition:.15s}
+  .rbtn:hover{border-color:#aab6cc;background:#f8fafd}
+  .rbtn.on{border-color:var(--past);background:var(--past-soft);font-weight:600}
+  .rout{margin-top:18px;padding:16px 18px;border-radius:8px;background:#faf8fe;
+    border:1.5px dashed #cbb6ef;font-size:19px;line-height:1.5;font-weight:600}
+  .rout b{background:#fff;padding:0 .16em;border-radius:4px;color:#4f2185}
+  .rnote{margin-top:10px;font-size:14.5px;color:var(--muted);max-width:64ch}
+
+  /* ---------- builder ---------- */
+  .brow{margin-bottom:16px}
+  .brow .blabel{display:block;font-family:ui-monospace,Menlo,monospace;font-size:10px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .trial{margin-top:24px;padding:18px;border-radius:9px;background:#f6f8fc;
+    border:1.5px solid var(--line);font-size:21px;font-weight:700;letter-spacing:-.01em;
+    line-height:1.45;min-height:2.4em;transition:.2s}
+  .trial b{background:var(--brand-soft);padding:0 .16em;border-radius:4px}
+
+  /* ---------- mixed map ---------- */
+  .mixgrid{display:grid;grid-template-columns:104px 1fr 1fr;gap:7px;margin-top:20px}
+  .mixgrid .corner{}
+  .mixgrid .colh,.mixgrid .rowh{font-family:ui-monospace,Menlo,monospace;font-size:10px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;
+    align-items:center;justify-content:center;text-align:center;line-height:1.3}
+  .mixgrid .rowh{justify-content:flex-end;padding-right:6px}
+  .cell{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:16px 10px;
+    text-align:center;transition:.16s;min-height:88px;display:flex;flex-direction:column;
+    justify-content:center;gap:6px}
+  .cell:hover{border-color:#aab6cc;background:#f8fafd}
+  .cell .ct{font-weight:800;font-size:16px;letter-spacing:-.01em}
+  .cell .cd{font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted)}
+  .cell.on{border-color:var(--brand);background:var(--brand-soft);
+    box-shadow:3px 3px 0 rgba(75,69,201,.16)}
+  .mixout{margin-top:18px;padding:18px;border-radius:9px;background:#faf8fe;
+    border:1.5px dashed #cbb6ef;font-size:20px;font-weight:700;line-height:1.45;min-height:2.4em}
+  .mixout b{background:#fff;padding:0 .16em;border-radius:4px}
+  .mixmeta{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+
+  /* ---------- contraction game ---------- */
+  .dgame{display:grid;gap:10px;margin-top:20px}
+  .dcard{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:14px 16px;
+    transition:.16s}
+  .dcard.solved{border-color:#b6e0c9;background:var(--good-soft)}
+  .dcard.missed{border-color:#f2c4c0;background:var(--bad-soft)}
+  .dsent{font-size:17.5px;line-height:1.55;margin-bottom:10px}
+  .dsent b.d{background:#ffe9a8;padding:0 .1em;border-radius:3px;font-weight:800}
+  .dopts{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .dopts .ask{font-size:12.5px;color:var(--muted);margin-right:2px}
+  .dopts button{border:1.5px solid var(--line);background:#fff;border-radius:6px;
+    padding:6px 14px;font-size:14px;transition:.15s}
+  .dopts button:hover{border-color:#aab6cc;background:#f8fafd}
+  .dopts button:disabled{cursor:default}
+  .dopts button.good{background:var(--good);border-color:var(--good);color:#fff}
+  .dopts button.bad{background:var(--bad-soft);border-color:#e6a9a4;color:#8d211a;
+    text-decoration:line-through}
+  .dwhy{margin-top:10px;font-size:14px;color:#41506b;display:none}
+  .dcard .dwhy.show{display:block}
+  .score{margin-top:16px;font-family:ui-monospace,Menlo,monospace;font-size:12px;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+  /* ---------- inversion ---------- */
+  .invrow{border:1.5px solid var(--line);border-radius:8px;background:#fff;
+    padding:14px 16px;margin-bottom:9px}
+  .invrow .itxt{font-size:17px;line-height:1.55;transition:.2s}
+  .invrow .itxt.formal{color:#4f2185;font-weight:600}
+  .invrow .itxt b{background:var(--past-soft);padding:0 .16em;border-radius:4px}
+  .invrow .ifoot{display:flex;justify-content:space-between;align-items:center;
+    gap:12px;margin-top:10px;flex-wrap:wrap}
+  .invrow .ihint{font-size:12.5px;color:var(--muted)}
+  .mini{border:1.5px solid var(--line);background:#fff;border-radius:6px;padding:6px 13px;
+    font-size:13px;transition:.15s}
+  .mini:hover{background:#f4f7fb;border-color:#aab6cc}
+
+  /* ---------- clinic ---------- */
+  .clinic{display:grid;gap:8px;margin-top:20px}
+  .crow{border:1.5px solid var(--line);border-radius:8px;background:#fff;padding:13px 16px;
+    text-align:left;transition:.16s;width:100%}
+  .crow:hover{border-color:#aab6cc;background:#f8fafd}
+  .crow .wrong{font-size:16.5px;line-height:1.5;color:#8d211a}
+  .crow .wrong s{text-decoration-thickness:1.5px}
+  .crow .right{display:none;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);
+    font-size:16.5px;line-height:1.5;color:#0a5136}
+  .crow .right b{background:var(--good-soft);padding:0 .15em;border-radius:3px}
+  .crow.open{border-color:#b6e0c9;background:#f4fbf7}
+  .crow.open .right{display:block}
+  .crow .tap{font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--brand);float:right;margin-left:12px}
+
+  /* ---------- dark hands-on ---------- */
+  .handson{margin-top:26px;background:var(--dark);color:#e7ebf4;border-radius:12px;
+    padding:22px;box-shadow:6px 6px 0 rgba(21,27,43,.14)}
+  .handson .hkick{color:#9aa8c4;margin:0 0 6px}
+  .handson h3{color:#fff;margin:0 0 6px;font-size:19px}
+  .handson p{color:#c3ccdd;font-size:15px;max-width:62ch}
+  .handson p b{color:#fff}
+  .handson details{background:var(--dark-2);border:1px solid var(--dark-line);
+    border-radius:8px;padding:12px 15px;margin-top:9px}
+  .handson summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;
+    align-items:center;gap:16px;font-size:15px;color:#e7ebf4;font-weight:600}
+  .handson summary::-webkit-details-marker{display:none}
+  .handson summary::after{content:"reveal";font-family:ui-monospace,Menlo,monospace;
+    font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#9c8ffa;white-space:nowrap}
+  .handson details[open] summary::after{content:"hide"}
+  .handson .ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--dark-line);
+    font-size:15px;color:#cfd7e6;line-height:1.55}
+  .handson .ans b{color:#fff;background:#333e59;padding:0 .18em;border-radius:3px}
+  .handson .ans s{color:#8e9ab4}
+
+  /* ---------- quiz ---------- */
+  .qbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+  .qbar h2{margin:0}
+  .qscore{margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;
+    letter-spacing:.06em;text-transform:uppercase;background:var(--ink);color:#fff;
+    padding:7px 13px;border-radius:5px}
+  .qcard{background:#fff;border:1.5px solid var(--line);border-radius:9px;
+    padding:18px;margin-bottom:11px;box-shadow:4px 4px 0 rgba(21,27,43,.04)}
+  .qno{font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--brand);margin-bottom:5px}
+  .qtext{font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.45;margin-bottom:4px}
+  .opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;
+    border:1.5px solid var(--line);background:#fff;border-radius:7px;padding:11px 14px;
+    margin-top:8px;font-size:15.5px;transition:.15s}
+  .opt .ltr{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);
+    border:1px solid var(--line);border-radius:4px;padding:1px 5px;flex:none;margin-top:2px}
+  .opt:hover{border-color:#aab6cc;background:#f8fafd}
+  .opt.correct{border-color:#9ad3b7;background:var(--good-soft);font-weight:600}
+  .opt.correct .ltr{background:#fff;border-color:#9ad3b7}
+  .opt.wrong{border-color:#eab3ae;background:var(--bad-soft);opacity:.62;
+    text-decoration:line-through}
+  .opt:disabled{cursor:default}
+  .opt:disabled:hover{background:inherit;border-color:inherit}
+
+  /* ---------- tables ---------- */
+  .tbl{overflow-x:auto;border:1.5px solid var(--line);border-radius:var(--r);background:#fff;
+    margin-top:18px;box-shadow:4px 4px 0 rgba(21,27,43,.04)}
+  table{width:100%;border-collapse:collapse;font-size:15px;min-width:560px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f4f7fc;font-family:ui-monospace,Menlo,monospace;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  td:first-child{font-weight:700;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover{background:#fafcff}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em;
+    background:#eef1f7;padding:1px 5px;border-radius:4px}
+
+  footer{padding:34px 0 60px;color:var(--muted);font-size:13.5px}
+
+  @media (max-width:920px){
+    .shell{grid-template-columns:1fr;gap:0}
+    .rail{display:none}
+    .steps{grid-template-columns:1fr}
+    .mixgrid{grid-template-columns:74px 1fr 1fr}
+    .hero{padding-top:44px}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="rail">
+    <p class="rlabel mono">sections</p>
+    <nav>
+      <a href="#idea"><span>01</span>The step back</a>
+      <a href="#second"><span>02</span>Second conditional</a>
+      <a href="#third"><span>03</span>Third conditional</a>
+      <a href="#lab"><span>04</span>Build it</a>
+      <a href="#mixed"><span>05</span>Mixed map</a>
+      <a href="#contraction"><span>06</span>’d: had or would?</a>
+      <a href="#formal"><span>07</span>Formal inversion</a>
+      <a href="#clinic"><span>08</span>Mistake clinic</a>
+      <a href="#quiz"><span>09</span>Quiz</a>
+      <a href="#ref"><span>10</span>Reference</a>
+    </nav>
+  </aside>
+
+  <main>
+
+    <div class="hero">
+      <p class="mono kicker">Grammar lab · B1 · conditionals</p>
+      <h1>If things were different.</h1>
+      <p class="lede">English has a trick for things that are <b>not true</b>: it takes the verb
+        <b>one step back in time</b>. Do it once and you have the second conditional. Do it twice
+        and you have the third.</p>
+    </div>
+
+    <!-- ================= 01 ================= -->
+    <section id="idea">
+      <p class="kicker"><span class="num">01</span><span class="mono">the one big idea</span></p>
+      <h2>Take one step back</h2>
+      <p class="sub">The past tense does not always mean past. Here it means <em>not real</em>.
+        Click each step and watch the verb move backwards.</p>
+
+      <div class="card">
+        <div class="steps" id="steps">
+          <button class="step" data-step="0">
+            <span class="stk">real · now</span>
+            <span class="stt">present simple</span>
+          </button>
+          <button class="step" data-step="1">
+            <span class="stk">not real · now</span>
+            <span class="stt">past simple</span>
+          </button>
+          <button class="step" data-step="2">
+            <span class="stk">not real · past</span>
+            <span class="stt">past perfect</span>
+          </button>
+        </div>
+
+        <div class="bigsent zero" id="shiftSent"></div>
+        <div class="truthline" id="shiftTruth"></div>
+        <div class="meta">
+          <span class="tag" id="shiftTense">present simple</span>
+          <span class="tag" id="shiftName">first conditional</span>
+        </div>
+      </div>
+
+      <div class="note rule">
+        <b>The pattern:</b> real <em>have</em> → imaginary <em>had</em> → imaginary past
+        <em>had had</em>. Each step is one tense further back. Nothing else changes.
+      </div>
+
+      <div class="handson">
+        <p class="mono hkick">over to you</p>
+        <h3>Move each fact one step back.</h3>
+        <p>Say the imaginary sentence out loud first, then reveal.</p>
+        <details>
+          <summary>Fact: “I’m not tall.”</summary>
+          <div class="ans"><b>If I were taller, I would play basketball.</b><br>
+            “am” → “were”. Two steps? No, one: present → past.</div>
+        </details>
+        <details>
+          <summary>Fact: “I don’t speak French.”</summary>
+          <div class="ans"><b>If I spoke French, I would work in Paris.</b><br>
+            “don’t speak” → “spoke”. The meaning is still now.</div>
+        </details>
+        <details>
+          <summary>Fact: “I didn’t save any money last year.”</summary>
+          <div class="ans"><b>If I had saved some money, I would have bought a car.</b><br>
+            This is the second step back: past → past perfect.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= 02 ================= -->
+    <section id="second">
+      <p class="kicker"><span class="num">02</span><span class="mono">not real now</span></p>
+      <h2>The second conditional</h2>
+      <p class="sub">One step back from the present. It describes:</p>
+
+      <div class="formstrip">
+        <span class="fp ifp">If + past simple</span>
+        <span class="farrow">→</span>
+        <span class="fp thp">would + base verb</span>
+      </div>
+
+      <div class="card">
+        <div class="switch" id="dreamSwitch">
+          <button data-dream="0" class="on">the truth</button>
+          <button data-dream="1">the dream</button>
+        </div>
+
+        <div class="pairs" id="pairs">
+          <div class="pair">
+            <span class="real"><span class="hint">true</span>I <b>don’t</b> live near the sea.</span>
+            <span class="dream"><span class="hint">imaginary</span>If I <b>lived</b> near the sea,
+              I <b>would swim</b> every day.</span>
+          </div>
+          <div class="pair">
+            <span class="real"><span class="hint">true</span>I <b>can’t</b> speak Japanese.</span>
+            <span class="dream"><span class="hint">imaginary</span>If I <b>spoke</b> Japanese,
+              I <b>would work</b> in Tokyo.</span>
+          </div>
+          <div class="pair">
+            <span class="real"><span class="hint">true</span>I <b>don’t have</b> a car.</span>
+            <span class="dream"><span class="hint">imaginary</span>If I <b>had</b> a car,
+              I <b>would drive</b> you home.</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>What it is used for</h3>
+      <ul>
+        <li><b>An imaginary present:</b> <em>If I lived by the sea, I would swim every day.</em></li>
+        <li><b>An unlikely future:</b> <em>If I won the lottery, I would buy a house.</em>
+          (Past tense here signals “probably won’t happen”.)</li>
+        <li><b>Advice:</b> <em>If I were you, I would apologise.</em></li>
+        <li><b>A polite no:</b> <em>If I had a car, I’d drive you — but I don’t.</em></li>
+      </ul>
+
+      <div class="note warn">
+        <b>Commas and contractions:</b> if the <em>if</em> part comes first, use a comma.
+        No comma when it comes second. In speech, <em>would</em> becomes <b>’d</b>:
+        <em>I’d swim</em>. In negative sentences: <em>wouldn’t</em>, <em>didn’t</em>.
+      </div>
+
+      <div class="note">
+        <b>One small choice: was or were?</b> With <em>I / he / she / it</em>, the standard
+        form is <b>were</b>: <em>If I were you…</em> In everyday speech many people say
+        <em>If I was you</em>, but in exams, writing and job applications, use <b>were</b>.
+      </div>
+
+      <div class="handson">
+        <p class="mono hkick">over to you</p>
+        <h3>Two tenses fight in each sentence. Fix them.</h3>
+        <p>Write the correct version before you reveal.</p>
+        <details>
+          <summary>If I would have a bigger flat, I would get a dog.</summary>
+          <div class="ans"><s>would have</s> → <b>had</b><br>
+            <b>If I had a bigger flat, I would get a dog.</b><br>
+            Never put <em>would</em> in the <em>if</em> part.</div>
+        </details>
+        <details>
+          <summary>If I would win, I would travel the world.</summary>
+          <div class="ans"><s>would win</s> → <b>won</b><br>
+            <b>If I won, I would travel the world.</b></div>
+        </details>
+        <details>
+          <summary>If I am you, I would take the job.</summary>
+          <div class="ans"><s>am</s> → <b>were</b><br>
+            <b>If I were you, I would take the job.</b></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= 03 ================= -->
+    <section id="third">
+      <p class="kicker"><span class="num">03</span><span class="mono">not real in the past</span></p>
+      <h2>The third conditional</h2>
+      <p class="sub">Two steps back. The moment has passed, so the situation can never change now.
+        It is only in your head.</p>
+
+      <div class="formstrip">
+        <span class="fp ifp">If + had + past participle</span>
+        <span class="farrow">→</span>
+        <span class="fp thp">would have + past participle</span>
+      </div>
+
+      <div class="card">
+        <svg viewBox="0 0 560 132" width="100%" height="132" role="img"
+             aria-label="Timeline showing what happened and what could have happened">
+          <line x1="20" y1="100" x2="545" y2="100" stroke="#151b2b" stroke-width="3"/>
+          <line x1="20" y1="100" x2="20" y2="88" stroke="#151b2b" stroke-width="3"/>
+          <path d="M150 100 C 270 100, 330 34, 545 34" fill="none" stroke="#7434c9"
+                stroke-width="3" stroke-dasharray="6 6"/>
+          <circle cx="150" cy="100" r="6" fill="#4b45c9"/>
+          <circle cx="545" cy="100" r="6" fill="#151b2b"/>
+          <circle cx="545" cy="34" r="6" fill="#7434c9"/>
+          <text x="128" y="124" font-size="11" fill="#5b6579"
+                font-family="ui-monospace,Menlo,monospace">THE CHOICE</text>
+          <text x="392" y="122" font-size="11" fill="#151b2b"
+                font-family="ui-monospace,Menlo,monospace">WHAT HAPPENED</text>
+          <text x="356" y="24" font-size="11" fill="#7434c9"
+                font-family="ui-monospace,Menlo,monospace">WHAT COULD HAVE HAPPENED</text>
+        </svg>
+        <p class="truthline" style="margin-top:6px">The solid line is real. The dashed line is the
+          third conditional.</p>
+      </div>
+
+      <h3>Try the regret machine</h3>
+      <p class="sub">Choose a real past action. The sentence appears.</p>
+      <div class="regret" id="regretBtns"></div>
+      <div class="rout" id="regretOut"></div>
+      <div class="rnote" id="regretNote"></div>
+
+      <div class="note rule">
+        <b>Two hads?</b> Yes. <em>If I had had more time</em> is correct — the first
+        <em>had</em> is the past-perfect helper, the second is the verb <em>have</em>.
+        In speech it often becomes <b>If I’d had more time</b>.
+      </div>
+
+      <div class="handson">
+        <p class="mono hkick">over to you</p>
+        <h3>Regret or relief?</h3>
+        <p>Decide first, then check the sentence.</p>
+        <details>
+          <summary>“I didn’t set an alarm. I missed my flight.”</summary>
+          <div class="ans"><b>If I had set an alarm, I wouldn’t have missed my flight.</b><br>
+            Regret. Note: “didn’t set” becomes positive “had set”.</div>
+        </details>
+        <details>
+          <summary>“We left early. We didn’t get stuck in traffic.”</summary>
+          <div class="ans"><b>If we hadn’t left early, we would have got stuck in traffic.</b><br>
+            Relief. Here the <em>if</em> part is the negative one.</div>
+        </details>
+        <details>
+          <summary>“She didn’t study. She failed.”</summary>
+          <div class="ans"><b>If she had studied, she wouldn’t have failed.</b><br>
+            Or: <b>she would have passed.</b> Both work.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= 04 ================= -->
+    <section id="lab">
+      <p class="kicker"><span class="num">04</span><span class="mono">sentence builder</span></p>
+      <h2>Build it and it checks itself</h2>
+      <p class="sub">Pick an <em>if</em> part and a result. The machine tells you which conditional
+        you built.</p>
+
+      <div class="card">
+        <div class="brow">
+          <span class="blabel">the if-part</span>
+          <div class="chips" id="ifChips"></div>
+        </div>
+        <div class="brow">
+          <span class="blabel">the result</span>
+          <div class="chips" id="thenChips"></div>
+        </div>
+        <div class="trial" id="trial"></div>
+        <div class="fb" id="trialFb"></div>
+      </div>
+
+      <div class="note">
+        Only the matching pairs are “standard”. But two of the mixed ones are possible too —
+        that is section 05.
+      </div>
+    </section>
+
+    <!-- ================= 05 ================= -->
+    <section id="mixed">
+      <p class="kicker"><span class="num">05</span><span class="mono">two times, one sentence</span></p>
+      <h2>The mixed map</h2>
+      <p class="sub">The <em>if</em> part and the result do not have to be in the same time.
+        One story: Maria does not speak Spanish, and that changed two things.</p>
+
+      <div class="card">
+        <div class="mixgrid">
+          <div class="corner"></div>
+          <div class="colh">result: now</div>
+          <div class="colh">result: past</div>
+
+          <div class="rowh">if-part: now</div>
+          <button class="cell" data-k="now-now">
+            <span class="ct">2nd</span><span class="cd">both now</span>
+          </button>
+          <button class="cell" data-k="now-past">
+            <span class="ct">mixed</span><span class="cd">now → past</span>
+          </button>
+
+          <div class="rowh">if-part: past</div>
+          <button class="cell" data-k="past-now">
+            <span class="ct">mixed</span><span class="cd">past → now</span>
+          </button>
+          <button class="cell" data-k="past-past">
+            <span class="ct">3rd</span><span class="cd">both past</span>
+          </button>
+        </div>
+
+        <div class="mixout" id="mixOut"></div>
+        <div class="mixmeta" id="mixMeta"></div>
+      </div>
+
+      <div class="note rule">
+        <b>How to choose:</b> ask two questions. <em>Is the if-part about now or about the past?</em>
+        Then <em>is the result about now or about the past?</em> The verbs follow the answers,
+        not the other way round.
+      </div>
+
+      <div class="handson">
+        <p class="mono hkick">over to you</p>
+        <h3>Which part is about now?</h3>
+        <details>
+          <summary>“If I hadn’t moved to Berlin, I would still work in Paris.”</summary>
+          <div class="ans">if-part = <b>past</b> (moving). result = <b>now</b> (still working there).<br>
+            So it is a mixed conditional.</div>
+        </details>
+        <details>
+          <summary>“If he weren’t so shy, he would have spoken to her.”</summary>
+          <div class="ans">if-part = <b>now</b> (he is shy — a permanent trait). result = <b>past</b>
+            (he didn’t speak).<br> Also mixed, but the other way round.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= 06 ================= -->
+    <section id="contraction">
+      <p class="kicker"><span class="num">06</span><span class="mono">listening detail</span></p>
+      <h2>’d — is it <em>had</em> or <em>would</em>?</h2>
+      <p class="sub">Both contract to <b>’d</b>. There is a simple test, and it is about
+        <em>where</em> the ’d is.</p>
+
+      <div class="note rule">
+        <b>Inside the if-part → had.</b> <b>In the result → would.</b><br>
+        Still unsure? Look at the next word: <b>’d + past participle</b> (<em>known, left, seen</em>)
+        = had. <b>’d + base verb</b> (<em>go, help</em>) or <b>’d have</b> = would.
+      </div>
+
+      <div class="dgame" id="dGame"></div>
+      <p class="score" id="dScore"></p>
+    </section>
+
+    <!-- ================= 07 ================= -->
+    <section id="formal">
+      <p class="kicker"><span class="num">07</span><span class="mono">optional · very formal</span></p>
+      <h2>Dropping <em>if</em></h2>
+      <p class="sub">In formal writing, you can delete <em>if</em> and move <em>had</em> or
+        <em>were</em> to the front. The meaning does not change at all — only the tone.</p>
+
+      <div class="card" id="invBox"></div>
+
+      <div class="note warn">
+        <b>One strict rule:</b> you cannot contract <em>not</em> after inversion.
+        <s>Hadn’t he told me, I would have been late.</s> →
+        <b>Had he not told me, I would have been late.</b>
+      </div>
+
+      <div class="handson">
+        <p class="mono hkick">over to you</p>
+        <h3>Make it formal.</h3>
+        <details>
+          <summary>If we had known about the delay, we would have called you.</summary>
+          <div class="ans"><b>Had we known about the delay, we would have called you.</b></div>
+        </details>
+        <details>
+          <summary>If she were the manager, she would change the rota.</summary>
+          <div class="ans"><b>Were she the manager, she would change the rota.</b></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= 08 ================= -->
+    <section id="clinic">
+      <p class="kicker"><span class="num">08</span><span class="mono">mistake clinic</span></p>
+      <h2>Six errors, six fixes</h2>
+      <p class="sub">Ask your student to repair each one before you click it.</p>
+      <div class="clinic" id="clinicRows"></div>
+    </section>
+
+    <!-- ================= 09 ================= -->
+    <section id="quiz">
+      <div class="qbar">
+        <div>
+          <p class="kicker"><span class="num">09</span><span class="mono">check yourself</span></p>
+          <h2>Six questions</h2>
+        </div>
+        <div class="qscore" id="qScore">0 / 6</div>
+      </div>
+      <p class="sub">Read each one aloud. Wrong answers can be tried again.</p>
+      <div id="quizBody"></div>
+    </section>
+
+    <!-- ================= 10 ================= -->
+    <section id="ref">
+      <p class="kicker"><span class="num">10</span><span class="mono">one page</span></p>
+      <h2>Reference</h2>
+
+      <div class="tbl">
+        <table>
+          <thead>
+            <tr><th>Type</th><th>If-part</th><th>Result</th><th>Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Second</td><td>past simple<br><code>if I had time</code></td>
+                <td>would + verb<br><code>I would help</code></td>
+                <td>not true now / unlikely future</td></tr>
+            <tr><td>Third</td><td>had + past participle<br><code>if I had had time</code></td>
+                <td>would have + past participle<br><code>I would have helped</code></td>
+                <td>did not happen in the past</td></tr>
+            <tr><td>Mixed</td><td>past perfect<br><code>if I had studied</code></td>
+                <td>would + verb<br><code>I would work there now</code></td>
+                <td>past cause, present result</td></tr>
+            <tr><td>Mixed</td><td>past simple<br><code>if I spoke Spanish</code></td>
+                <td>would have + past participle<br><code>I would have got the job</code></td>
+                <td>present state, past result</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Formal</th><th>Normal</th></tr></thead>
+          <tbody>
+            <tr><td>Were I in your position…</td><td>If I were in your position…</td></tr>
+            <tr><td>Had I known…</td><td>If I had known…</td></tr>
+            <tr><td>Had he not called…</td><td>If he hadn’t called…</td></tr>
+            <tr><td><span style="color:#b8271f">✗ Hadn’t he called…</span></td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note rule" style="margin-top:22px">
+        <b>Three things to remember:</b> one, the past form here means <em>not real</em>, not past.
+        Two, never put <em>would</em> inside the <em>if</em> part. Three, <em>would have</em> needs
+        a past participle: <em>would have gone</em>, not <s>would have went</s>.
+      </div>
+    </section>
+
+    <footer>
+      If things were different · second and third conditionals · every demo is clickable for screen shares.
+    </footer>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- rail highlighting ---------------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var railSecs = railLinks.map(function(a){
+    return document.querySelector(a.getAttribute("href"));
+  }).filter(Boolean);
+
+  if ("IntersectionObserver" in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){
+          railLinks.forEach(function(l){
+            l.classList.toggle("on", l.getAttribute("href") === "#" + e.target.id);
+          });
+        }
+      });
+    }, {rootMargin:"-40% 0px -55% 0px", threshold:0});
+    railSecs.forEach(function(s){ obs.observe(s); });
+  }
+
+  /* ---------------- 01 step ladder ---------------- */
+  var shiftData = [
+    {
+      sent: "If I <b>have</b> more time, I <b>will</b> help you.",
+      truth: "The truth: maybe I have time. It is possible.",
+      tense: "present simple",
+      name: "first conditional",
+      cls: "zero"
+    },
+    {
+      sent: "If I <b>had</b> more time, I <b>would</b> help you.",
+      truth: "The truth: I do not have time.",
+      tense: "past simple",
+      name: "second conditional",
+      cls: ""
+    },
+    {
+      sent: "If I <b>had had</b> more time, I <b>would have</b> helped you.",
+      truth: "The truth: I did not have time. It is finished.",
+      tense: "past perfect",
+      name: "third conditional",
+      cls: "two"
+    }
+  ];
+
+  var stepBtns = Array.prototype.slice.call(document.querySelectorAll("#steps .step"));
+  var shiftSent = document.getElementById("shiftSent");
+  var shiftTruth = document.getElementById("shiftTruth");
+  var shiftTense = document.getElementById("shiftTense");
+  var shiftName = document.getElementById("shiftName");
+  var curStep = 0;
+
+  function drawShift(){
+    var d = shiftData[curStep];
+    stepBtns.forEach(function(b){
+      b.classList.toggle("on", Number(b.getAttribute("data-step")) === curStep);
+    });
+    shiftSent.className = "bigsent " + d.cls;
+    shiftSent.innerHTML = d.sent;
+    shiftTruth.innerHTML = d.truth;
+    shiftTense.textContent = d.tense;
+    shiftName.textContent = d.name;
+  }
+
+  stepBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      curStep = Number(b.getAttribute("data-step"));
+      drawShift();
+    });
+  });
+  drawShift();
+
+  /* ---------------- 02 truth / dream ---------------- */
+  var pairs = document.getElementById("pairs");
+  var dreamBtns = Array.prototype.slice.call(document.querySelectorAll("#dreamSwitch button"));
+
+  dreamBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      var on = b.getAttribute("data-dream") === "1";
+      pairs.classList.toggle("dream", on);
+      dreamBtns.forEach(function(x){
+        x.classList.toggle("on", x === b);
+      });
+    });
+  });
+
+  /* ---------------- 03 regret machine ---------------- */
+  var regrets = [
+    {
+      choice: "I didn’t study for the exam.",
+      sent: "If I <b>had studied</b> for the exam, I <b>would have passed</b>.",
+      note: "Regret. The exam is over, so only the past perfect is possible here."
+    },
+    {
+      choice: "We left home late.",
+      sent: "If we <b>had left</b> home earlier, we <b>wouldn’t have missed</b> the train.",
+      note: "A negative result is very common in regrets: wouldn’t have + past participle."
+    },
+    {
+      choice: "I didn’t tell her the truth.",
+      sent: "If I <b>had told</b> her the truth, she <b>would have understood</b>.",
+      note: "Careful: the real sentence was negative. In the if-part it flips to positive: “had told”."
+    },
+    {
+      choice: "He didn’t buy the ticket.",
+      sent: "If he <b>had bought</b> the ticket, he <b>would have come</b> with us.",
+      note: "Note the past participle: buy → bought, come → come."
+    }
+  ];
+
+  var regretBtns = document.getElementById("regretBtns");
+  var regretOut = document.getElementById("regretOut");
+  var regretNote = document.getElementById("regretNote");
+
+  regrets.forEach(function(r, i){
+    var b = document.createElement("button");
+    b.className = "rbtn";
+    b.type = "button";
+    b.textContent = r.choice;
+    b.addEventListener("click", function(){
+      Array.prototype.forEach.call(regretBtns.children, function(c){
+        c.classList.remove("on");
+      });
+      b.classList.add("on");
+      regretOut.innerHTML = r.sent;
+      regretNote.textContent = r.note;
+    });
+    regretBtns.appendChild(b);
+  });
+
+  if (regretBtns.firstChild){
+    regretBtns.firstChild.click();
+  }
+
+  /* ---------------- 04 builder ---------------- */
+  var ifOpts = [
+    {t:"If I have more time", k:"real"},
+    {t:"If I had more time", k:"second"},
+    {t:"If I had had more time", k:"third"}
+  ];
+  var thenOpts = [
+    {t:"I will help you.", k:"real"},
+    {t:"I would help you.", k:"second"},
+    {t:"I would have helped you.", k:"third"}
+  ];
+
+  var ifChips = document.getElementById("ifChips");
+  var thenChips = document.getElementById("thenChips");
+  var trial = document.getElementById("trial");
+  var trialFb = document.getElementById("trialFb");
+
+  var pickIf = 1;
+  var pickThen = 1;
+
+  function buildChips(container, arr, which){
+    arr.forEach(function(o, i){
+      var b = document.createElement("button");
+      b.className = "chip";
+      b.type = "button";
+      b.textContent = o.t;
+      b.setAttribute("data-i", i);
+      b.addEventListener("click", function(){
+        if (which === "if"){ pickIf = i; } else { pickThen = i; }
+        drawTrial();
+      });
+      container.appendChild(b);
+    });
+  }
+
+  buildChips(ifChips, ifOpts, "if");
+  buildChips(thenChips, thenOpts, "then");
+
+  function drawTrial(){
+    Array.prototype.forEach.call(ifChips.children, function(c, i){
+      c.classList.toggle("on", i === pickIf);
+    });
+    Array.prototype.forEach.call(thenChips.children, function(c, i){
+      c.classList.toggle("on", i === pickThen);
+    });
+
+    var A = ifOpts[pickIf];
+    var B = thenOpts[pickThen];
+
+    trial.innerHTML = "<b>" + A.t + "</b>, " + B.t.toLowerCase();
+
+    trialFb.className = "fb show";
+
+    if (A.k === B.k){
+      if (A.k === "real"){
+        trialFb.classList.add("ok");
+        trialFb.innerHTML = "✓ First conditional. It is possible, so no back-shift.";
+      } else if (A.k === "second"){
+        trialFb.classList.add("ok");
+        trialFb.innerHTML = "✓ Second conditional. Unreal now, one step back.";
+      } else {
+        trialFb.classList.add("ok");
+        trialFb.innerHTML = "✓ Third conditional. Unreal past, two steps back.";
+      }
+      return;
+    }
+
+    if (A.k === "real"){
+      trialFb.classList.add("no");
+      trialFb.innerHTML = "✗ The if-part says it is possible (present tense), " +
+        "but the result imagines it is not. Choose one world.";
+      return;
+    }
+
+    if (B.k === "real"){
+      trialFb.classList.add("no");
+      trialFb.innerHTML = "✗ The result uses a real tense, but the if-part is imaginary. " +
+        "Use <b>would</b>.";
+      return;
+    }
+
+    trialFb.classList.add("warn");
+    trialFb.innerHTML = "✓ Possible — but only as a <b>mixed conditional</b>. " +
+      "Check section 05 to see which way round it works.";
+  }
+
+  drawTrial();
+
+  /* ---------------- 05 mixed map ---------------- */
+  var mixed = {
+    "now-now": {
+      sent: "If Maria <b>spoke</b> Spanish, she <b>would work</b> in Madrid.",
+      ifTag: "if-part: now",
+      resTag: "result: now",
+      type: "second conditional"
+    },
+    "now-past": {
+      sent: "If Maria <b>spoke</b> Spanish, she <b>would have got</b> the job in Madrid.",
+      ifTag: "if-part: now",
+      resTag: "result: past",
+      type: "mixed"
+    },
+    "past-now": {
+      sent: "If Maria <b>had studied</b> Spanish, she <b>would work</b> in Madrid now.",
+      ifTag: "if-part: past",
+      resTag: "result: now",
+      type: "mixed"
+    },
+    "past-past": {
+      sent: "If Maria <b>had studied</b> Spanish, she <b>would have got</b> the job in Madrid.",
+      ifTag: "if-part: past",
+      resTag: "result: past",
+      type: "third conditional"
+    }
+  };
+
+  var mixOut = document.getElementById("mixOut");
+  var mixMeta = document.getElementById("mixMeta");
+  var mixCells = Array.prototype.slice.call(document.querySelectorAll(".cell"));
+
+  function drawMixed(key){
+    var m = mixed[key];
+    mixCells.forEach(function(c){
+      c.classList.toggle("on", c.getAttribute("data-k") === key);
+    });
+    mixOut.innerHTML = m.sent;
+    mixMeta.innerHTML =
+      "<span class='tag teal'>" + m.ifTag + "</span>" +
+      "<span class='tag violet'>" + m.resTag + "</span>" +
+      "<span class='tag'>" + m.type + "</span>";
+  }
+
+  mixCells.forEach(function(c){
+    c.addEventListener("click", function(){
+      drawMixed(c.getAttribute("data-k"));
+    });
+  });
+  drawMixed("past-now");
+
+  /* ---------------- 06 ’d game ---------------- */
+  var dItems = [
+    { sent:"If I <b class='d'>’d</b> known about the meeting, I would have come.", answer:"had",
+      why:"Inside the if-part, and the next word is a past participle (known). So it is had." },
+    { sent:"If I had more money, I <b class='d'>’d</b> travel more.", answer:"would",
+      why:"In the result, and the next word is a base verb (travel). So it is would." },
+    { sent:"I <b class='d'>’d</b> have called you if I had had your number.", answer:"would",
+      why:"The result comes first here. “’d have + past participle” is always would have." },
+    { sent:"If she <b class='d'>’d</b> left earlier, she would have caught the train.", answer:"had",
+      why:"Inside the if-part, with a past participle (left). So it is had." },
+    { sent:"We <b class='d'>’d</b> have arrived on time if we had taken a taxi.", answer:"would",
+      why:"Again the result: would have + past participle." }
+  ];
+
+  var dGame = document.getElementById("dGame");
+  var dScoreEl = document.getElementById("dScore");
+  var dDone = 0;
+  var dRight = 0;
+
+  dItems.forEach(function(item){
+    var card = document.createElement("div");
+    card.className = "dcard";
+
+    var s = document.createElement("div");
+    s.className = "dsent";
+    s.innerHTML = item.sent;
+    card.appendChild(s);
+
+    var opts = document.createElement("div");
+    opts.className = "dopts";
+
+    var ask = document.createElement("span");
+    ask.className = "ask";
+    ask.textContent = "the highlighted ’d is:";
+    opts.appendChild(ask);
+
+    var countThis = false;
+
+    ["had", "would"].forEach(function(choice){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = choice;
+      b.addEventListener("click", function(){
+        if (countThis) return;
+        countThis = true;
+        dDone++;
+        if (choice === item.answer){
+          b.classList.add("good");
+          dRight++;
+        } else {
+          b.classList.add("bad");
+          card.classList.add("missed");
+          Array.prototype.forEach.call(opts.querySelectorAll("button"), function(x){
+            if (x.textContent === item.answer){ x.classList.add("good"); }
+          });
+        }
+        if (choice === item.answer){ card.classList.add("solved"); }
+        Array.prototype.forEach.call(opts.querySelectorAll("button"), function(x){
+          x.disabled = true;
+        });
+        why.classList.add("show");
+        dScoreEl.textContent = dRight + " of " + dItems.length + " correct";
+      });
+      opts.appendChild(b);
+    });
+
+    card.appendChild(opts);
+
+    var why = document.createElement("div");
+    why.className = "dwhy";
+    why.innerHTML = "<b>Rule:</b> " + item.why +
+      " (Answer: <b>" + item.answer + "</b>)";
+    card.appendChild(why);
+
+    dGame.appendChild(card);
+  });
+
+  dScoreEl.textContent = "0 of " + dItems.length + " correct";
+
+  /* ---------------- 07 inversion ---------------- */
+  var inversions = [
+    {
+      normal: "If I were in your position, I would wait a week.",
+      formal: "Were I in your position, I would wait a week.",
+      hint: "were moves to the front"
+    },
+    {
+      normal: "If I had known, I would have told you.",
+      formal: "Had I known, I would have told you.",
+      hint: "had moves to the front"
+    },
+    {
+      normal: "If we had left earlier, we wouldn’t have missed it.",
+      formal: "Had we left earlier, we wouldn’t have missed it.",
+      hint: "had + subject + past participle"
+    },
+    {
+      normal: "If they were to change the plan, we would need more time.",
+      formal: "Were they to change the plan, we would need more time.",
+      hint: "were + subject + to + verb (very formal)"
+    }
+  ];
+
+  var invBox = document.getElementById("invBox");
+
+  inversions.forEach(function(inv){
+    var row = document.createElement("div");
+    row.className = "invrow";
+
+    var txt = document.createElement("div");
+    txt.className = "itxt";
+    txt.innerHTML = inv.normal;
+    row.appendChild(txt);
+
+    var foot = document.createElement("div");
+    foot.className = "ifoot";
+
+    var hint = document.createElement("span");
+    hint.className = "ihint";
+    hint.textContent = inv.hint;
+    foot.appendChild(hint);
+
+    var btn = document.createElement("button");
+    btn.className = "mini";
+    btn.type = "button";
+    btn.textContent = "make it formal";
+
+    var isFormal = false;
+    btn.addEventListener("click", function(){
+      isFormal = !isFormal;
+      txt.classList.toggle("formal", isFormal);
+      txt.innerHTML = isFormal ? inv.formal : inv.normal;
+      btn.textContent = isFormal ? "back to normal" : "make it formal";
+    });
+
+    foot.appendChild(btn);
+    row.appendChild(foot);
+    invBox.appendChild(row);
+  });
+
+  /* ---------------- 08 clinic ---------------- */
+  var clinicItems = [
+    {
+      wrong: "If I <s>would have</s> time, I would help you.",
+      right: "If I <b>had</b> time, I would help you.",
+      why: "The if-part never takes would."
+    },
+    {
+      wrong: "If I <s>would have known</s>, I would have called.",
+      right: "If I <b>had known</b>, I would have called.",
+      why: "Third conditional: had + past participle in the if-part."
+    },
+    {
+      wrong: "If I had known, I <s>would told</s> you.",
+      right: "If I had known, I <b>would have told</b> you.",
+      why: "would needs have before the past participle."
+    },
+    {
+      wrong: "If she had studied, she <s>would have pass</s> the exam.",
+      right: "If she had studied, she <b>would have passed</b> the exam.",
+      why: "After would have, use the past participle."
+    },
+    {
+      wrong: "I would have gone if I <s>would have been</s> invited.",
+      right: "I would have gone if I <b>had been</b> invited.",
+      why: "Again: no would inside the if-part."
+    },
+    {
+      wrong: "If I <s>was</s> you, I would apologise.",
+      right: "If I <b>were</b> you, I would apologise.",
+      why: "“was” is common in speech, but “were” is the standard written form."
+    },
+    {
+      wrong: "If I had studied, I <s>would have went</s> to university.",
+      right: "If I had studied, I <b>would have gone</b> to university.",
+      why: "The past participle of go is gone, not went."
+    }
+  ];
+
+  var clinicRows = document.getElementById("clinicRows");
+
+  clinicItems.forEach(function(item){
+    var b = document.createElement("button");
+    b.className = "crow";
+    b.type = "button";
+    b.innerHTML =
+      "<span class='tap'>tap to fix</span>" +
+      "<div class='wrong'>" + item.wrong + "</div>" +
+      "<div class='right'>" + item.right +
+        "<div style='font-size:13.5px;color:#5b6579;margin-top:5px'>" +
+        item.why + "</div></div>";
+    b.addEventListener("click", function(){
+      b.classList.toggle("open");
+    });
+    clinicRows.appendChild(b);
+  });
+
+  /* ---------------- 09 quiz ---------------- */
+  var quiz = [
+    {
+      q: "If I ______ more time, I would learn the guitar.",
+      opts: ["have", "had"],
+      correct: 1,
+      why: "Second conditional: the if-part takes the past simple."
+    },
+    {
+      q: "If you had told me, I ______ helped you.",
+      opts: ["would have", "would"],
+      correct: 0,
+      why: "The if-part is past perfect, so the result needs would have + past participle."
+    },
+    {
+      q: "Which sentence is correct?",
+      opts: ["If I would have known, I would have come.",
+             "If I had known, I would have come."],
+      correct: 1,
+      why: "Never put would inside the if-part."
+    },
+    {
+      q: "If I ______ you, I would take the job.",
+      opts: ["was", "were"],
+      correct: 1,
+      why: "Were is the standard form. Was is common in speech but weaker in writing and exams."
+    },
+    {
+      q: "If she had studied medicine, she ______ a doctor now.",
+      opts: ["would be", "would have been"],
+      correct: 0,
+      why: "Mixed conditional: past cause, present result. “now” is the clue."
+    },
+    {
+      q: "We wouldn’t have missed the train if we ______ earlier.",
+      opts: ["left", "had left"],
+      correct: 1,
+      why: "The result is would have + past participle, so the if-part must be past perfect."
+    }
+  ];
+
+  var quizBody = document.getElementById("quizBody");
+  var qScoreEl = document.getElementById("qScore");
+  var qScore = 0;
+
+  quiz.forEach(function(item, qi){
+    var card = document.createElement("div");
+    card.className = "qcard";
+
+    var no = document.createElement("div");
+    no.className = "qno";
+    no.textContent = "question " + (qi + 1);
+    card.appendChild(no);
+
+    var qt = document.createElement("div");
+    qt.className = "qtext";
+    qt.textContent = item.q;
+    card.appendChild(qt);
+
+    var fb = document.createElement("div");
+    fb.className = "fb";
+    var locked = false;
+
+    item.opts.forEach(function(text, oi){
+      var btn = document.createElement("button");
+      btn.className = "opt";
+      btn.type = "button";
+
+      var ltr = document.createElement("span");
+      ltr.className = "ltr";
+      ltr.textContent = oi === 0 ? "A" : "B";
+      btn.appendChild(ltr);
+
+      var label = document.createElement("span");
+      label.textContent = text;
+      btn.appendChild(label);
+
+      btn.addEventListener("click", function(){
+        if (locked) return;
+
+        if (oi === item.correct){
+          btn.classList.add("correct");
+          Array.prototype.forEach.call(card.querySelectorAll(".opt"), function(x){
+            x.disabled = true;
+          });
+          fb.className = "fb show ok";
+          fb.innerHTML = "✓ " + item.why;
+          locked = true;
+          qScore++;
+          qScoreEl.textContent = qScore + " / " + quiz.length;
+        } else {
+          btn.classList.add("wrong");
+          btn.disabled = true;
+          fb.className = "fb show no";
+          fb.innerHTML = "Not quite. Try the other one.";
+        }
+      });
+
+      card.appendChild(btn);
+    });
+
+    card.appendChild(fb);
+    quizBody.appendChild(card);
+  });
+
+  qScoreEl.textContent = "0 / " + quiz.length;
+
+})();
+</script>
+</body>
+</html>
