@@ -42,6 +42,10 @@ No login, no software, and no downloads are needed. It works in any modern web b
 
 ### 📚 Other Grammar Topics
 
+| Lesson | Link |
+| --- | --- |
+| Modifying Comparatives & Superlatives 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/modifying-comparatives-superlatives/) |
+
 > More topics coming soon — keep an eye on this page!
 
 New lessons are added regularly. Check this list, or the menu on the main page, for the latest additions.
