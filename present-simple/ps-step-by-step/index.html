@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Present Simple POWER — block by block</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root{
+  --ink:#1B1524; --cream:#FFF6E8; --sun:#FFC531; --sky:#38BDF8;
+  --mint:#2DD4BF; --coral:#FF6B6B; --grape:#8B5CF6; --rose:#FB7185; --leaf:#22C55E;
+  --a:#8B5CF6; --s:#EDE9FE; --d:#5B21B6;
+}
+html,body{margin:0}
+body{
+  font-family:'Nunito',-apple-system,'Segoe UI',Roboto,sans-serif;
+  color:var(--ink); background-color:var(--cream);
+  background-image:
+    radial-gradient(circle at 10% 6%, rgba(255,197,49,.38), transparent 42%),
+    radial-gradient(circle at 94% 2%, rgba(56,189,248,.32), transparent 42%),
+    radial-gradient(circle at 50% 104%, rgba(139,92,246,.24), transparent 55%);
+  background-attachment:fixed; min-height:100vh; padding-bottom:50px;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.f{font-family:'Fredoka','Nunito',sans-serif;font-weight:600}
+
+.bar{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
+  justify-content:space-between;flex-wrap:wrap;padding:10px 16px;
+  background:rgba(255,246,232,.94);backdrop-filter:blur(8px);
+  border-bottom:3px solid var(--ink);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.bot{
+  width:48px;height:48px;border-radius:16px;display:grid;place-items:center;
+  font-size:26px;background:var(--sun);border:3px solid var(--ink);
+  box-shadow:0 4px 0 var(--ink);animation:bob 2.6s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.brand h1{margin:0;font-size:1.1rem;line-height:1}
+.brand h1 em{font-style:normal;color:var(--grape)}
+.brand p{margin:2px 0 0;font-size:.74rem;font-weight:800;opacity:.6}
+.hud{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;font-weight:900;font-size:.86rem;
+  background:#fff;border:3px solid var(--ink);border-radius:999px;
+  padding:5px 12px;box-shadow:0 3px 0 var(--ink);
+}
+.chip.xp{background:#FFF3C4}
+.chip.fire{background:#FFE0D6}
+.ico{
+  width:44px;height:44px;border-radius:14px;cursor:pointer;font-size:1.05rem;
+  background:#fff;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);
+  transition:.06s;
+}
+.ico:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+
+.screen{max-width:860px;margin:0 auto;padding:0 16px}
+.view{display:none}
+.view.on{display:block;animation:in .22s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.hero{
+  display:flex;gap:16px;align-items:center;margin:18px 0 22px;
+  background:#fff;border:3px solid var(--ink);border-radius:26px;
+  padding:18px;box-shadow:0 7px 0 var(--ink);
+}
+.hero .big{font-size:52px;line-height:1;animation:bob 2.4s ease-in-out infinite}
+.hero h2{margin:0 0 4px;font-size:clamp(1.3rem,3.4vw,1.7rem);line-height:1.15}
+.hero p{margin:0;font-weight:800;font-size:.9rem;opacity:.72}
+
+/* ---------- tower: every block has its own colour ---------- */
+.tower{display:flex;flex-direction:column;gap:14px}
+.step{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+  font-family:inherit;color:inherit;padding:14px 16px;border-radius:22px;
+  border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink);
+  border-left:14px solid var(--c,#ccc);
+  background:linear-gradient(100deg,var(--soft) 0%,#fff 62%);
+  transition:.07s;
+}
+.step:hover{transform:translateY(-3px);box-shadow:0 9px 0 var(--ink)}
+.step:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.step.lock{
+  background:#EFE8DD;border-left-color:#B9AFA1;box-shadow:0 6px 0 #B9AFA1;
+  cursor:not-allowed;
+}
+.step-e{font-size:30px;line-height:1;flex:0 0 auto}
+.step.lock .step-e{filter:grayscale(1);opacity:.5}
+.step-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.step-n{font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:.55}
+.step-t{font-family:'Fredoka',sans-serif;font-size:1.06rem;font-weight:600}
+.step-s{font-size:.82rem;font-weight:700;opacity:.6}
+.step-go{
+  flex:0 0 auto;font-weight:900;font-size:.78rem;background:var(--c,var(--sun));
+  border:3px solid var(--ink);border-radius:12px;padding:6px 10px;
+}
+.step.lock .step-go{background:#D9D0C2;color:#8A8073}
+.steps-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;justify-content:center}
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:.98rem;cursor:pointer;
+  border:3px solid var(--ink);border-radius:16px;padding:12px 22px;background:#fff;
+  color:var(--ink);box-shadow:0 5px 0 var(--ink);transition:.06s;
+}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn.pri{background:var(--a)}
+.btn.mint{background:var(--mint)}
+.btn.sm{padding:8px 14px;font-size:.85rem;border-radius:12px;box-shadow:0 4px 0 var(--ink)}
+.btn.wide{width:100%;margin-top:14px}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* ---------- play head ---------- */
+.phead{display:flex;align-items:center;gap:12px;margin:16px 0 10px}
+.phtxt{flex:1;min-width:0}
+.phtxt b{display:block;font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600}
+/* journey strip */
+.strip{display:flex;gap:5px;margin:0 0 10px}
+.sb{
+  flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:5px 2px;border-radius:11px;border:2px solid #E0D5C4;background:#fff;
+  font-size:.6rem;font-weight:900;line-height:1;opacity:.5;
+}
+.sb.cur{opacity:1;border-color:var(--ink);box-shadow:0 3px 0 var(--ink)}
+.sb.done{opacity:1}
+.dots{display:flex;gap:5px;flex-wrap:wrap;margin:0 0 12px}
+.dot{height:9px;flex:1 1 14px;border-radius:999px;background:#E7DCCB;border:2px solid transparent}
+.dot.done{background:var(--a)}
+.dot.cur{background:var(--a);border-color:var(--ink)}
+
+/* ---------- question card ---------- */
+.qcard{
+  background:#fff;border:3px solid var(--ink);border-top:12px solid var(--a);
+  border-radius:26px;padding:20px;box-shadow:0 8px 0 var(--ink);
+  animation:pop .2s ease;
+}
+@keyframes pop{from{transform:scale(.98);opacity:.5}to{transform:scale(1);opacity:1}}
+.qtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.tag{
+  display:inline-block;background:var(--s);border:2px solid var(--ink);border-radius:999px;
+  font-size:.68rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase;
+  padding:4px 10px;
+}
+.tag.flash{background:#FFE0D6}
+.hintbtn{
+  flex:0 0 auto;font-family:'Nunito',sans-serif;font-weight:900;font-size:.78rem;
+  cursor:pointer;background:var(--s);border:2px solid var(--ink);border-radius:999px;
+  padding:5px 11px;box-shadow:0 3px 0 var(--ink);transition:.06s;
+}
+.hintbtn:active{transform:translateY(3px);box-shadow:none}
+.hintbtn:disabled{opacity:.55;cursor:default;box-shadow:none;transform:translateY(2px)}
+.hintbox{
+  background:var(--s);border:3px dashed var(--d);border-radius:14px;
+  padding:10px 13px;font-weight:800;font-size:.88rem;line-height:1.35;
+  margin-bottom:12px;animation:pop .16s;
+}
+.hintbox:empty{display:none}
+.qprompt{font-family:'Fredoka',sans-serif;font-size:clamp(1.1rem,2.6vw,1.45rem);font-weight:600;line-height:1.3}
+.quote{
+  display:flex;align-items:center;gap:10px;justify-content:space-between;
+  margin-top:12px;background:#F7F2E8;border:3px solid var(--ink);border-radius:16px;
+  padding:12px 14px;font-size:clamp(1.02rem,2.2vw,1.25rem);font-weight:900;
+}
+.listen{
+  flex:0 0 auto;background:var(--sky);border:3px solid var(--ink);border-radius:12px;
+  width:42px;height:42px;font-size:1.05rem;cursor:pointer;box-shadow:0 3px 0 var(--ink);
+}
+.listen:active{transform:translateY(3px);box-shadow:none}
+.blank{display:inline-block;min-width:56px;border-bottom:4px solid var(--a);margin:0 3px;vertical-align:-2px}
+.hl{background:#FFE58F;border-radius:7px;padding:0 5px;font-weight:900}
+
+.opts{display:grid;gap:10px;margin-top:16px}
+.opt{
+  display:block;width:100%;text-align:left;font-family:'Nunito',sans-serif;
+  font-weight:800;font-size:clamp(.95rem,2vw,1.08rem);padding:14px 16px;cursor:pointer;
+  background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:16px;
+  box-shadow:0 4px 0 var(--ink);transition:.06s;
+}
+.opt:hover:not(:disabled){background:var(--s);transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.opt:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.opt:disabled{cursor:default}
+.opt.ok{background:#DCFCE7;box-shadow:0 4px 0 #15803D}
+.opt.ok::after{content:' ✓';font-weight:900;color:#15803D}
+.opt.no{background:#FEE2E2;box-shadow:0 4px 0 #B91C1C}
+.opt.no::after{content:' ✗';font-weight:900;color:#B91C1C}
+
+.trow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.tin{
+  flex:1;min-width:190px;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;
+  padding:13px 15px;border-radius:16px;border:3px solid var(--ink);outline:none;
+  box-shadow:inset 0 3px 0 rgba(0,0,0,.06);
+}
+.tin:focus{background:#FFF9E8}
+.tin.ok{background:#DCFCE7}
+.tin.no{background:#FEE2E2}
+
+.fb{margin-top:16px;border:3px solid var(--ink);border-radius:16px;padding:13px 15px;animation:pop .18s}
+.fb.ok{background:#DCFCE7}
+.fb.no{background:#FEE2E2}
+.fb b{display:block;font-family:'Fredoka',sans-serif;font-size:1rem;margin-bottom:3px}
+.fb span{font-weight:800;font-size:.9rem;line-height:1.35}
+.fb .pen{display:inline-block;margin-top:6px;font-size:.74rem;font-weight:900;opacity:.7}
+
+/* ---------- teach ---------- */
+.teach{
+  background:#fff;border:3px solid var(--ink);border-top:12px solid var(--a);
+  border-radius:26px;padding:22px;box-shadow:0 8px 0 var(--ink);animation:pop .2s;
+}
+.teach .head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.teach .head span{font-size:36px;line-height:1}
+.teach .head h3{margin:0;font-size:1.2rem}
+.teach ul{margin:0 0 14px;padding-left:20px}
+.teach li{font-weight:800;font-size:.95rem;margin:4px 0}
+.ex{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--s);border:3px solid var(--ink);border-radius:14px;
+  padding:11px 13px;margin-bottom:8px;font-weight:900;font-size:1.02rem;
+}
+.note{background:#EDE9FE;border-radius:14px;padding:11px 13px;font-weight:800;font-size:.86rem;border:3px dashed var(--ink)}
+
+/* ---------- result ---------- */
+.res{text-align:center}
+.res .big{font-size:62px;line-height:1;animation:bob 1.6s ease-in-out infinite}
+.res h2{margin:6px 0;font-size:1.5rem}
+.res p{font-weight:800;margin:4px 0;opacity:.75}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+
+/* ---------- speaking ---------- */
+.timer{
+  font-family:'Fredoka',sans-serif;font-size:2.6rem;text-align:center;
+  background:var(--s);border:3px solid var(--ink);border-radius:20px;padding:10px;margin:14px 0;
+}
+.timer.low{background:#FFE0D6}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(27,21,36,.45);opacity:0;pointer-events:none;transition:.2s;z-index:60}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;height:100%;width:min(400px,92vw);background:var(--cream);
+  z-index:70;transform:translateX(104%);transition:transform .24s;display:flex;flex-direction:column;
+  border-left:3px solid var(--ink);
+}
+.drawer.on{transform:none}
+.dhead{display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--ink);color:#fff}
+.dhead h3{margin:0;font-size:1.05rem}
+.dbody{padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.rcard{display:flex;gap:10px;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:12px;box-shadow:0 4px 0 var(--ink)}
+.rcard.lock{background:#EBE3D7;box-shadow:none;opacity:.6}
+.rcard .ic{font-size:1.3rem}
+.rcard b{display:block;font-family:'Fredoka',sans-serif;font-size:.95rem;margin-bottom:3px}
+.rcard li{font-size:.85rem;font-weight:800;margin:2px 0;list-style:none}
+.rcard ul{margin:0;padding:0}
+
+/* ---------- toast + confetti ---------- */
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);z-index:90;
+  background:var(--ink);color:#fff;border-radius:16px;padding:13px 20px;font-weight:900;
+  opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center;font-size:.9rem;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.conf{position:fixed;top:-16px;width:11px;height:15px;border-radius:3px;z-index:95;pointer-events:none;animation:fall 2.1s linear forwards}
+@keyframes fall{to{transform:translateY(107vh) rotate(720deg);opacity:.9}}
+
+@media(max-width:520px){
+  .brand p{display:none}
+  .bot{width:42px;height:42px;font-size:22px}
+  .hero .big{font-size:42px}
+  .sb{font-size:.55rem}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <div class="bot">🤖</div>
+    <div>
+      <h1>Present Simple <em>POWER</em></h1>
+      <p>Build the blocks. Keep the S!</p>
+    </div>
+  </div>
+  <div class="hud">
+    <span class="chip xp">⭐ <b id="xpV">0</b></span>
+    <span class="chip fire">🔥 <b id="stkV">0</b></span>
+    <button class="ico" id="sndBtn" title="Sound">🔊</button>
+    <button class="ico" id="rulesBtn" title="My rules">📘</button>
+  </div>
+</header>
+
+<main class="screen">
+  <section class="view on" id="vMap">
+    <div class="hero">
+      <div class="big">🚀</div>
+      <div>
+        <h2>Let's build the tower!</h2>
+        <p>Eight blocks, eight colours. Clear one to unlock the next.</p>
+      </div>
+    </div>
+    <div class="tower" id="tower"></div>
+    <div class="steps-row">
+      <button class="btn sm" id="mixBtn">⚡ Quick Mix</button>
+      <button class="btn sm" id="unlockBtn">🔓 Unlock all</button>
+      <button class="btn sm" id="resetBtn">↺ Reset</button>
+    </div>
+  </section>
+
+  <section class="view" id="vPlay">
+    <div class="phead">
+      <button class="btn sm" id="backBtn">←</button>
+      <div class="phtxt"><b id="phName"></b></div>
+      <span class="chip" id="phScore">0 / 0</span>
+    </div>
+    <div class="strip" id="strip"></div>
+    <div class="dots" id="dots"></div>
+    <div id="qArea"></div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <div class="dhead">
+    <h3>📘 My Rules</h3>
+    <button class="ico" id="dClose">✕</button>
+  </div>
+  <div class="dbody" id="ruleList"></div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const ri = n => Math.floor(Math.random() * n);
+const pick = a => a[ri(a.length)];
+const shuffle = a => {
+  const b = a.slice();
+  for (let i = b.length - 1; i > 0; i--) {
+    const j = ri(i + 1);
+    [b[i], b[j]] = [b[j], b[i]];
+  }
+  return b;
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const tall = s => esc(s).replace(/___/g, '<span class="blank"></span>');
+const norm = s => String(s).toLowerCase().replace(/[\u2019']/g, '')
+  .replace(/[.!?]+$/, '').replace(/\s+/g, ' ').trim();
+const plain = s => String(s).replace(/<[^>]+>/g, '');
+
+function deck(arr) {
+  let pool = [], last = null;
+  return function next() {
+    if (!pool.length) {
+      pool = shuffle(arr);
+      if (pool.length > 1 && pool[pool.length - 1] === last) pool.unshift(pool.pop());
+    }
+    last = pool.pop();
+    return last;
+  };
+}
+function wrongsFrom(arr, exclude, n) {
+  return shuffle(arr.filter(x => x !== exclude)).slice(0, n);
+}
+
+function chq(prompt, good, wrongs, why, quote) {
+  const options = shuffle([good].concat(wrongs));
+  return { kind: 'choice', prompt, quote: quote || '', options, ci: options.indexOf(good), why };
+}
+function typ(prompt, answers, why, quote) {
+  return { kind: 'type', prompt, quote: quote || '', answers: answers.map(norm), show: answers[0], why };
+}
+function mist(wrong, right, d1, d2, why) {
+  const options = shuffle([right, d1, d2]);
+  return {
+    kind: 'choice',
+    prompt: 'One of these sentences is fixed. Which one is correct?',
+    quote: '"' + wrong + '"',
+    options, ci: options.indexOf(right), why
+  };
+}
+function teachCard(emoji, title, lines, examples, note) {
+  return { kind: 'teach', emoji, title, lines, examples: examples || [], note: note || '' };
+}
+
+function sig(it) {
+  const body = it.options ? it.options.join('|') : (it.answers ? it.answers.join('|') : '');
+  return (it.prompt + '|' + (it.quote || '') + '|' + body).toLowerCase();
+}
+
+function planTypes(n, types) {
+  const list = types.slice();
+  const out = [];
+  for (let i = 0; i < n; i++) out.push(list[i % list.length]);
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = ri(i + 1);
+    const t = out[i]; out[i] = out[j]; out[j] = t;
+  }
+  for (let pass = 0; pass < 3; pass++) {
+    for (let i = 2; i < out.length; i++) {
+      if (out[i] === out[i - 1] && out[i] === out[i - 2]) {
+        for (let j = i + 1; j < out.length; j++) {
+          if (out[j] !== out[i]) { const t = out[i]; out[i] = out[j]; out[j] = t; break; }
+        }
+      }
+    }
+    for (let i = out.length - 3; i >= 0; i--) {
+      if (out[i] === out[i + 1] && out[i] === out[i + 2]) {
+        for (let j = i - 1; j >= 0; j--) {
+          if (out[j] !== out[i]) { const t = out[i]; out[i] = out[j]; out[j] = t; break; }
+        }
+      }
+    }
+  }
+  return out;
+}
+
+/* ================= sound ================= */
+let actx = null;
+function ac() {
+  if (!actx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    actx = new AC();
+  }
+  return actx;
+}
+function beep(f, at, dur, type, vol) {
+  const ctx = ac();
+  if (!ctx) return;
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = type || 'sine';
+  o.frequency.value = f;
+  o.connect(g); g.connect(ctx.destination);
+  const t0 = ctx.currentTime + at;
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.linearRampToValueAtTime(vol || 0.06, t0 + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.start(t0); o.stop(t0 + dur + 0.03);
+}
+function sfx(k) {
+  if (!state.sound) return;
+  try {
+    if (k === 'ok') { beep(680, 0, 0.1); beep(920, 0.07, 0.14); }
+    else if (k === 'no') { beep(240, 0, 0.14, 'square', 0.04); beep(170, 0.1, 0.18, 'square', 0.04); }
+    else if (k === 'level') { [523, 659, 784, 1046].forEach((f, i) => beep(f, i * 0.09, 0.2)); }
+    else if (k === 'hint') { beep(520, 0, 0.07, 'triangle', 0.04); beep(700, 0.06, 0.1, 'triangle', 0.04); }
+    else { beep(440, 0, 0.045, 'triangle', 0.03); }
+  } catch (e) {}
+}
+function say(text) {
+  if (!('speechSynthesis' in window)) { toast('Sorry — no voice here 😕'); return; }
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(plain(text));
+    u.lang = 'en-GB'; u.rate = 0.85; u.pitch = 1.05;
+    window.speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
+/* ================= state ================= */
+const KEY = 'ps_power_v3';
+const state = { xp: 0, streak: 0, unlocked: 1, passed: {}, sound: true };
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (typeof s.xp === 'number') state.xp = s.xp;
+    if (typeof s.unlocked === 'number') state.unlocked = s.unlocked;
+    if (typeof s.sound === 'boolean') state.sound = s.sound;
+    if (s.passed && typeof s.passed === 'object') state.passed = s.passed;
+  } catch (e) {}
+}
+
+/* ================= palettes: one per block ================= */
+const PAL = {
+  0: { c: '#8B5CF6', s: '#EDE9FE', d: '#5B21B6' },
+  1: { c: '#F5B921', s: '#FFF3C4', d: '#B45309' },
+  2: { c: '#38BDF8', s: '#DFF3FE', d: '#0369A1' },
+  3: { c: '#2DD4BF', s: '#CFFAF3', d: '#0F766E' },
+  4: { c: '#FF6B6B', s: '#FFE3E3', d: '#B91C1C' },
+  5: { c: '#8B5CF6', s: '#EDE9FE', d: '#5B21B6' },
+  6: { c: '#FB7185', s: '#FFE3EA', d: '#9F1239' },
+  7: { c: '#22C55E', s: '#DCFCE7', d: '#15803D' },
+  8: { c: '#F97316', s: '#FFEDD5', d: '#C2410C' }
+};
+
+/* ================= content ================= */
+const ROUTINES = [
+  'I brush my teeth every morning.',
+  'We play football on Saturdays.',
+  'She walks to school every day.',
+  'They watch TV in the evening.',
+  'My mum cooks dinner on Mondays.',
+  'I read a book every night.',
+  'He gets up at seven every day.',
+  'We visit my grandma every Sunday.'
+];
+const FACTS = [
+  'The sun is very hot.',
+  'Water boils at 100 degrees.',
+  'Cats sleep a lot.',
+  'Dogs eat meat.',
+  'Birds have wings.',
+  'Ice is cold.',
+  'The Earth goes around the Sun.',
+  'Parrots live in hot countries.'
+];
+const R_TRIPLES = [
+  { g: 'I play football every Saturday.', o: ['I am playing football now.', 'I played football yesterday.'],
+    w: '"Every Saturday" means again and again. That is present simple.' },
+  { g: 'She reads a book every night.', o: ['She is reading a book now.', 'She read a book last night.'],
+    w: '"Every night" is a routine. Present simple.' },
+  { g: 'We go to school by bus every day.', o: ['We are going to school now.', 'We went to school yesterday.'],
+    w: '"Every day" tells us it is a routine.' },
+  { g: 'They visit the park on Sundays.', o: ['They are visiting the park now.', 'They visited the park last Sunday.'],
+    w: '"On Sundays" happens again and again.' },
+  { g: 'My brother plays games after school.', o: ['My brother is playing now.', 'My brother played after school yesterday.'],
+    w: 'A habit after school = present simple.' }
+];
+const F_TRIPLES = [
+  { g: 'Water boils at 100 degrees.', o: ['Water is boiling now.', 'Water boiled yesterday.'],
+    w: 'A science fact is always true. Present simple.' },
+  { g: 'Cats sleep a lot.', o: ['The cat is sleeping now.', 'The cat slept a lot yesterday.'],
+    w: 'True all the time = present simple.' },
+  { g: 'The sun rises in the east.', o: ['The sun is rising now.', 'The sun rose yesterday.'],
+    w: 'Always true = present simple.' },
+  { g: 'Birds fly south in winter.', o: ['The birds are flying now.', 'The birds flew yesterday.'],
+    w: 'Something that always happens = present simple.' }
+];
+
+const D_ROUTINE = deck(ROUTINES);
+const D_FACT = deck(FACTS);
+const D_RTRIP = deck(R_TRIPLES);
+const D_FTRIP = deck(F_TRIPLES);
+
+const T1 = teachCard('👀', 'First: WHAT is it for?', [
+  'Present simple = things that happen again and again.',
+  'Present simple = things that are always true.'
+], [
+  'I brush my teeth <span class="hl">every morning</span>.',
+  'The sun <span class="hl">is</span> very hot.'
+], 'Read it like this: "This happens again and again" or "This is always true".');
+
+function g1classify() {
+  const isR = Math.random() < 0.5;
+  const s = (isR ? D_ROUTINE : D_FACT)();
+  return {
+    kind: 'choice',
+    prompt: pick(['What is this sentence about?', 'Routine or fact?', 'Why is present simple used here?']),
+    quote: '"' + s + '"',
+    options: ['A routine — again and again 🔁', 'A fact — always true 🌍'],
+    ci: isR ? 0 : 1,
+    why: isR
+      ? 'It happens again and again, so we use present simple.'
+      : 'It is true all the time, so we use present simple too.'
+  };
+}
+function g1triple() {
+  const t = D_RTRIP();
+  return chq('Which sentence happens again and again?', t.g, t.o, t.w);
+}
+function g1fact() {
+  const t = D_FTRIP();
+  return chq('Which sentence is always true?', t.g, t.o, t.w);
+}
+
+/* ---- block 2 ---- */
+const PS_TIME = ['always', 'usually', 'often', 'sometimes', 'never', 'every day',
+  'every Monday', 'every Saturday', 'on Mondays', 'on Tuesdays', 'every morning', 'every evening'];
+const NO_TIME = ['yesterday', 'now', 'tomorrow', 'last week', 'right now',
+  'next Monday', 'two weeks ago', 'last night', 'next year', 'at the moment'];
+const PS_SENT = [
+  { g: 'She plays tennis every Tuesday.', o: ['She is playing tennis now.', 'She played tennis yesterday.'] },
+  { g: 'We go to school by bus every day.', o: ['We are going to school now.', 'We went to school yesterday.'] },
+  { g: 'My dad reads the newspaper every morning.', o: ['My dad is reading now.', 'My dad read it yesterday.'] },
+  { g: 'I usually eat breakfast at 7.', o: ['I am eating breakfast now.', 'I ate breakfast at 7 yesterday.'] },
+  { g: 'Tom never drinks coffee.', o: ['Tom is drinking coffee now.', 'Tom drank coffee yesterday.'] }
+];
+
+const D_PSTIME = deck(PS_TIME);
+const D_NOTIME = deck(NO_TIME);
+const D_PSSENT = deck(PS_SENT);
+
+const T2 = teachCard('⏰', 'Time words are the clue!', [
+  'These words love present simple:',
+  'always · usually · often · sometimes · never',
+  'every day · every Monday · every Saturday · on Mondays'
+], [
+  'I <span class="hl">always</span> eat breakfast.',
+  'He plays tennis <span class="hl">on Mondays</span>.'
+], 'yesterday, now, tomorrow and last week are NOT present simple words.');
+
+function g2word() {
+  const good = D_PSTIME();
+  return chq('Which time word goes with present simple?', good,
+    wrongsFrom(NO_TIME, good, 2),
+    '"' + good + '" means it happens again and again, so we use present simple.');
+}
+function g2not() {
+  const bad = D_NOTIME();
+  return chq('Which word does NOT go with present simple?', bad,
+    wrongsFrom(PS_TIME, bad, 2),
+    '"' + bad + '" is not a present simple word. Use always, usually, often, sometimes, never, every day, on Mondays.');
+}
+function g2sent() {
+  const t = D_PSSENT();
+  return chq('Which sentence is present simple?', t.g, t.o,
+    'Look for the time word. Present simple sentences often have every day, on Mondays or always.');
+}
+
+/* ---- block 3 ---- */
+const PLURAL = ['I', 'You', 'We', 'They', 'My friends', 'Tom and Anna', 'The children',
+  'My parents', 'My brother and I', 'The students', 'My cousins', 'The boys', 'My sisters'];
+const VPL = [
+  ['play', 'football after school'], ['like', 'pizza'], ['live', 'in London'],
+  ['eat', 'fruit every day'], ['read', 'comics'], ['speak', 'English very well'],
+  ['want', 'a new bike'], ['walk', 'to school'], ['drink', 'milk in the morning'],
+  ['swim', 'on Saturdays'], ['love', 'dogs'], ['need', 'a pencil'],
+  ['play', 'computer games'], ['run', 'in the park'], ['cook', 'dinner on Sundays'],
+  ['watch', 'films at home'], ['clean', 'their room'], ['visit', 'their grandma']
+];
+
+const D_PLURAL = deck(PLURAL);
+const D_VPL = deck(VPL);
+
+const T3 = teachCard('👥', 'I · you · we · they', [
+  'The verb has NO S at the end.',
+  'I play. You play. We play. They play.'
+], [
+  'They <span class="hl">play</span> football after school.',
+  'We <span class="hl">live</span> in London.'
+], 'I, you, we and they never take the S. Only he, she and it do.');
+
+function g3mc() {
+  const [verb, obj] = D_VPL();
+  const subj = D_PLURAL();
+  return chq(subj + ' ___ (' + verb + ') ' + obj + '.', verb, [verb + 's'],
+    subj + ' → the verb has NO S. Just "' + verb + '".');
+}
+function g3type() {
+  const [verb, obj] = D_VPL();
+  const subj = D_PLURAL();
+  return typ(subj + ' ___ (' + verb + ') ' + obj + '.', [verb],
+    'After ' + subj + ' we say "' + verb + '" — no S.');
+}
+function g3fix() {
+  const [verb, obj] = D_VPL();
+  const subj = D_PLURAL();
+  const bad1 = subj + ' ' + verb + 's ' + obj + '.';
+  return mist(bad1, subj + ' ' + verb + ' ' + obj + '.', bad1,
+    subj + ' ' + verb + 'es ' + obj + '.',
+    subj + ' is not he/she/it, so no S: "' + subj + ' ' + verb + ' ' + obj + '."');
+}
+
+/* ---- block 4 ---- */
+const SING = ['He', 'She', 'Tom', 'Sarah', 'My mum', 'My dad', 'My brother', 'My sister',
+  'My teacher', 'Emma', 'Lucas', 'The dog', 'My best friend', 'Anna'];
+const VSG = [
+  ['play', 'football after school'], ['read', 'comics'], ['like', 'ice cream'],
+  ['live', 'in London'], ['work', 'in a bank'], ['eat', 'breakfast at 7'],
+  ['drink', 'water'], ['walk', 'to school'], ['want', 'a new phone'],
+  ['speak', 'English very well'], ['sleep', 'a lot'], ['love', 'music'],
+  ['run', 'very fast'], ['clean', 'the kitchen'], ['listen', 'to music'],
+  ['sing', 'in a band'], ['help', 'at home'], ['need', 'a pen']
+];
+
+const D_SING = deck(SING);
+const D_VSG = deck(VSG);
+
+const T4 = teachCard('🙋', 'he · she · it', [
+  'Now the verb NEEDS the S.',
+  'He plays. She plays. It plays.'
+], [
+  'She <span class="hl">plays</span> tennis on Mondays.',
+  'My dad <span class="hl">works</span> in a bank.'
+], 'Careful with one special verb: have → has. "She has a dog."');
+
+function g4mc() {
+  const [verb, obj] = D_VSG();
+  const subj = D_SING();
+  return chq(subj + ' ___ (' + verb + ') ' + obj + '.', verb + 's', [verb],
+    subj + ' is he / she / it → we add S: ' + verb + ' → ' + verb + 's.');
+}
+function g4type() {
+  const [verb, obj] = D_VSG();
+  const subj = D_SING();
+  return typ(subj + ' ___ (' + verb + ') ' + obj + '.', [verb + 's'],
+    subj + ' → ' + verb + 's (with the S!).');
+}
+function g4have() {
+  const subj = D_SING();
+  return chq(subj + ' ___ (have) a dog.', 'has', ['haves', 'have'],
+    'Special verb! have → has. "' + subj + ' has a dog."');
+}
+function g4fix() {
+  const [verb, obj] = D_VSG();
+  const subj = D_SING();
+  const bad1 = subj + ' ' + verb + ' ' + obj + '.';
+  return mist(bad1, subj + ' ' + verb + 's ' + obj + '.', bad1,
+    subj + ' ' + verb + 'es ' + obj + '.',
+    subj + ' is a he/she/it word, so the verb needs the S.');
+}
+
+/* ---- block 5 ---- */
+const WHY5 = {
+  es: 'After ch, sh, s, x or o we add -es.',
+  ies: 'Consonant + y → change the y to -ies.',
+  ys: 'Vowel + y → just add -s.'
+};
+const B5 = [
+  { v: 'watch', s: 'watches', o: 'TV every evening', g: 'es' },
+  { v: 'finish', s: 'finishes', o: 'school at 3', g: 'es' },
+  { v: 'wash', s: 'washes', o: 'the car on Saturdays', g: 'es' },
+  { v: 'catch', s: 'catches', o: 'the bus at 7', g: 'es' },
+  { v: 'fix', s: 'fixes', o: 'bikes in the shop', g: 'es' },
+  { v: 'go', s: 'goes', o: 'to school by bus', g: 'es' },
+  { v: 'do', s: 'does', o: 'the dishes after dinner', g: 'es' },
+  { v: 'study', s: 'studies', o: 'English every day', g: 'ies' },
+  { v: 'carry', s: 'carries', o: 'a big bag', g: 'ies' },
+  { v: 'fly', s: 'flies', o: 'a kite on Sundays', g: 'ies' },
+  { v: 'try', s: 'tries', o: 'new food', g: 'ies' },
+  { v: 'play', s: 'plays', o: 'football with friends', g: 'ys' },
+  { v: 'buy', s: 'buys', o: 'bread every morning', g: 'ys' },
+  { v: 'stay', s: 'stays', o: 'at home on Sundays', g: 'ys' }
+];
+
+const D_B5 = deck(B5);
+
+const T5 = teachCard('➕', 'Sometimes it is not just S', [
+  'After ch, sh, s, x, o → add -es',
+  'Consonant + y → change y to -ies',
+  'Vowel + y (play, buy, stay) → just add -s'
+], [
+  'watch → <span class="hl">watches</span>',
+  'study → <span class="hl">studies</span>',
+  'play → <span class="hl">plays</span>'
+], 'go → goes · do → does · watch → watches · study → studies · play → plays');
+
+function spellWrongs(it) {
+  const cands = [it.v + 's', it.v.replace(/y$/, 'ies'), it.v + 'es', it.v];
+  const out = [];
+  cands.forEach(c => { if (c !== it.s && out.indexOf(c) === -1) out.push(c); });
+  return out.slice(0, 2);
+}
+function g5mc() {
+  const it = D_B5();
+  const subj = D_SING();
+  return chq(subj + ' ___ (' + it.v + ') ' + it.o + '.', it.s, spellWrongs(it), WHY5[it.g]);
+}
+function g5type() {
+  const it = D_B5();
+  const subj = D_SING();
+  return typ(subj + ' ___ (' + it.v + ') ' + it.o + '.', [it.s], WHY5[it.g]);
+}
+function g5spell() {
+  const it = D_B5();
+  const set = [it.s, it.v + 's', it.v.replace(/y$/, 'ies'), it.v + 'es', it.v];
+  const opts = [];
+  set.forEach(x => { if (opts.indexOf(x) === -1) opts.push(x); });
+  const shuffled = shuffle(opts);
+  return {
+    kind: 'choice',
+    prompt: 'Spelling check! Which one is correct for "' + it.v + '"?',
+    quote: '', options: shuffled, ci: shuffled.indexOf(it.s), why: WHY5[it.g]
+  };
+}
+
+/* ---- block 6 ---- */
+const V6 = [
+  ['play', 'football'], ['like', 'carrots'], ['live', 'in Paris'], ['eat', 'meat'],
+  ['watch', 'TV'], ['go', 'to the park'], ['drink', 'coffee'], ['read', 'comics'],
+  ['speak', 'French'], ['want', 'a dog'], ['walk', 'to school'], ['sing', 'in a band']
+];
+
+const D_V6 = deck(V6);
+
+const T6 = teachCard('🚫', 'Saying NO 🚫', [
+  "I / you / we / they → don't",
+  "he / she / it → doesn't",
+  'After them, the verb is NORMAL — no S!'
+], [
+  "They <span class=\"hl\">don't</span> play tennis.",
+  "She <span class=\"hl\">doesn't</span> play tennis."
+], 'Never say "She doesn\'t plays". The S is already inside doesn\'t!');
+
+function g6sign() {
+  const [verb, obj] = D_V6();
+  const isS = Math.random() < 0.5;
+  const subj = isS ? D_SING() : D_PLURAL();
+  return chq(subj + ' ___ ' + verb + ' ' + obj + '.', isS ? "doesn't" : "don't",
+    [isS ? "don't" : "doesn't"],
+    isS ? subj + " is he/she/it → doesn't." : subj + " → don't.");
+}
+function g6verb() {
+  const [verb, obj] = D_V6();
+  const subj = D_SING();
+  return chq(subj + " doesn't ___ (" + verb + ') ' + obj + '.', verb, [verb + 's', verb + 'es'],
+    "The S is already inside doesn't. So the verb stays normal: " + subj + " doesn't " + verb + '.');
+}
+function g6type() {
+  const [verb, obj] = D_V6();
+  const isS = Math.random() < 0.5;
+  const subj = isS ? D_SING() : D_PLURAL();
+  const ans = isS ? "doesn't " + verb : "don't " + verb;
+  return typ(subj + ' ___ (not / ' + verb + ') ' + obj + '.',
+    [ans, (isS ? 'does not ' : 'do not ') + verb],
+    'The negative is "' + ans + '".');
+}
+function g6fix() {
+  const [verb, obj] = D_V6();
+  const subj = D_SING();
+  const bad1 = subj + " don't " + verb + ' ' + obj + '.';
+  return mist(bad1, subj + " doesn't " + verb + ' ' + obj + '.', bad1,
+    subj + " doesn't " + verb + 's ' + obj + '.',
+    subj + " is he/she/it → doesn't + normal verb.");
+}
+
+/* ---- blocks 7 and 8 ---- */
+const T7 = teachCard('⚡', 'Boss battle!', [
+  'Everything you learned, mixed together.',
+  'Step 1: who is it? I/you/we/they or he/she/it?',
+  'Step 2: then choose the verb form.'
+], [], 'When you are not sure, say the sentence out loud in your head.');
+
+const SPEAK = [
+  { p: 'Tell me about your morning. Say 3 sentences with "I".', t: 'I / you / we / they → NO S.' },
+  { p: 'Talk about your best friend. Use "he" or "she". 3 sentences.', t: 'he / she → the verb needs the S.' },
+  { p: 'Say 3 things you NEVER do. Use "I never…".', t: 'never + present simple.' },
+  { p: 'Talk about your mum or dad. Use always / usually / often.', t: 'She usually works… He always gets up…' },
+  { p: 'Say 2 facts about an animal. (Cats… Dogs…)', t: 'Facts that are always true.' },
+  { p: "Say 3 things your friend DOESN'T do.", t: "doesn't + normal verb (no S)." }
+];
+const T8 = teachCard('🗣️', 'Your turn to speak', [
+  'No writing now — just talk!',
+  'You have 30 seconds for each one.'
+], [], 'It is okay to make a mistake. Try again, that is how it sticks.');
+
+/* ---- generator registry ---- */
+const GEN = {
+  b1_classify: g1classify, b1_triple: g1triple, b1_fact: g1fact,
+  b2_word: g2word, b2_not: g2not, b2_sent: g2sent,
+  b3_mc: g3mc, b3_type: g3type, b3_fix: g3fix,
+  b4_mc: g4mc, b4_type: g4type, b4_have: g4have, b4_fix: g4fix,
+  b5_mc: g5mc, b5_type: g5type, b5_spell: g5spell,
+  b6_sign: g6sign, b6_verb: g6verb, b6_type: g6type, b6_fix: g6fix
+};
+
+/* ---- hints: nudge the thinking, never the answer ---- */
+const HINTS = {
+  b1_classify: 'Ask yourself: does this happen again and again, or is it true all the time?',
+  b1_triple: 'Look at the time words at the end of each sentence.',
+  b1_fact: 'Which sentence would still be true on a day you never saw it happen?',
+  b2_word: 'One of these words shows a repeating pattern. The others are about one single time.',
+  b2_not: 'One of these words talks about one moment, not a habit.',
+  b2_sent: 'Check the time word at the end of each sentence. Is it a habit word?',
+  b3_mc: 'Who is the subject? If it is not he, she or it, the verb stays plain.',
+  b3_type: 'Who is the subject? If it is not he, she or it, the verb stays plain.',
+  b3_fix: 'Two sentences have an S they should not have. Find the one without it.',
+  b4_mc: 'Is the subject a he/she/it word? Then the verb needs the S.',
+  b4_type: 'Is the subject a he/she/it word? Then the verb needs the S.',
+  b4_have: 'This verb is special. It does not just take an S.',
+  b4_fix: 'Only one sentence has the S the subject needs.',
+  b5_mc: 'Look at the last letters of the verb: ch, sh, s, x, o — or a consonant + y?',
+  b5_type: 'Look at the last letters of the verb: ch, sh, s, x, o — or a consonant + y?',
+  b5_spell: 'Check the ending of the verb first, then look for the same ending in the answers.',
+  b6_sign: 'First find the subject, then decide: don\'t or doesn\'t?',
+  b6_verb: 'The S is already hiding inside doesn\'t. So what does the verb need?',
+  b6_type: 'First find the subject. Then write the correct negative, then the plain verb.',
+  b6_fix: 'Only one sentence has the right negative AND the right verb after it.'
+};
+
+const BLOCK_TYPES = {
+  1: ['b1_classify', 'b1_triple', 'b1_classify', 'b1_fact'],
+  2: ['b2_word', 'b2_sent', 'b2_not', 'b2_word', 'b2_sent'],
+  3: ['b3_mc', 'b3_type', 'b3_fix', 'b3_mc'],
+  4: ['b4_mc', 'b4_type', 'b4_have', 'b4_fix', 'b4_mc'],
+  5: ['b5_mc', 'b5_type', 'b5_spell', 'b5_mc'],
+  6: ['b6_sign', 'b6_verb', 'b6_type', 'b6_fix', 'b6_sign']
+};
+
+const BLOCKS = [
+  { id: 1, e: '🎯', t: 'What is it for?', s: 'routines and facts', teach: T1, n: 8 },
+  { id: 2, e: '⏰', t: 'Time words', s: 'always · every day · on Mondays', teach: T2, n: 8 },
+  { id: 3, e: '👥', t: 'I · you · we · they', s: 'no S at the end', teach: T3, n: 8 },
+  { id: 4, e: '🙋', t: 'he · she · it', s: 'add the S', teach: T4, n: 8 },
+  { id: 5, e: '➕', t: '-es and -ies', s: 'watches · goes · studies', teach: T5, n: 8 },
+  { id: 6, e: '🚫', t: "don't · doesn't", s: 'the negative form', teach: T6, n: 8 },
+  { id: 7, e: '⚡', t: 'Boss battle', s: 'everything mixed', teach: T7, n: 10 },
+  { id: 8, e: '🗣️', t: 'Speaking time', s: 'say it out loud', teach: T8, n: 0 }
+];
+
+const RULES = {
+  1: { ic: '🎯', t: 'When do we use it?', l: ['A routine (again and again) ✔', 'A fact (always true) ✔', 'now / yesterday / tomorrow ✘'] },
+  2: { ic: '⏰', t: 'Time words', l: ['always, usually, often, sometimes, never', 'every day, every Monday, on Mondays', 'NOT yesterday, now, tomorrow, last week'] },
+  3: { ic: '👥', t: 'I / you / we / they', l: ['No S: I play, you play, we play, they play'] },
+  4: { ic: '🙋', t: 'he / she / it', l: ['Add S: he plays, she plays, it plays', 'have → has'] },
+  5: { ic: '➕', t: '-es and -ies', l: ['ch, sh, s, x, o → -es', 'consonant + y → -ies', 'vowel + y → -s'] },
+  6: { ic: '🚫', t: "don't / doesn't", l: ["I/you/we/they → don't", "he/she/it → doesn't", 'after them: normal verb'] },
+  7: { ic: '⚡', t: 'Mix it', l: ['Who is it first? Then the verb.'] },
+  8: { ic: '🗣️', t: 'Speak it', l: ['Full sentences, out loud.'] }
+};
+
+/* ================= item building ================= */
+function makeUnique(type, seen) {
+  let it = null;
+  for (let i = 0; i < 40; i++) {
+    it = GEN[type]();
+    const s = sig(it);
+    if (!seen.has(s)) { seen.add(s); it.hint = HINTS[type] || ''; return it; }
+  }
+  seen.add(sig(it));
+  it.hint = HINTS[type] || '';
+  return it;
+}
+
+function buildMix(n) {
+  const all = [];
+  for (let k = 1; k <= 6; k++) BLOCK_TYPES[k].forEach(t => all.push(t));
+  const plan = planTypes(n, shuffle(all));
+  const seen = new Set();
+  return plan.map(t => makeUnique(t, seen));
+}
+
+function buildItems(id) {
+  if (id === 0) return buildMix(10);
+  if (id === 8) {
+    const warm = buildMix(2);
+    warm.forEach(w => { w.review = true; });
+    const spoken = SPEAK.map(s => ({ kind: 'speak', prompt: s.p, tip: s.t }));
+    return [BLOCKS[7].teach].concat(warm, spoken);
+  }
+  const b = BLOCKS[id - 1];
+  const seen = new Set();
+  const out = [b.teach];
+  planTypes(b.n, BLOCK_TYPES[id]).forEach(t => out.push(makeUnique(t, seen)));
+
+  const earlier = [];
+  for (let k = 1; k < id; k++) BLOCK_TYPES[k].forEach(t => earlier.push(t));
+  if (earlier.length) {
+    const nc = id >= 5 ? 3 : 2;
+    const revPlan = planTypes(nc, shuffle(earlier).slice(0, Math.min(earlier.length, 6)));
+    revPlan.forEach(t => {
+      const it = makeUnique(t, seen);
+      it.review = true;
+      out.push(it);
+    });
+  }
+  return out;
+}
+
+/* ================= session ================= */
+const session = { blockId: 1, items: [], i: 0, ok: 0, total: 1 };
+let answered = false;
+let hintedThis = false;
+let speakTimer = null;
+
+function applyTheme(id) {
+  const p = PAL[id] || PAL[0];
+  const v = $('#vPlay');
+  v.style.setProperty('--a', p.c);
+  v.style.setProperty('--s', p.s);
+  v.style.setProperty('--d', p.d);
+}
+
+function startBlock(id) {
+  clearInterval(speakTimer);
+  session.blockId = id;
+  session.items = buildItems(id);
+  session.i = 0;
+  session.ok = 0;
+  session.total = Math.max(1, session.items.filter(x => x.kind !== 'teach' && !x.review).length);
+  applyTheme(id);
+  $('#phName').textContent = id === 0
+    ? '⚡ Quick Mix'
+    : BLOCKS[id - 1].e + ' Block ' + id + ': ' + BLOCKS[id - 1].t;
+  screen('vPlay');
+  renderItem();
+}
+
+function paintStrip() {
+  const strip = $('#strip');
+  strip.innerHTML = '';
+  const cur = session.blockId;
+  BLOCKS.forEach(b => {
+    const p = PAL[b.id];
+    const done = !!state.passed[b.id];
+    const el = document.createElement('div');
+    el.className = 'sb' + (b.id === cur ? ' cur' : '') + (done ? ' done' : '');
+    el.style.setProperty('--a', p.c);
+    el.style.background = done || b.id === cur ? p.s : '#fff';
+    el.style.borderColor = done ? p.c : (b.id === cur ? 'var(--ink)' : '#E0D5C4');
+    el.innerHTML = '<span style="font-size:.95rem">' +
+      (done ? '✓' : b.id === cur ? b.e : '•') + '</span><span>B' + b.id + '</span>';
+    el.title = 'Block ' + b.id + ': ' + b.t;
+    strip.appendChild(el);
+  });
+}
+
+function paintProgress() {
+  paintStrip();
+  const d = $('#dots');
+  d.innerHTML = '';
+  session.items.forEach((it, i) => {
+    const s = document.createElement('span');
+    s.className = 'dot' + (i < session.i ? ' done' : i === session.i ? ' cur' : '');
+    d.appendChild(s);
+  });
+  $('#phScore').textContent = session.ok + ' / ' + session.total;
+}
+
+function renderItem() {
+  answered = false;
+  hintedThis = false;
+  clearInterval(speakTimer);
+  paintProgress();
+  const qa = $('#qArea');
+  const it = session.items[session.i];
+  if (!it) { finishBlock(); return; }
+  if (it.kind === 'teach') { renderTeach(it); return; }
+  if (it.kind === 'speak') { renderSpeak(it); return; }
+
+  const qAll = session.items.filter(x => x.kind !== 'teach').length;
+  const qNo = session.items.slice(0, session.i + 1).filter(x => x.kind !== 'teach').length;
+
+  let h = '<div class="qcard">';
+  h += '<div class="qtop">';
+  h += it.review
+    ? '<span class="tag flash">🔁 Flashback</span>'
+    : '<span class="tag">Question ' + qNo + ' / ' + qAll + '</span>';
+  h += it.hint
+    ? '<button class="hintbtn" id="hintBtn">💡 Hint</button>'
+    : '';
+  h += '</div>';
+  h += '<div class="hintbox" id="hintBox"></div>';
+  h += '<div class="qprompt">' + tall(it.prompt) + '</div>';
+  if (it.quote) {
+    h += '<div class="quote"><div>' + tall(it.quote) + '</div>' +
+      '<button class="listen" data-say="' + esc(plain(it.quote)) + '">🔊</button></div>';
+  }
+  if (it.kind === 'type') {
+    h += '<div class="trow"><input id="tin" class="tin" autocomplete="off" autocorrect="off" ' +
+      'autocapitalize="off" spellcheck="false" placeholder="type here…">' +
+      '<button class="btn pri" id="checkBtn">Check</button></div>';
+  } else {
+    h += '<div class="opts">' + it.options.map((o, i) =>
+      '<button class="opt" data-i="' + i + '">' + tall(o) + '</button>').join('') + '</div>';
+  }
+  h += '<div id="fb"></div></div>';
+  qa.innerHTML = h;
+
+  document.querySelectorAll('.listen').forEach(b =>
+    b.addEventListener('click', () => say(b.dataset.say)));
+
+  const hb = $('#hintBtn');
+  if (hb && it.hint) {
+    hb.addEventListener('click', () => {
+      hintedThis = true;
+      hb.disabled = true;
+      hb.textContent = '💡 Hint used';
+      const box = $('#hintBox');
+      box.textContent = it.hint;
+      // force reflow so the animation replays
+      void box.offsetWidth;
+      sfx('hint');
+    });
+  }
+
+  if (it.kind === 'type') {
+    const inp = $('#tin');
+    inp.focus();
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); checkType(); }
+    });
+    $('#checkBtn').addEventListener('click', checkType);
+  } else {
+    document.querySelectorAll('.opt').forEach(b =>
+      b.addEventListener('click', () => checkChoice(+b.dataset.i)));
+  }
+}
+
+function renderTeach(it) {
+  const cur = session.blockId;
+  const p = PAL[cur] || PAL[0];
+  let h = '<div class="teach">';
+  h += '<div class="qtop"><span class="tag">' +
+    (cur === 0 ? 'Quick Mix' : 'Block ' + cur + ' of 8') + '</span></div>';
+  h += '<div class="head"><span>' + it.emoji + '</span><h3>' + esc(it.title) + '</h3></div>';
+  h += '<ul>' + it.lines.map(l => '<li>' + tall(l) + '</li>').join('') + '</ul>';
+  it.examples.forEach(ex => {
+    h += '<div class="ex"><div>' + ex + '</div>' +
+      '<button class="listen" data-say="' + esc(plain(ex)) + '">🔊</button></div>';
+  });
+  if (it.note) h += '<div class="note">💡 ' + tall(it.note) + '</div>';
+  h += '<button class="btn pri wide" id="gotIt">Got it! Let\'s try →</button></div>';
+  $('#qArea').innerHTML = h;
+  document.querySelectorAll('.listen').forEach(b =>
+    b.addEventListener('click', () => say(b.dataset.say)));
+  $('#gotIt').addEventListener('click', () => {
+    sfx('click');
+    addXP(2);
+    next();
+  });
+}
+
+function renderSpeak(it) {
+  $('#qArea').innerHTML =
+    '<div class="qcard">' +
+      '<div class="qtop"><span class="tag">🗣️ Speaking</span></div>' +
+      '<div class="qprompt">' + esc(it.prompt) + '</div>' +
+      '<div class="note" style="margin-top:12px">💡 ' + esc(it.tip) + '</div>' +
+      '<div class="timer" id="timer">30</div>' +
+      '<div class="row">' +
+        '<button class="btn pri" id="goBtn">▶ Start talking</button>' +
+        '<button class="btn mint" id="doneBtn">✅ We said it</button>' +
+      '</div></div>';
+
+  let left = 30;
+  $('#goBtn').addEventListener('click', () => {
+    clearInterval(speakTimer);
+    left = 30;
+    const t = $('#timer');
+    t.textContent = left;
+    t.classList.remove('low');
+    speakTimer = setInterval(() => {
+      left--;
+      t.textContent = left > 0 ? left : 'Time!';
+      if (left <= 5) t.classList.add('low');
+      if (left <= 0) { clearInterval(speakTimer); sfx('level'); }
+    }, 1000);
+  });
+  $('#doneBtn').addEventListener('click', () => {
+    clearInterval(speakTimer);
+    session.ok++;
+    addXP(10);
+    sfx('ok');
+    next();
+  });
+}
+
+function checkChoice(i) {
+  if (answered) return;
+  const it = session.items[session.i];
+  const ok = i === it.ci;
+  document.querySelectorAll('.opt').forEach(b => {
+    b.disabled = true;
+    const bi = +b.dataset.i;
+    if (bi === it.ci) b.classList.add('ok');
+    else if (bi === i) b.classList.add('no');
+  });
+  resolve(ok, 'The answer is "' + plain(it.options[it.ci]) + '".');
+}
+
+function checkType() {
+  if (answered) return;
+  const it = session.items[session.i];
+  const inp = $('#tin');
+  const ok = it.answers.indexOf(norm(inp.value)) !== -1;
+  inp.disabled = true;
+  inp.classList.add(ok ? 'ok' : 'no');
+  $('#checkBtn').disabled = true;
+  resolve(ok, 'The answer is "' + it.show + '".');
+}
+
+const PRAISE = ['Yes! 🎉', 'Nailed it! ⚡', 'Perfect! 🌟', 'Great! 👏', 'Exactly! 💪', 'Boom! 💥'];
+
+function resolve(ok, answerText) {
+  answered = true;
+  const it = session.items[session.i];
+  const fb = $('#fb');
+  const pen = hintedThis ? '<span class="pen">💡 hint used — 5 XP instead of 10</span>' : '';
+
+  if (ok) {
+    if (!it.review) session.ok++;
+    addXP(hintedThis ? 5 : (it.review ? 15 : 10));
+    state.streak++;
+    sfx('ok');
+    fb.innerHTML = '<div class="fb ok"><b>' + pick(PRAISE) + '</b>' +
+      '<span>' + tall(it.why || '') + '</span>' + pen + '</div>' +
+      '<button class="btn pri wide" id="nextBtn">Next →</button>';
+  } else {
+    state.streak = 0;
+    sfx('no');
+    fb.innerHTML = '<div class="fb no"><b>Not quite. ' + tall(answerText) + '</b>' +
+      '<span>' + tall(it.why || '') + '</span>' + pen + '</div>' +
+      '<button class="btn wide" id="nextBtn">Next →</button>';
+  }
+  hud();
+  $('#phScore').textContent = session.ok + ' / ' + session.total;
+  save();
+  $('#nextBtn').addEventListener('click', next);
+}
+
+function next() {
+  sfx('click');
+  session.i++;
+  if (session.i >= session.items.length) finishBlock();
+  else renderItem();
+}
+
+/* ================= finish ================= */
+function finishBlock() {
+  clearInterval(speakTimer);
+  const id = session.blockId;
+  const pct = Math.round(100 * session.ok / session.total);
+  const mix = id === 0;
+  const speaking = id === 8;
+  const pass = speaking ? true : pct >= 75;
+
+  if (pass && !mix) {
+    state.passed[id] = speaking ? 100 : Math.max(state.passed[id] || 0, pct);
+    if (id < 8 && state.unlocked === id) state.unlocked = id + 1;
+    confetti(speaking ? 140 : 80);
+    sfx('level');
+  }
+  save();
+  paintTower();
+  paintRules();
+
+  let h = '<div class="qcard res">';
+  if (speaking) {
+    h += '<div class="big">🏆</div><h2>You finished the tower!</h2>' +
+      '<p>Routines, facts, time words, the S, -es, -ies, don\'t and doesn\'t.</p>' +
+      '<p>Now keep saying it out loud — that is where it sticks.</p>';
+  } else if (pass) {
+    h += '<div class="big">🎉</div><h2>Block cleared!</h2>' +
+      '<p>' + session.ok + ' of ' + session.total + ' right (' + pct + '%).</p>' +
+      '<p>' + (id < 8 ? 'Block ' + (id + 1) + ' is unlocked.' : '') + '</p>';
+  } else {
+    h += '<div class="big">💪</div><h2>Almost!</h2>' +
+      '<p>' + session.ok + ' of ' + session.total + ' right (' + pct + '%). You need 75%.</p>' +
+      '<p>Look at the rule again, then try once more.</p>';
+  }
+  if (mix) h += '<p>Quick Mix: ' + session.ok + ' / ' + session.total + '.</p>';
+
+  h += '<div class="row">';
+  if (pass && !mix && !speaking && id < 7) {
+    h += '<button class="btn pri" id="nextBlk">Next block →</button>';
+  }
+  if (!mix) h += '<button class="btn" id="again">Try again</button>';
+  h += '<button class="btn mint" id="toMap">🗺️ Map</button></div></div>';
+  $('#qArea').innerHTML = h;
+  paintProgress();
+
+  const nb = $('#nextBlk');
+  if (nb) nb.addEventListener('click', () => { sfx('click'); startBlock(id + 1); });
+  const ag = $('#again');
+  if (ag) ag.addEventListener('click', () => { sfx('click'); startBlock(id); });
+  $('#toMap').addEventListener('click', () => {
+    sfx('click');
+    screen('vMap');
+    paintTower();
+    paintRules();
+  });
+}
+
+/* ================= map + rules ================= */
+let toastT = null;
+function toast(msg) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => el.classList.remove('on'), 2300);
+}
+function confetti(n) {
+  const cols = ['#FFC531', '#FF6B6B', '#38BDF8', '#8B5CF6', '#2DD4BF', '#22C55E'];
+  for (let i = 0; i < n; i++) {
+    const d = document.createElement('div');
+    d.className = 'conf';
+    d.style.left = (Math.random() * 100) + 'vw';
+    d.style.background = pick(cols);
+    d.style.animationDelay = (Math.random() * 0.4) + 's';
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 2800);
+  }
+}
+function screen(id) {
+  ['vMap', 'vPlay'].forEach(v => $('#' + v).classList.toggle('on', v === id));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function hud() {
+  $('#xpV').textContent = state.xp;
+  $('#stkV').textContent = state.streak;
+  $('#sndBtn').textContent = state.sound ? '🔊' : '🔇';
+}
+function addXP(n) { state.xp += n; hud(); save(); }
+function stars(p) { return p >= 90 ? '⭐⭐⭐' : p >= 75 ? '⭐⭐' : '⭐'; }
+
+function paintTower() {
+  const t = $('#tower');
+  t.innerHTML = '';
+  BLOCKS.forEach(b => {
+    const open = b.id <= state.unlocked;
+    const best = state.passed[b.id];
+    const p = PAL[b.id];
+    const el = document.createElement('button');
+    el.className = 'step' + (open ? '' : ' lock');
+    el.style.setProperty('--c', p.c);
+    el.style.setProperty('--soft', p.s);
+    el.innerHTML =
+      '<span class="step-e">' + b.e + '</span>' +
+      '<span class="step-b">' +
+        '<span class="step-n">Block ' + b.id + '</span>' +
+        '<span class="step-t">' + esc(b.t) + '</span>' +
+        '<span class="step-s">' + esc(b.s) + '</span>' +
+      '</span>' +
+      '<span class="step-go">' +
+        (open ? (best ? stars(best) : (b.id === state.unlocked ? '▶ Current' : 'Start')) : '🔒') +
+      '</span>';
+    el.addEventListener('click', () => {
+      if (!open) { sfx('no'); toast('Clear the block before this one first! 🔒'); return; }
+      sfx('click');
+      startBlock(b.id);
+    });
+    t.appendChild(el);
+  });
+}
+
+function paintRules() {
+  const box = $('#ruleList');
+  box.innerHTML = '';
+  for (let i = 1; i <= 8; i++) {
+    const r = RULES[i];
+    const done = !!state.passed[i];
+    const el = document.createElement('div');
+    el.className = 'rcard' + (done ? '' : ' lock');
+    if (done) el.style.borderLeft = '10px solid ' + PAL[i].c;
+    el.innerHTML =
+      '<div class="ic">' + (done ? r.ic : '🔒') + '</div>' +
+      '<div><b>' + (done ? esc(r.t) : 'Block ' + i) + '</b>' +
+      '<ul>' + (done ? r.l.map(x => '<li>• ' + esc(x) + '</li>').join('')
+        : '<li>Clear Block ' + i + ' to unlock.</li>') + '</ul></div>';
+    box.appendChild(el);
+  }
+}
+
+/* ================= wire ================= */
+function init() {
+  load();
+  hud();
+  paintTower();
+  paintRules();
+  applyTheme(1);
+
+  $('#sndBtn').addEventListener('click', () => {
+    state.sound = !state.sound;
+    hud();
+    save();
+    if (state.sound) sfx('ok');
+  });
+
+  const openRules = () => {
+    paintRules();
+    $('#drawer').classList.add('on');
+    $('#scrim').classList.add('on');
+  };
+  const closeRules = () => {
+    $('#drawer').classList.remove('on');
+    $('#scrim').classList.remove('on');
+  };
+  $('#rulesBtn').addEventListener('click', openRules);
+  $('#dClose').addEventListener('click', closeRules);
+  $('#scrim').addEventListener('click', closeRules);
+
+  $('#backBtn').addEventListener('click', () => {
+    clearInterval(speakTimer);
+    sfx('click');
+    screen('vMap');
+    paintTower();
+    paintRules();
+  });
+
+  $('#mixBtn').addEventListener('click', () => { sfx('click'); startBlock(0); });
+
+  $('#unlockBtn').addEventListener('click', () => {
+    state.unlocked = 8;
+    save();
+    paintTower();
+    toast('All blocks unlocked (teacher mode) 🔓');
+  });
+
+  $('#resetBtn').addEventListener('click', () => {
+    if (!confirm('Reset all progress?')) return;
+    state.xp = 0; state.streak = 0; state.unlocked = 1; state.passed = {};
+    save(); hud(); paintTower(); paintRules(); screen('vMap');
+    toast('Fresh start! 🌱');
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if ($('#nextBtn')) { e.preventDefault(); next(); return; }
+      const cb = $('#checkBtn');
+      if (cb && !cb.disabled) { e.preventDefault(); checkType(); }
+    }
+    if (e.key === 'Escape') closeRules();
+  });
+}
+
+init();
+</script>
+</body>
+</html>
