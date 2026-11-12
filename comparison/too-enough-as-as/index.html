@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grammar Lab — too · enough · as … as</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --ink:#20243a; --paper:#fff8ec;
+  --sun:#ffc94d; --mint:#3ec9a0; --coral:#ff7a6b; --sky:#6aa9ff; --lilac:#b48cff;
+  --adj:#ff8f80; --noun:#8bbdff; --verb:#7fe0c0; --little:#ffd771;
+  --shadow:8px 8px 0 rgba(32,36,58,.10);
+}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--ink);line-height:1.5;
+  font-family:ui-rounded,"Trebuchet MS","Segoe UI",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 1px 1px,rgba(32,36,58,.09) 1px,transparent 0) 0 0/24px 24px,
+    linear-gradient(165deg,#fff9f0,#fdeee2 55%,#eaf3ff);
+  background-attachment:fixed;
+  -webkit-tap-highlight-color:transparent;
+}
+h1,h2{margin:0 0 8px;line-height:1.15;letter-spacing:-.01em}
+h1{font-size:clamp(1.55rem,4vw,2.15rem)}
+h2{font-size:clamp(1.3rem,3.4vw,1.75rem)}
+p{margin:0 0 12px}
+b{font-weight:900}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sky);outline-offset:4px}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:10px;
+  align-items:center;justify-content:space-between;
+  padding:10px clamp(12px,3vw,26px);
+  background:rgba(255,248,236,.92);backdrop-filter:blur(10px);
+  border-bottom:3px solid var(--ink);
+}
+.brand{
+  display:flex;align-items:center;gap:8px;font-weight:900;
+  font-size:clamp(.8rem,2.2vw,1rem);
+  background:#fff;border:3px solid var(--ink);border-radius:999px;
+  padding:6px 14px;box-shadow:0 4px 0 var(--ink);white-space:nowrap;
+}
+.progwrap{display:flex;align-items:center;gap:10px}
+.blocks{display:flex;gap:4px;flex-wrap:wrap}
+.blk{
+  width:16px;height:16px;border-radius:5px;border:2.5px solid var(--ink);
+  background:#fff;transition:.25s ease;
+}
+.blk.active{background:var(--sun);transform:translateY(-3px)}
+.blk.done{background:var(--mint);transform:translateY(-3px) rotate(-6deg)}
+.steplabel{font-size:.7rem;font-weight:900;opacity:.65;white-space:nowrap}
+
+/* ---------- layout ---------- */
+main{max-width:960px;margin:0 auto;padding:clamp(16px,4vw,32px) clamp(14px,3vw,24px) 8px}
+.step{display:none}
+.step.on{display:block;animation:pop .38s cubic-bezier(.2,1.3,.5,1)}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+.kicker{
+  display:inline-block;font-size:.68rem;font-weight:900;letter-spacing:.12em;
+  text-transform:uppercase;background:var(--lilac);color:#fff;
+  padding:4px 12px;border-radius:999px;border:2.5px solid var(--ink);
+  margin-bottom:12px;box-shadow:0 3px 0 var(--ink);
+}
+.lead{font-size:1rem;max-width:66ch;opacity:.92}
+.card{
+  background:#fff;border:3px solid var(--ink);border-radius:26px;
+  padding:clamp(16px,3.5vw,26px);box-shadow:var(--shadow);
+}
+.helper{
+  display:flex;gap:10px;align-items:flex-start;
+  background:#fff6d9;border:3px dashed var(--ink);border-radius:16px;
+  padding:10px 14px;font-size:.88rem;font-weight:800;margin:14px 0;
+}
+
+/* ---------- buttons ---------- */
+.btn{
+  font:inherit;font-weight:900;font-size:.96rem;cursor:pointer;
+  border:3px solid var(--ink);border-radius:999px;padding:10px 24px;
+  background:var(--sun);color:var(--ink);
+  box-shadow:0 5px 0 var(--ink);transition:transform .08s,box-shadow .08s,background .15s;
+}
+.btn:hover:not(:disabled){background:#ffd86e}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:0 5px 0 rgba(32,36,58,.25)}
+.btn.ghost{background:#fff}
+.btn.mint{background:var(--mint)}
+
+/* ---------- sliders ---------- */
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:16px;margin:14px 0 4px;
+  border-radius:999px;border:3px solid var(--ink);background:#eee5d7;
+  outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:36px;height:36px;border-radius:50%;
+  background:var(--sun);border:3px solid var(--ink);box-shadow:0 3px 0 var(--ink);
+}
+input[type=range]::-moz-range-thumb{
+  width:36px;height:36px;border:3px solid var(--ink);border-radius:50%;
+  background:var(--sun);box-shadow:0 3px 0 var(--ink);
+}
+.hotrange{background:linear-gradient(90deg,#6cc4f5,#ffd166,#ff5c48)!important}
+.scale{display:flex;justify-content:space-between;font-size:.66rem;font-weight:900;opacity:.55}
+
+/* ---------- step 1 ---------- */
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.legend-item{border:3px solid var(--ink);border-radius:16px;padding:9px 12px}
+.legend-item b{display:block;font-size:.68rem;letter-spacing:.08em}
+.legend-item span{font-size:.74rem;opacity:.85}
+.legend-item.adj{background:#fff0ec}
+.legend-item.noun{background:#eef5ff}
+.legend-item.verb{background:#e9fbf4}
+.pool{
+  display:flex;flex-wrap:wrap;gap:10px;padding:16px;min-height:84px;
+  background:#fffdf6;border:3px solid var(--ink);border-radius:20px;
+}
+.wcard{
+  font:inherit;font-weight:900;font-size:1.02rem;padding:8px 19px;
+  border:3px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink);
+  box-shadow:0 4px 0 var(--ink);cursor:pointer;transition:transform .12s,background .15s;
+}
+.wcard:hover{transform:translateY(-3px) rotate(-1.5deg)}
+.wcard.picked{background:var(--sun);transform:translateY(-5px) rotate(-3deg);box-shadow:0 8px 0 var(--ink)}
+.wcard.sorted{
+  font-size:.85rem;padding:4px 11px;box-shadow:none;background:#f0fbf5;
+  pointer-events:none;animation:pop .3s;
+}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px) rotate(-2deg)}75%{transform:translateX(8px) rotate(2deg)}}
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.bin{
+  background:#fff;border:3px dashed var(--ink);border-radius:18px;
+  padding:10px;min-height:104px;display:flex;flex-direction:column;gap:6px;
+  cursor:pointer;transition:.15s;
+}
+.bin:hover{transform:translateY(-3px)}
+.bin.adj{border-color:#e06a55;background:#fff7f4}
+.bin.noun{border-color:#5a8fd8;background:#f6faff}
+.bin.verb{border-color:#2fa884;background:#f3fdf9}
+.bin-title{font-size:.64rem;font-weight:900;letter-spacing:.09em;opacity:.75}
+.bin-body{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;flex:1}
+.status{text-align:center;font-weight:900;font-size:.83rem;opacity:.65;margin-top:12px}
+
+/* ---------- lab shell ---------- */
+.lab{
+  display:grid;grid-template-columns:220px 1fr;gap:clamp(14px,3vw,28px);
+  align-items:center;background:#fff;border:3px solid var(--ink);
+  border-radius:26px;padding:clamp(14px,3vw,24px);box-shadow:var(--shadow);
+}
+.lab + .lab{margin-top:16px}
+.lab-visual{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.lab-controls{display:flex;flex-direction:column;min-width:0}
+.bigsentence{
+  font-size:clamp(1.02rem,2.8vw,1.32rem);font-weight:900;margin:4px 0 0;
+  min-height:2.4em;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.face{font-size:2.9rem;line-height:1;transition:transform .2s;transform-origin:center}
+.face.bump{animation:bump .35s}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.26) rotate(-8deg)}100%{transform:scale(1)}}
+.speak{
+  font:inherit;font-size:.85rem;cursor:pointer;border:2.5px solid var(--ink);
+  background:#fff;border-radius:50%;width:34px;height:34px;line-height:1;
+  box-shadow:0 3px 0 var(--ink);flex:0 0 auto;
+}
+.speak:active{transform:translateY(3px);box-shadow:none}
+.pattern{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:10px}
+.pchip{
+  display:inline-block;padding:4px 12px;border:2.5px solid var(--ink);
+  border-radius:999px;font-weight:900;font-size:.78rem;background:#fff;
+  box-shadow:0 3px 0 rgba(32,36,58,.75);animation:pop .25s;
+}
+.pchip.adj{background:var(--adj)}
+.pchip.noun{background:var(--noun)}
+.pchip.verb{background:var(--verb)}
+.pchip.little{background:var(--little)}
+.statebits{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.bit{
+  font-size:.72rem;font-weight:900;padding:3px 10px;border-radius:999px;
+  border:2.5px solid var(--ink);background:#fff;opacity:.3;transition:.2s;
+}
+.bit.on{opacity:1;background:var(--mint);transform:translateY(-2px)}
+
+/* ---------- soup ---------- */
+.potwrap{
+  position:relative;width:190px;height:156px;display:flex;flex-direction:column;
+  justify-content:flex-end;align-items:center;padding-top:34px;
+}
+.steamrow{
+  position:absolute;top:0;left:0;right:0;height:60px;display:flex;
+  justify-content:center;gap:10px;opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.puff{
+  width:14px;height:14px;border-radius:50%;background:#fff;
+  border:2px solid rgba(32,36,58,.22);animation:steam 2.6s infinite ease-out;
+}
+.puff:nth-child(2){animation-delay:.8s;width:18px;height:18px}
+.puff:nth-child(3){animation-delay:1.5s}
+@keyframes steam{
+  0%{opacity:0;transform:translateY(16px) scale(.5)}
+  30%{opacity:.9}
+  100%{opacity:0;transform:translateY(-30px) scale(1.35)}
+}
+.pot{
+  width:154px;height:104px;border:6px solid var(--ink);border-radius:12px 12px 74px 74px;
+  position:relative;overflow:hidden;background:#fff;box-shadow:0 6px 0 rgba(32,36,58,.12);
+  transition:box-shadow .25s;
+}
+.soup{position:absolute;left:0;right:0;bottom:0;height:82%;transition:background .25s}
+.potwrap.hot .pot{box-shadow:0 0 0 9px rgba(255,92,72,.18),0 6px 0 rgba(32,36,58,.12)}
+
+/* ---------- build lab ---------- */
+.buildlab{
+  display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:center;
+  background:#fff;border:3px solid var(--ink);border-radius:26px;
+  padding:clamp(14px,3vw,20px);box-shadow:var(--shadow);
+}
+.buildscene{
+  background:#fffaf0;border:3px dashed rgba(32,36,58,.28);
+  border-radius:18px;display:grid;place-items:center;min-height:172px;padding:10px;
+}
+.buildmain{min-width:0}
+.hintline{
+  font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;
+  opacity:.55;margin-bottom:10px;
+}
+.line{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-height:64px;padding:12px;
+  border:3px dashed var(--ink);border-radius:18px;background:#fffdf6;align-content:flex-start;
+}
+.wordtext{font-weight:900;font-size:clamp(.92rem,2.5vw,1.05rem)}
+.slot{
+  min-width:70px;height:44px;padding:0 10px;border:3px dashed rgba(32,36,58,.3);
+  border-radius:12px;background:#fff;display:grid;place-items:center;
+  font:inherit;font-weight:900;font-size:1rem;color:var(--ink);
+}
+.slot.full{
+  border-style:solid;background:var(--sun);cursor:pointer;
+  box-shadow:0 4px 0 var(--ink);animation:pop .2s;
+}
+.slot.slotgood{border-color:#12855f;background:#d9f7ea}
+.slot.slotbad{border-color:#c93a2c;background:#ffe7e4}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;min-height:50px}
+.chip{
+  font:inherit;font-weight:900;font-size:.96rem;padding:8px 16px;
+  border:3px solid var(--ink);border-radius:12px;background:#fff;
+  box-shadow:0 4px 0 var(--ink);cursor:pointer;transition:transform .1s,background .15s;
+}
+.chip:hover{transform:translateY(-2px)}
+.chip.online{background:var(--sun)}
+.feedback{min-height:1.6em;font-weight:900;text-align:center;margin-top:10px;font-size:.9rem}
+.feedback.good{color:#12855f}
+.feedback.bad{color:#c93a2c}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+
+/* ---------- mini scenes ---------- */
+.sc{display:flex;align-items:center;justify-content:center;gap:9px;min-height:150px}
+.scIco{font-size:42px;line-height:1}
+.scEmo{font-size:2.2rem;line-height:1}
+.scPot{
+  position:relative;width:96px;height:68px;border:5px solid var(--ink);
+  border-radius:8px 8px 42px 42px;overflow:hidden;background:#fff;
+}
+.scSoup{position:absolute;left:0;right:0;bottom:0;height:80%}
+.scSteam{position:absolute;top:-30px;left:50%;transform:translateX(-50%);font-size:1.3rem}
+.scBar{width:8px;border-radius:5px;border:2px solid var(--ink);background:var(--coral)}
+.scGlass{
+  position:relative;width:52px;height:74px;border:5px solid var(--ink);
+  border-top:none;border-radius:4px 4px 16px 16px;overflow:hidden;background:#fff;
+}
+.scWater{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#8bdcff,#37a8e6)}
+.scLine{position:absolute;left:0;right:0;bottom:68%;border-top:2px dashed #12855f;z-index:3}
+.scDoor{
+  position:relative;width:52px;height:78px;border:5px solid var(--ink);
+  border-radius:6px 6px 3px 3px;background:linear-gradient(160deg,#e0ac72,#b8763f);
+}
+.scDoor .hTop{
+  position:absolute;top:36%;left:50%;transform:translateX(-50%);
+  width:13px;height:13px;border-radius:50%;background:#20243a;
+}
+.scDoor .hSlot{
+  position:absolute;top:45%;left:50%;transform:translateX(-50%);
+  width:8px;height:16px;background:#20243a;
+  clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);
+}
+
+/* ---------- key + door ---------- */
+.doorwrap{display:flex;align-items:center;justify-content:center;gap:10px;min-height:170px}
+.keycol,.doorcol{display:flex;flex-direction:column;align-items:center;gap:5px}
+.key{font-size:30px;line-height:1;transition:font-size .12s}
+.klabel{font-size:.56rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;opacity:.5}
+.lockpad{
+  width:64px;height:86px;border:6px solid var(--ink);border-radius:10px;
+  background:linear-gradient(160deg,#e0ac72,#b8763f);position:relative;
+  transition:transform .35s,box-shadow .3s;
+}
+.hTop{
+  position:absolute;top:32%;left:50%;transform:translateX(-50%);
+  width:16px;height:16px;border-radius:50%;background:#20243a;transition:.25s;
+}
+.hSlot{
+  position:absolute;top:44%;left:50%;transform:translateX(-50%);
+  width:10px;height:22px;background:#20243a;
+  clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);transition:.25s;
+}
+.fitsign{
+  font-size:1.3rem;font-weight:900;border:3px solid var(--ink);border-radius:50%;
+  width:34px;height:34px;display:grid;place-items:center;background:#fff;transition:.2s;
+}
+.fitsign.bad{color:#c93a2c}
+.fitsign.ok{color:#12855f;background:#d9f7ea;transform:scale(1.15)}
+.doorwrap.open .hTop,
+.doorwrap.open .hSlot{background:#12855f;box-shadow:0 0 14px #3ec9a0}
+.doorwrap.open .lockpad{transform:perspective(500px) rotateY(-16deg)}
+
+/* ---------- glass free lab ---------- */
+.glassRow{display:flex;align-items:flex-end;gap:4px;justify-content:center}
+.glass-wrap{position:relative;width:120px;height:180px}
+.glass{
+  position:absolute;inset:0;overflow:hidden;background:rgba(255,255,255,.86);
+  border:6px solid var(--ink);border-top:none;border-radius:6px 6px 30px 30px;
+}
+.rim{
+  position:absolute;top:-9px;left:-6px;right:-6px;height:18px;
+  border:6px solid var(--ink);border-radius:50%;background:#fff;z-index:4;
+}
+.band{
+  position:absolute;left:0;right:0;bottom:68%;height:20%;z-index:1;
+  background:repeating-linear-gradient(45deg,rgba(62,201,160,.25) 0 7px,transparent 7px 14px);
+  border-top:2px dashed rgba(18,133,95,.85);
+  border-bottom:2px dashed rgba(18,133,95,.85);
+}
+.water{
+  position:absolute;left:0;right:0;bottom:0;height:40%;z-index:2;
+  background:linear-gradient(180deg,#8bdcff,#37a8e6);transition:height .15s ease-out;
+}
+.water::before{
+  content:"";position:absolute;top:-7px;left:-10%;width:120%;height:14px;
+  background:#8bdcff;border-radius:50%;
+}
+.spillstream{
+  position:absolute;top:14px;right:-6px;width:12px;height:66px;border-radius:8px;
+  background:linear-gradient(180deg,#8bdcff,#37a8e6);transform:scaleY(0);
+  transform-origin:top;opacity:0;transition:.2s;z-index:3;
+}
+.glass-wrap.spilling .spillstream{transform:scaleY(1);opacity:1}
+.puddle{
+  position:absolute;bottom:-24px;left:50%;transform:translateX(-50%) scale(.3);
+  font-size:1.4rem;opacity:0;transition:.25s;
+}
+.glass-wrap.spilling .puddle{opacity:1;transform:translateX(-50%) scale(1.15)}
+.gauge{position:relative;width:66px;height:180px;flex:0 0 auto}
+.glabel{
+  position:absolute;left:6px;font-size:.52rem;font-weight:900;line-height:1.1;
+  white-space:nowrap;padding:2px 5px;border-radius:5px;border:2px solid var(--ink);
+}
+.glabel::before{
+  content:"";position:absolute;left:-9px;top:50%;width:6px;border-top:2px dashed currentColor;
+}
+.glabel.low{bottom:26%;background:#eaf4ff;color:#2b6bb0}
+.glabel.mid{bottom:74%;background:#d9f7ea;color:#0d6b50}
+.glabel.top{bottom:92%;background:#ffe7e4;color:#b83020}
+
+/* ---------- music lab ---------- */
+.musicvis{
+  display:flex;align-items:flex-end;justify-content:center;gap:10px;
+  height:150px;padding-bottom:8px;
+}
+.musicvis.shake{animation:shake .45s}
+.musicico{font-size:42px;line-height:1}
+.bars{display:flex;align-items:flex-end;gap:4px;height:74px}
+.bars span{
+  display:block;width:9px;height:10px;border-radius:5px;
+  border:2px solid var(--ink);background:var(--mint);
+  transition:height .1s,background .2s;
+}
+
+/* ---------- comparison ---------- */
+.cmpStage{
+  position:relative;height:250px;display:flex;align-items:flex-end;justify-content:center;
+  gap:clamp(30px,9vw,74px);padding:0 8px;
+}
+.cmpKid{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;z-index:2}
+.cmpHead{font-size:24px;line-height:26px;height:26px}
+.cmpBody{
+  width:38px;border:4px solid var(--ink);border-radius:12px 12px 8px 8px;
+  transition:height .15s;
+}
+.cmpKid.tom .cmpBody{background:linear-gradient(180deg,#9ecbff,#6aa9ff)}
+.cmpKid.sara .cmpBody{background:linear-gradient(180deg,#ffc7e0,#ff8ac0)}
+.cmpName{font-weight:900;font-size:.7rem;height:20px;line-height:20px}
+.sightline{
+  position:absolute;left:0;right:0;border-top:3px dashed rgba(32,36,58,.45);
+  z-index:1;transition:bottom .15s;
+}
+.eqbadge{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  font-weight:900;font-size:1.3rem;background:#fff;
+  border:3px solid var(--ink);border-radius:50%;width:42px;height:42px;
+  display:grid;place-items:center;z-index:5;transition:.2s;
+}
+.eqbadge.same{background:var(--mint)}
+.eqbadge.diff{background:var(--sun)}
+
+/* ---------- quiz ---------- */
+.quizscene{
+  display:flex;align-items:flex-end;justify-content:center;gap:26px;
+  min-height:150px;padding:16px;background:#fffaf0;border-radius:16px;
+  border:3px dashed rgba(32,36,58,.25);margin-bottom:12px;
+}
+.quizopts{display:grid;gap:10px}
+.qopt{
+  font:inherit;font-weight:800;font-size:.9rem;text-align:left;padding:11px 15px;
+  border:3px solid var(--ink);border-radius:14px;background:#fff;cursor:pointer;
+  box-shadow:0 4px 0 var(--ink);transition:.12s;line-height:1.35;
+}
+.qopt:hover{transform:translateY(-2px)}
+.qopt.good{background:#d9f7ea;border-color:#12855f}
+.qopt.bad{background:#ffe7e4;border-color:#c93a2c}
+.qbar{
+  height:16px;border:3px solid var(--ink);border-radius:6px;background:var(--sun);
+  display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:900;
+}
+.qtower{width:36px;border:4px solid var(--ink);border-radius:6px;background:var(--sky)}
+
+/* ---------- speaking ---------- */
+.speakcard{
+  background:#fff;border:3px solid var(--ink);border-radius:26px;
+  padding:clamp(16px,3.5vw,26px);text-align:center;box-shadow:var(--shadow);
+}
+.speaktitle{font-weight:900;margin-top:6px;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;opacity:.55}
+.picFrame{
+  min-height:186px;display:flex;align-items:flex-end;justify-content:center;gap:18px;
+  background:#fffaf0;border:3px dashed rgba(32,36,58,.25);border-radius:20px;
+  padding:16px;margin:10px 0 12px;
+}
+.picFrame > span{align-self:center}
+.speakprompt{font-weight:900;font-size:1rem;max-width:36ch;margin:0 auto 10px}
+.starters{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px}
+.starter{
+  font-size:.76rem;font-weight:900;padding:5px 11px;border:2.5px solid var(--ink);
+  border-radius:999px;background:#f3f7ff;
+}
+.hintbox{
+  max-width:34ch;margin:10px auto 0;padding:10px 14px;border-radius:14px;
+  background:#fff6d9;border:2.5px dashed var(--ink);font-weight:800;font-size:.88rem;
+  display:none;
+}
+.hintbox.show{display:block;animation:pop .25s}
+.hintbox.model{background:#e9fbf4}
+.counter{text-align:center;font-weight:900;font-size:.8rem;opacity:.6;margin-top:12px}
+
+/* ---------- poster ---------- */
+.poster{
+  background:linear-gradient(160deg,#fffdf6,#fff2e0);
+  border:3px solid var(--ink);border-radius:26px;
+  padding:clamp(18px,4vw,30px);box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.poster::after{
+  content:"⭐";position:absolute;top:-10px;right:-6px;font-size:5rem;
+  opacity:.13;transform:rotate(18deg);pointer-events:none;
+}
+.pname{
+  font:inherit;font-weight:900;font-size:1.02rem;border:3px solid var(--ink);
+  border-radius:12px;padding:8px 14px;background:#fff;max-width:100%;
+}
+.rule{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:2px dashed rgba(32,36,58,.2)}
+.rule:last-child{border-bottom:none}
+.rulenum{
+  flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:3px solid var(--ink);
+  background:var(--sun);display:grid;place-items:center;font-weight:900;font-size:.82rem;
+}
+
+/* ---------- nav + toast ---------- */
+.nav{
+  position:sticky;bottom:0;z-index:55;display:flex;gap:12px;justify-content:space-between;
+  max-width:960px;margin:0 auto;padding:16px clamp(14px,3vw,24px) 20px;
+  background:linear-gradient(transparent,var(--paper) 35%);
+}
+.toast{
+  position:fixed;left:50%;bottom:96px;transform:translate(-50%,16px);
+  background:var(--ink);color:#fff;font-weight:800;font-size:.84rem;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:.25s;z-index:200;max-width:88vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:680px){
+  .lab{grid-template-columns:1fr}
+  .lab-visual{order:-1}
+  .buildlab{grid-template-columns:1fr}
+  .legend{grid-template-columns:1fr}
+  .bins{grid-template-columns:1fr}
+  .bin{min-height:66px}
+  .bin-body{min-height:28px}
+  .blk{width:13px;height:13px}
+  .cmpStage{height:225px}
+}
+@media print{
+  .topbar,.nav,.speak,.btn,.hintbox{display:none!important}
+  body{background:#fff}
+  .step{display:none!important}
+  .step.on{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span>🧪</span> Grammar Lab · too · enough · as…as</div>
+  <div class="progwrap">
+    <div class="blocks" id="blocks"></div>
+    <span class="steplabel" id="stepLabel">Step 1 of 9</span>
+  </div>
+</header>
+
+<main id="stage">
+
+  <!-- ================= STEP 1 ================= -->
+  <section class="step" data-step="0">
+    <div class="kicker">Step 1 · Word blocks</div>
+    <h1>First, the three kinds of words</h1>
+    <p class="lead">A sentence is made of blocks. Tap a word, then tap the box where it belongs.</p>
+
+    <div class="legend">
+      <div class="legend-item adj"><b>ADJECTIVE</b><span>describes a thing — big, hot, full, loud</span></div>
+      <div class="legend-item noun"><b>NOUN</b><span>a thing — key, door, soup, glass</span></div>
+      <div class="legend-item verb"><b>VERB</b><span>an action — run, swim, eat, sing</span></div>
+    </div>
+
+    <div class="pool" id="wordPool"></div>
+
+    <div class="bins">
+      <div class="bin adj" data-type="adj" role="button" tabindex="0">
+        <span class="bin-title">ADJECTIVE</span><span class="bin-body"></span>
+      </div>
+      <div class="bin noun" data-type="noun" role="button" tabindex="0">
+        <span class="bin-title">NOUN</span><span class="bin-body"></span>
+      </div>
+      <div class="bin verb" data-type="verb" role="button" tabindex="0">
+        <span class="bin-title">VERB</span><span class="bin-body"></span>
+      </div>
+    </div>
+
+    <p class="status" id="sortStatus">0 of 12 words sorted</p>
+  </section>
+
+  <!-- ================= STEP 2 ================= -->
+  <section class="step" data-step="1">
+    <div class="kicker">Step 2 · Meet the words</div>
+    <h2>Ben likes cool soup and warm soup. Never hot!</h2>
+    <p class="lead">Slide the temperature. Watch the soup colour, the steam and Ben's face.
+      Find the happy face twice, then make him too hot.</p>
+
+    <div class="lab">
+      <div class="lab-visual">
+        <div class="potwrap" id="potWrap">
+          <div class="steamrow" id="steamRow">
+            <span class="puff"></span><span class="puff"></span><span class="puff"></span>
+          </div>
+          <div class="pot"><div class="soup" id="soupLiquid"></div></div>
+        </div>
+        <div class="face" id="faceSoup">😐</div>
+      </div>
+      <div class="lab-controls">
+        <div class="bigsentence">
+          <span id="sentSoup">Move the slider…</span>
+          <button class="speak" id="saySoup" type="button" data-say="" aria-label="listen">🔊</button>
+        </div>
+        <input class="hotrange" type="range" id="soupSlider" min="0" max="100" value="24"
+               aria-label="Soup temperature">
+        <div class="scale"><span>❄️ cool</span><span>☀️ warm</span><span>🔥 hot</span></div>
+        <div class="pattern" id="patSoup"></div>
+        <div class="statebits" id="bitsSoup">
+          <span class="bit" data-s="cool">😄 cool enough</span>
+          <span class="bit" data-s="warm">😄 warm enough</span>
+          <span class="bit" data-s="hot">🥵 too hot</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STEP 3 ================= -->
+  <section class="step" data-step="2">
+    <div class="kicker">Step 3 · How to build it</div>
+    <h2>Look at the picture. Build the sentence.</h2>
+    <p class="lead">The picture shows you the meaning. Tap a word from the bottom and it jumps into
+      the next empty box. Tap a box to take the word back.</p>
+
+    <div class="helper">
+      <span>👉</span>
+      <span><b>too</b> comes <b>before</b> the adjective: too + hot.
+        <b>enough</b> comes <b>after</b> it: cool + enough.</span>
+    </div>
+
+    <div id="labA"></div>
+  </section>
+
+  <!-- ================= STEP 4 ================= -->
+  <section class="step" data-step="3">
+    <div class="kicker">Step 4 · Big enough?</div>
+    <h2>The key and the keyhole</h2>
+    <p class="lead">The key must be big enough for the hole. Slide it and watch the size.
+      When it fits, the hole turns green and the door opens.</p>
+
+    <div class="lab">
+      <div class="lab-visual">
+        <div class="doorwrap" id="doorWrap">
+          <div class="keycol">
+            <span class="key" id="keyEl">🔑</span>
+            <span class="klabel">the key</span>
+          </div>
+          <div class="fitsign bad" id="fitSign">✗</div>
+          <div class="doorcol">
+            <div class="lockpad">
+              <span class="hTop"></span><span class="hSlot"></span>
+            </div>
+            <span class="klabel">the hole</span>
+          </div>
+        </div>
+        <div class="face" id="faceKey">😐</div>
+      </div>
+      <div class="lab-controls">
+        <div class="bigsentence">
+          <span id="sentKey">Move the slider…</span>
+          <button class="speak" id="sayKey" type="button" data-say="" aria-label="listen">🔊</button>
+        </div>
+        <input type="range" id="keySlider" min="20" max="100" value="28"
+               aria-label="How big is the key">
+        <div class="scale"><span>tiny key</span><span></span><span>big key</span></div>
+        <div class="pattern" id="patKey"></div>
+        <div class="statebits" id="bitsKey">
+          <span class="bit" data-s="low">😟 not big enough</span>
+          <span class="bit" data-s="ok">😄 big enough</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STEP 5 ================= -->
+  <section class="step" data-step="4">
+    <div class="kicker">Step 5 · How to build it</div>
+    <h2>Now add the word “not”</h2>
+    <p class="lead">Look at each picture. Then put the words in the boxes.</p>
+
+    <div class="helper">
+      <span>👉</span>
+      <span><b>not</b> goes <b>first</b>: not + big + enough.
+        <b>enough</b> always goes <b>last</b>.</span>
+    </div>
+
+    <div id="labB"></div>
+  </section>
+
+  <!-- ================= STEP 6 ================= -->
+  <section class="step" data-step="5">
+    <div class="kicker">Step 6 · Free lab</div>
+    <h2>All three states, two machines</h2>
+    <p class="lead">The green band on the glass is the “enough” zone. Fill the glass to the band
+      and it is full enough. Go above the band and it spills. On the speaker, the green bars are
+      the “enough” zone too. Find all three faces on both machines.</p>
+
+    <div class="lab">
+      <div class="lab-visual">
+        <div class="glassRow">
+          <div class="glass-wrap" id="glassWrap">
+            <div class="glass">
+              <div class="band"></div>
+              <div class="water" id="waterFill"></div>
+            </div>
+            <div class="rim"></div>
+            <div class="spillstream"></div>
+            <div class="puddle">💦</div>
+          </div>
+          <div class="gauge">
+            <span class="glabel top">too full</span>
+            <span class="glabel mid">enough line</span>
+            <span class="glabel low">not enough</span>
+          </div>
+        </div>
+        <div class="face" id="faceGlass">😐</div>
+      </div>
+      <div class="lab-controls">
+        <div class="bigsentence">
+          <span id="sentGlass">Move the slider…</span>
+          <button class="speak" id="sayGlass" type="button" data-say="" aria-label="listen">🔊</button>
+        </div>
+        <input type="range" id="glassSlider" min="0" max="100" value="40"
+               aria-label="How full is the glass">
+        <div class="scale"><span>empty</span><span>band</span><span>spilling</span></div>
+        <div class="pattern" id="patGlass"></div>
+        <div class="statebits" id="bitsGlass">
+          <span class="bit" data-s="low">😟 not full enough</span>
+          <span class="bit" data-s="ok">😄 full enough</span>
+          <span class="bit" data-s="high">😵 too full</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab">
+      <div class="lab-visual">
+        <div class="musicvis" id="musicVis">
+          <span class="musicico">🔊</span>
+          <div class="bars" id="musicBars">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="face" id="faceMusic">😐</div>
+      </div>
+      <div class="lab-controls">
+        <div class="bigsentence">
+          <span id="sentMusic">Move the slider…</span>
+          <button class="speak" id="sayMusic" type="button" data-say="" aria-label="listen">🔊</button>
+        </div>
+        <input type="range" id="musicSlider" min="0" max="100" value="20"
+               aria-label="How loud is the music">
+        <div class="scale"><span>🔈 quiet</span><span>👌 good</span><span>🔊 very loud</span></div>
+        <div class="pattern" id="patMusic"></div>
+        <div class="statebits" id="bitsMusic">
+          <span class="bit" data-s="low">😕 not loud enough</span>
+          <span class="bit" data-s="ok">😄 loud enough</span>
+          <span class="bit" data-s="high">🙉 too loud</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STEP 7 ================= -->
+  <section class="step" data-step="6">
+    <div class="kicker">Step 7 · The same or different?</div>
+    <h2>as tall as … not as tall as</h2>
+    <p class="lead">Move the two sliders. When the heads reach the same line, we say
+      <b>as tall as</b>. When they do not, we say <b>not as tall as</b>.</p>
+
+    <div class="lab">
+      <div class="lab-visual">
+        <div class="cmpStage">
+          <div class="eqbadge" id="eqBadge">=</div>
+          <div class="sightline" id="sightLine"></div>
+          <div class="cmpKid tom">
+            <span class="cmpHead">🧑</span>
+            <div class="cmpBody" id="tomBody" style="height:80px"></div>
+            <span class="cmpName">Tom</span>
+          </div>
+          <div class="cmpKid sara">
+            <span class="cmpHead">👧</span>
+            <div class="cmpBody" id="saraBody" style="height:80px"></div>
+            <span class="cmpName">Sara</span>
+          </div>
+        </div>
+      </div>
+      <div class="lab-controls">
+        <div class="face" id="faceCmp">😐</div>
+        <div class="bigsentence">
+          <span id="sentCmp">Move the sliders…</span>
+          <button class="speak" id="sayCmp" type="button" data-say="" aria-label="listen">🔊</button>
+        </div>
+        <div class="littlelabel">Tom</div>
+        <input type="range" id="tomSlider" min="60" max="130" value="80" aria-label="Tom height">
+        <div class="littlelabel">Sara</div>
+        <input type="range" id="saraSlider" min="60" max="130" value="80" aria-label="Sara height">
+        <div class="pattern" id="patCmp"></div>
+        <p class="status" id="tipCmp" style="margin:10px 0 0">Try to make them the same, then different.</p>
+      </div>
+    </div>
+
+    <div class="quizbox" style="background:#fff;border:3px solid var(--ink);border-radius:26px;padding:clamp(16px,3.5vw,22px);box-shadow:var(--shadow);margin-top:16px">
+      <div class="hintline">Now look and choose — same or different?</div>
+      <div class="quizscene" id="quizScene"></div>
+      <div class="quizopts" id="quizOpts"></div>
+      <div class="feedback" id="quizFb"></div>
+      <p class="status" id="quizCount">Picture 1 of 4</p>
+    </div>
+  </section>
+
+  <!-- ================= STEP 8 ================= -->
+  <section class="step" data-step="7">
+    <div class="kicker">Step 8 · Say it out loud</div>
+    <h2>What do you see?</h2>
+    <p class="lead">Look at the picture first. There is no answer on the screen.
+      Tell your partner what you see. Use the sentence starters. Press a button only if you need help.</p>
+
+    <div class="speakcard">
+      <div class="speaktitle" id="sTitle">Picture card</div>
+      <div class="picFrame" id="picFrame">
+        <span style="font-size:3rem">🎲</span>
+      </div>
+      <p class="speakprompt">What is happening? Tell your partner.</p>
+      <div class="starters" id="sStarters"></div>
+      <div class="row">
+        <button class="btn ghost" id="hintBtn" type="button">Hint 💡</button>
+        <button class="btn ghost" id="modelBtn" type="button">Example 🔊</button>
+        <button class="btn mint" id="saidBtn" type="button" disabled>I said it ✓</button>
+      </div>
+      <div class="hintbox" id="sHint"></div>
+      <div class="hintbox model" id="sModel"></div>
+      <div class="row">
+        <button class="btn" id="spinBtn" type="button">New picture 🎲</button>
+      </div>
+      <p class="counter" id="sCount">0 of 4 pictures done</p>
+    </div>
+  </section>
+
+  <!-- ================= STEP 9 ================= -->
+  <section class="step" data-step="8">
+    <div class="kicker">Step 9 · Your poster</div>
+    <h2>You built it. Here it is.</h2>
+    <p class="lead">Put your name on your grammar poster and read it out loud one more time.</p>
+
+    <div class="poster">
+      <p style="font-weight:900;font-size:.74rem;letter-spacing:.1em;opacity:.55;margin-bottom:4px">
+        GRAMMAR POSTER FOR
+      </p>
+      <input class="pname" id="nameIn" placeholder="type your name…" maxlength="22">
+      <div style="height:14px"></div>
+
+      <div class="rule">
+        <div class="rulenum">1</div>
+        <div>
+          <div style="font-weight:900">TOO + adjective = more than we want.</div>
+          <div style="font-size:.9rem;opacity:.85">The soup is <b>too hot</b>. ·
+            The glass is <b>too full</b>. · The bag is <b>too heavy</b>.</div>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rulenum">2</div>
+        <div>
+          <div style="font-weight:900">adjective + ENOUGH = just right.</div>
+          <div style="font-size:.9rem;opacity:.85">The soup is <b>warm enough</b>. ·
+            The key is <b>big enough</b>. · The glass is <b>full enough</b>.</div>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rulenum">3</div>
+        <div>
+          <div style="font-weight:900">NOT + adjective + ENOUGH = less than we want.</div>
+          <div style="font-size:.9rem;opacity:.85">The key is <b>not big enough</b>. ·
+            The jacket is <b>not warm enough</b>. · The glass is <b>not full enough</b>.</div>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rulenum">4</div>
+        <div>
+          <div style="font-weight:900">AS + adjective + AS = the same.</div>
+          <div style="font-size:.9rem;opacity:.85">Tom is <b>as tall as</b> Sara.</div>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rulenum">5</div>
+        <div>
+          <div style="font-weight:900">NOT AS + adjective + AS = different.</div>
+          <div style="font-size:.9rem;opacity:.85">Tom is <b>not as tall as</b> Sara.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:18px">
+      <button class="btn ghost" id="printBtn" type="button">Print my poster 🖨️</button>
+    </div>
+  </section>
+
+</main>
+
+<nav class="nav">
+  <button class="btn ghost" id="btnBack" type="button">← Back</button>
+  <button class="btn" id="btnNext" type="button">Next →</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var $ = function (s) { return document.querySelector(s); };
+  var $$ = function (s) {
+    return Array.prototype.slice.call(document.querySelectorAll(s));
+  };
+
+  /* ---------------- helpers ---------------- */
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  var toastTimer = null;
+  function toast(msg) {
+    var el = $("#toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove("show"); }, 2400);
+  }
+
+  function say(text) {
+    if (!text) return;
+    if (!("speechSynthesis" in window)) { toast("Sorry, no voice here 🔊"); return; }
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  }
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest(".speak") : null;
+    if (b) say(b.getAttribute("data-say") || "");
+  });
+
+  function chipsHtml(parts) {
+    return parts.map(function (p) {
+      return '<span class="pchip ' + p.c + '">' + p.t + "</span>";
+    }).join("");
+  }
+
+  function setFace(el, emoji) {
+    if (!el || el.textContent === emoji) return;
+    el.textContent = emoji;
+    el.classList.remove("bump");
+    void el.offsetWidth;
+    el.classList.add("bump");
+  }
+
+  function setPattern(el, parts) {
+    if (el) el.innerHTML = chipsHtml(parts);
+  }
+
+  /* ---------------- steps / progress ---------------- */
+  var steps = $$(".step");
+  var TOTAL = steps.length;
+  var unlocked = {};
+  var current = 0;
+
+  var blocksEl = $("#blocks");
+  for (var bi = 0; bi < TOTAL; bi++) {
+    var d = document.createElement("div");
+    d.className = "blk";
+    blocksEl.appendChild(d);
+  }
+
+  function unlock(i) {
+    if (unlocked[i]) return;
+    unlocked[i] = true;
+    render();
+  }
+
+  function render() {
+    steps.forEach(function (s, i) { s.classList.toggle("on", i === current); });
+
+    $$("#blocks .blk").forEach(function (b, i) {
+      b.classList.toggle("done", !!unlocked[i]);
+      b.classList.toggle("active", i === current && !unlocked[i]);
+    });
+
+    $("#stepLabel").textContent = "Step " + (current + 1) + " of " + TOTAL;
+    $("#btnBack").style.visibility = current === 0 ? "hidden" : "visible";
+
+    var next = $("#btnNext");
+    if (current === TOTAL - 1) {
+      next.textContent = "Start again ↺";
+      next.disabled = false;
+      next.title = "";
+    } else {
+      next.textContent = "Next →";
+      next.disabled = !unlocked[current];
+      next.title = next.disabled ? "Finish the activity first" : "";
+    }
+  }
+
+  $("#btnNext").addEventListener("click", function () {
+    if (current === TOTAL - 1) {
+      current = 0;
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (!unlocked[current]) return;
+    current = Math.min(TOTAL - 1, current + 1);
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  $("#btnBack").addEventListener("click", function () {
+    current = Math.max(0, current - 1);
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* =========================================================
+     STEP 1 — word types
+     ========================================================= */
+  var WORDS = [
+    { w: "big",   t: "adj"  },
+    { w: "hot",   t: "adj"  },
+    { w: "full",  t: "adj"  },
+    { w: "loud",  t: "adj"  },
+    { w: "key",   t: "noun" },
+    { w: "door",  t: "noun" },
+    { w: "soup",  t: "noun" },
+    { w: "glass", t: "noun" },
+    { w: "run",   t: "verb" },
+    { w: "swim",  t: "verb" },
+    { w: "eat",   t: "verb" },
+    { w: "sing",  t: "verb" }
+  ];
+
+  var HINTS = {
+    adj:  "Adjectives describe: big, hot, full, loud.",
+    noun: "Nouns are things: key, door, soup, glass.",
+    verb: "Verbs are actions: run, swim, eat, sing."
+  };
+
+  var picked = null;
+  var sortedCount = 0;
+
+  function buildPool() {
+    var pool = $("#wordPool");
+    pool.innerHTML = "";
+    shuffle(WORDS.slice()).forEach(function (item) {
+      var b = document.createElement("button");
+      b.className = "wcard";
+      b.type = "button";
+      b.textContent = item.w;
+      b.setAttribute("data-type", item.t);
+      b.addEventListener("click", function () {
+        if (b.classList.contains("sorted")) return;
+        $$(".wcard.picked").forEach(function (x) { x.classList.remove("picked"); });
+        b.classList.add("picked");
+        picked = b;
+      });
+      pool.appendChild(b);
+    });
+  }
+
+  function trySort(bin) {
+    if (!picked) { toast("Tap a word first 👆"); return; }
+    var type = bin.getAttribute("data-type");
+
+    if (picked.getAttribute("data-type") === type) {
+      picked.classList.remove("picked");
+      picked.classList.add("sorted");
+      bin.querySelector(".bin-body").appendChild(picked);
+      picked = null;
+      sortedCount++;
+      $("#sortStatus").textContent = sortedCount + " of 12 words sorted";
+      if (sortedCount === 12) {
+        $("#sortStatus").textContent = "✓ All 12 words sorted — you can go on!";
+        unlock(0);
+        toast("Those are your building blocks 🧱");
+      }
+    } else {
+      var el = picked;
+      el.classList.add("shake");
+      setTimeout(function () { el.classList.remove("shake"); }, 420);
+      toast(HINTS[type]);
+    }
+  }
+
+  $$(".bin").forEach(function (bin) {
+    bin.addEventListener("click", function () { trySort(bin); });
+    bin.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        trySort(bin);
+      }
+    });
+  });
+
+  /* =========================================================
+     STEP 2 — soup: too + adj  /  adj + enough
+     ========================================================= */
+  var soupSlider = $("#soupSlider");
+  var soupLiquid = $("#soupLiquid");
+  var steamRow   = $("#steamRow");
+  var potWrap    = $("#potWrap");
+  var faceSoup   = $("#faceSoup");
+  var sentSoup   = $("#sentSoup");
+  var saySoup    = $("#saySoup");
+  var patSoup    = $("#patSoup");
+  var seenSoup   = {};
+
+  function updSoup() {
+    var v = +soupSlider.value;
+    var hue;
+    if (v <= 55) hue = 210 - (v / 55) * 172;
+    else hue = 38 - ((v - 55) / 45) * 38;
+
+    soupLiquid.style.background =
+      "linear-gradient(180deg,hsl(" + hue + " 90% 68%),hsl(" + (hue - 6) + " 82% 48%))";
+
+    var steam = v > 40 ? Math.min(1, (v - 40) / 40) : 0;
+    steamRow.style.opacity = steam.toFixed(2);
+    potWrap.classList.toggle("hot", v > 70);
+
+    var txt, state, pat;
+    if (v <= 36) {
+      state = "cool";
+      setFace(faceSoup, "😄");
+      txt = "The soup is cool enough.";
+      pat = [{ t: "cool", c: "adj" }, { t: "enough", c: "little" }];
+    } else if (v <= 70) {
+      state = "warm";
+      setFace(faceSoup, "😄");
+      txt = "The soup is warm enough.";
+      pat = [{ t: "warm", c: "adj" }, { t: "enough", c: "little" }];
+    } else {
+      state = "hot";
+      setFace(faceSoup, "🥵");
+      txt = "The soup is too hot!";
+      pat = [{ t: "too", c: "little" }, { t: "hot", c: "adj" }];
+    }
+
+    sentSoup.textContent = txt;
+    saySoup.setAttribute("data-say", txt);
+    setPattern(patSoup, pat);
+
+    seenSoup[state] = true;
+    $$("#bitsSoup .bit").forEach(function (b) {
+      b.classList.toggle("on", !!seenSoup[b.getAttribute("data-s")]);
+    });
+
+    if (seenSoup.cool && seenSoup.warm && seenSoup.hot) unlock(1);
+  }
+  soupSlider.addEventListener("input", updSoup);
+
+  /* =========================================================
+     SCENES for the build labs
+     ========================================================= */
+  var SC = {
+    hotSoup: '<div class="sc"><div class="scPot"><div class="scSoup" ' +
+      'style="background:linear-gradient(180deg,#ffa184,#d63a1e)"></div>' +
+      '<span class="scSteam">♨️</span></div><span class="scEmo">🥵</span></div>',
+
+    coolSoup: '<div class="sc"><div class="scPot"><div class="scSoup" ' +
+      'style="background:linear-gradient(180deg,#a8dcff,#3a90d0)"></div></div>' +
+      '<span class="scEmo">😄</span></div>',
+
+    loud: '<div class="sc"><span class="scIco">🔊</span>' +
+      '<span class="scBar" style="height:26px"></span>' +
+      '<span class="scBar" style="height:46px"></span>' +
+      '<span class="scBar" style="height:22px"></span>' +
+      '<span class="scEmo">🙉</span></div>',
+
+    smallKey: '<div class="sc"><span class="scIco" style="font-size:22px">🔑</span>' +
+      '<div class="scDoor"><span class="hTop"></span><span class="hSlot"></span></div>' +
+      '<span class="scEmo">😟</span></div>',
+
+    coldJacket: '<div class="sc"><span class="scIco">🧥</span>' +
+      '<span style="font-size:20px">❄️</span><span class="scEmo">🥶</span></div>',
+
+    fullGlass: '<div class="sc"><div class="scGlass">' +
+      '<div class="scWater" style="height:80%"></div><span class="scLine"></span></div>' +
+      '<span class="scEmo">😄</span></div>'
+  };
+
+  /* =========================================================
+     SLOT LAB ("how to build")
+     ========================================================= */
+  function slotLab(root, tasks, onAllDone) {
+    var idx = 0, built = [], tray = [], busy = false;
+
+    var wrap = document.createElement("div");
+    wrap.className = "buildlab";
+    var sceneEl = document.createElement("div");
+    sceneEl.className = "buildscene";
+    var main = document.createElement("div");
+    main.className = "buildmain";
+    var hint = document.createElement("div");
+    hint.className = "hintline";
+    var line = document.createElement("div");
+    line.className = "line";
+    var bank = document.createElement("div");
+    bank.className = "bank";
+    var fb = document.createElement("div");
+    fb.className = "feedback";
+    var row = document.createElement("div");
+    row.className = "row";
+    var checkBtn = document.createElement("button");
+    checkBtn.type = "button";
+    checkBtn.className = "btn";
+    checkBtn.textContent = "Check ✓";
+    var resetBtn = document.createElement("button");
+    resetBtn.type = "button";
+    resetBtn.className = "btn ghost";
+    resetBtn.textContent = "Reset";
+    row.appendChild(checkBtn);
+    row.appendChild(resetBtn);
+    var rule = document.createElement("div");
+    rule.className = "pattern";
+
+    main.appendChild(hint);
+    main.appendChild(line);
+    main.appendChild(bank);
+    main.appendChild(fb);
+    main.appendChild(row);
+    main.appendChild(rule);
+    wrap.appendChild(sceneEl);
+    wrap.appendChild(main);
+    root.appendChild(wrap);
+
+    function load() {
+      busy = false;
+      var t = tasks[idx];
+      sceneEl.innerHTML = t.visual || "";
+      hint.textContent = "Picture " + (idx + 1) + " of " + tasks.length +
+        " — look, then build the sentence";
+      built = [];
+      for (var k = 0; k < t.slots.length; k++) built.push(null);
+      tray = t.tray.map(function (w, i) { return { w: w, id: idx + "-" + i }; });
+      shuffle(tray);
+      fb.textContent = "";
+      fb.className = "feedback";
+      rule.innerHTML = "";
+      checkBtn.disabled = false;
+      draw();
+    }
+
+    function draw() {
+      var t = tasks[idx];
+
+      line.innerHTML = "";
+      var pre = document.createElement("span");
+      pre.className = "wordtext";
+      pre.textContent = t.pre;
+      line.appendChild(pre);
+
+      for (var si = 0; si < built.length; si++) {
+        (function (si) {
+          var tok = built[si];
+          var s = document.createElement("button");
+          s.type = "button";
+          s.className = "slot" + (tok ? " full" : "");
+          s.textContent = tok ? tok.w : "";
+          if (tok) {
+            s.addEventListener("click", function () {
+              if (busy) return;
+              tray.push(tok);
+              built[si] = null;
+              draw();
+            });
+          } else {
+            s.style.cursor = "default";
+          }
+          line.appendChild(s);
+        })(si);
+      }
+
+      var post = document.createElement("span");
+      post.className = "wordtext";
+      post.textContent = t.post;
+      line.appendChild(post);
+
+      bank.innerHTML = "";
+      tray.forEach(function (tok) {
+        var c = document.createElement("button");
+        c.type = "button";
+        c.className = "chip";
+        c.textContent = tok.w;
+        c.addEventListener("click", function () {
+          if (busy) return;
+          var empty = built.indexOf(null);
+          if (empty < 0) {
+            toast("All the boxes are full. Tap a word in a box to take it back.");
+            return;
+          }
+          tray = tray.filter(function (x) { return x.id !== tok.id; });
+          built[empty] = tok;
+          draw();
+        });
+        bank.appendChild(c);
+      });
+    }
+
+    checkBtn.addEventListener("click", function () {
+      if (busy) return;
+      var t = tasks[idx];
+      var ok = true;
+      for (var i = 0; i < t.slots.length; i++) {
+        if (!built[i] || built[i].w !== t.slots[i]) { ok = false; break; }
+      }
+
+      if (ok) {
+        busy = true;
+        $$(".slot", line).forEach(function (s) { s.classList.add("slotgood"); });
+        fb.textContent = "✓ " + t.sentence;
+        fb.className = "feedback good";
+        rule.innerHTML = chipsHtml(t.rule);
+        say(t.sentence);
+        idx++;
+        setTimeout(function () {
+          if (idx >= tasks.length) finish();
+          else load();
+        }, 1500);
+      } else {
+        fb.textContent = "Not yet — look at the picture and the word order. 🔍";
+        fb.className = "feedback bad";
+        line.classList.add("shake");
+        setTimeout(function () { line.classList.remove("shake"); }, 420);
+        $$(".slot", line).forEach(function (s) {
+          if (s.textContent) {
+            s.classList.add("slotbad");
+            setTimeout(function () { s.classList.remove("slotbad"); }, 700);
+          }
+        });
+      }
+    });
+
+    resetBtn.addEventListener("click", function () {
+      if (busy) return;
+      built.forEach(function (b) { if (b) tray.push(b); });
+      for (var k = 0; k < built.length; k++) built[k] = null;
+      fb.textContent = "";
+      fb.className = "feedback";
+      draw();
+    });
+
+    function finish() {
+      busy = true;
+      sceneEl.innerHTML = '<span style="font-size:3rem">🏆</span>';
+      hint.textContent = "Done!";
+      fb.textContent = "🏆 You built every sentence. Look at the word order:";
+      fb.className = "feedback good";
+      rule.innerHTML = tasks.map(function (t) { return chipsHtml(t.rule); }).join("");
+      checkBtn.disabled = true;
+      if (onAllDone) onAllDone();
+    }
+
+    load();
+  }
+
+  /* ---- Step 3 tasks: too + adj / adj + enough ---- */
+  slotLab($("#labA"), [
+    {
+      visual: SC.hotSoup,
+      pre: "The soup is ",
+      post: " .",
+      slots: ["too", "hot"],
+      tray: ["hot", "cool", "too", "enough"],
+      sentence: "The soup is too hot.",
+      rule: [{ t: "too", c: "little" }, { t: "hot", c: "adj" }]
+    },
+    {
+      visual: SC.coolSoup,
+      pre: "The soup is ",
+      post: " .",
+      slots: ["cool", "enough"],
+      tray: ["cool", "hot", "enough", "too"],
+      sentence: "The soup is cool enough.",
+      rule: [{ t: "cool", c: "adj" }, { t: "enough", c: "little" }]
+    },
+    {
+      visual: SC.loud,
+      pre: "The music is ",
+      post: " .",
+      slots: ["too", "loud"],
+      tray: ["loud", "quiet", "too", "enough"],
+      sentence: "The music is too loud.",
+      rule: [{ t: "too", c: "little" }, { t: "loud", c: "adj" }]
+    }
+  ], function () { unlock(2); });
+
+  /* =========================================================
+     STEP 4 — key + keyhole
+     ========================================================= */
+  var keySlider = $("#keySlider");
+  var keyEl     = $("#keyEl");
+  var doorWrap  = $("#doorWrap");
+  var fitSign   = $("#fitSign");
+  var faceKey   = $("#faceKey");
+  var sentKey   = $("#sentKey");
+  var sayKey    = $("#sayKey");
+  var patKey    = $("#patKey");
+  var seenKey   = {};
+
+  function updKey() {
+    var v = +keySlider.value;
+    var fs = 18 + (v / 100) * 58;
+    keyEl.style.fontSize = fs.toFixed(0) + "px";
+
+    var fits = fs >= 52;
+    doorWrap.classList.toggle("open", fits);
+    fitSign.textContent = fits ? "✓" : "✗";
+    fitSign.className = "fitsign " + (fits ? "ok" : "bad");
+
+    if (fits) {
+      setFace(faceKey, "😄");
+      sentKey.textContent = "The key is big enough.";
+      setPattern(patKey, [{ t: "big", c: "adj" }, { t: "enough", c: "little" }]);
+      seenKey.ok = true;
+    } else {
+      setFace(faceKey, "😟");
+      sentKey.textContent = "The key is not big enough.";
+      setPattern(patKey, [
+        { t: "not", c: "" },
+        { t: "big", c: "adj" },
+        { t: "enough", c: "little" }
+      ]);
+      seenKey.low = true;
+    }
+
+    sayKey.setAttribute("data-say", sentKey.textContent);
+    $$("#bitsKey .bit").forEach(function (b) {
+      b.classList.toggle("on", !!seenKey[b.getAttribute("data-s")]);
+    });
+
+    if (seenKey.ok && seenKey.low) unlock(3);
+  }
+  keySlider.addEventListener("input", updKey);
+
+  /* ---- Step 5 tasks: not + adj + enough ---- */
+  slotLab($("#labB"), [
+    {
+      visual: SC.smallKey,
+      pre: "The key is ",
+      post: " .",
+      slots: ["not", "big", "enough"],
+      tray: ["big", "enough", "not", "too"],
+      sentence: "The key is not big enough.",
+      rule: [
+        { t: "not", c: "" },
+        { t: "big", c: "adj" },
+        { t: "enough", c: "little" }
+      ]
+    },
+    {
+      visual: SC.coldJacket,
+      pre: "The jacket is ",
+      post: " .",
+      slots: ["not", "warm", "enough"],
+      tray: ["warm", "enough", "not", "full"],
+      sentence: "The jacket is not warm enough.",
+      rule: [
+        { t: "not", c: "" },
+        { t: "warm", c: "adj" },
+        { t: "enough", c: "little" }
+      ]
+    },
+    {
+      visual: SC.fullGlass,
+      pre: "The glass is ",
+      post: " .",
+      slots: ["full", "enough"],
+      tray: ["full", "empty", "enough", "too"],
+      sentence: "The glass is full enough.",
+      rule: [{ t: "full", c: "adj" }, { t: "enough", c: "little" }]
+    }
+  ], function () { unlock(4); });
+
+  /* =========================================================
+     STEP 6 — glass and music
+     ========================================================= */
+  var glassSlider = $("#glassSlider");
+  var waterFill   = $("#waterFill");
+  var glassWrap   = $("#glassWrap");
+  var faceGlass   = $("#faceGlass");
+  var sentGlass   = $("#sentGlass");
+  var sayGlass    = $("#sayGlass");
+  var patGlass    = $("#patGlass");
+  var seenGlass   = {};
+
+  function updGlass() {
+    var v = +glassSlider.value;
+    waterFill.style.height = v + "%";
+
+    var txt, state, pat;
+    if (v < 68) {
+      state = "low";
+      setFace(faceGlass, "😟");
+      txt = "The glass is not full enough.";
+      pat = [
+        { t: "not", c: "" },
+        { t: "full", c: "adj" },
+        { t: "enough", c: "little" }
+      ];
+    } else if (v <= 88) {
+      state = "ok";
+      setFace(faceGlass, "😄");
+      txt = "The glass is full enough.";
+      pat = [{ t: "full", c: "adj" }, { t: "enough", c: "little" }];
+    } else {
+      state = "high";
+      setFace(faceGlass, "😵");
+      txt = "The glass is too full!";
+      pat = [{ t: "too", c: "little" }, { t: "full", c: "adj" }];
+    }
+
+    sentGlass.textContent = txt;
+    sayGlass.setAttribute("data-say", txt);
+    setPattern(patGlass, pat);
+    glassWrap.classList.toggle("spilling", state === "high");
+
+    seenGlass[state] = true;
+    $$("#bitsGlass .bit").forEach(function (b) {
+      b.classList.toggle("on", !!seenGlass[b.getAttribute("data-s")]);
+    });
+
+    checkFreeLab();
+  }
+  glassSlider.addEventListener("input", updGlass);
+
+  var musicSlider = $("#musicSlider");
+  var musicBars   = $$("#musicBars span");
+  var musicVis    = $("#musicVis");
+  var faceMusic   = $("#faceMusic");
+  var sentMusic   = $("#sentMusic");
+  var sayMusic    = $("#sayMusic");
+  var patMusic    = $("#patMusic");
+  var seenMusic   = {};
+
+  function updMusic() {
+    var v = +musicSlider.value;
+    var txt, state, pat, face, color;
+    var barColor;
+
+    if (v < 38) {
+      state = "low";
+      face = "😕";
+      txt = "The music is not loud enough.";
+      pat = [
+        { t: "not", c: "" },
+        { t: "loud", c: "adj" },
+        { t: "enough", c: "little" }
+      ];
+      color = "#7fb2e8";
+      barColor = "#9cc6f0";
+    } else if (v <= 76) {
+      state = "ok";
+      face = "😄";
+      txt = "The music is loud enough.";
+      pat = [{ t: "loud", c: "adj" }, { t: "enough", c: "little" }];
+      color = "#3ec9a0";
+      barColor = "#3ec9a0";
+    } else {
+      state = "high";
+      face = "🙉";
+      txt = "The music is too loud!";
+      pat = [{ t: "too", c: "little" }, { t: "loud", c: "adj" }];
+      color = "#ff5c48";
+      barColor = "#ff8a7a";
+    }
+
+    setFace(faceMusic, face);
+    sentMusic.textContent = txt;
+    sayMusic.setAttribute("data-say", txt);
+    setPattern(patMusic, pat);
+    musicVis.style.color = color;
+    musicVis.classList.toggle("shake", state === "high");
+
+    musicBars.forEach(function (b, i) {
+      var h = 8 + (v / 100) * 46 * (0.55 + 0.45 * Math.abs(Math.sin(i * 1.7 + 1)));
+      b.style.height = h.toFixed(0) + "px";
+      b.style.background = barColor;
+    });
+
+    seenMusic[state] = true;
+    $$("#bitsMusic .bit").forEach(function (b) {
+      b.classList.toggle("on", !!seenMusic[b.getAttribute("data-s")]);
+    });
+
+    checkFreeLab();
+  }
+  musicSlider.addEventListener("input", updMusic);
+
+  function checkFreeLab() {
+    var glassDone = seenGlass.low && seenGlass.ok && seenGlass.high;
+    var musicDone = seenMusic.low && seenMusic.ok && seenMusic.high;
+    if (glassDone && musicDone) unlock(5);
+  }
+
+  /* =========================================================
+     STEP 7 — as ... as
+     ========================================================= */
+  var tomSlider  = $("#tomSlider");
+  var saraSlider = $("#saraSlider");
+  var tomBody    = $("#tomBody");
+  var saraBody   = $("#saraBody");
+  var sightLine  = $("#sightLine");
+  var eqBadge    = $("#eqBadge");
+  var faceCmp    = $("#faceCmp");
+  var sentCmp    = $("#sentCmp");
+  var sayCmp     = $("#sayCmp");
+  var patCmp     = $("#patCmp");
+  var tipCmp     = $("#tipCmp");
+  var seenCmp    = {};
+
+  function updCmp() {
+    var a = +tomSlider.value;
+    var b = +saraSlider.value;
+
+    tomBody.style.height = a + "px";
+    saraBody.style.height = b + "px";
+
+    var minH = Math.min(a, b);
+    sightLine.style.bottom = (minH + 46) + "px";
+
+    var equal = Math.abs(a - b) <= 2;
+
+    if (equal) {
+      setFace(faceCmp, "😄");
+      eqBadge.textContent = "=";
+      eqBadge.className = "eqbadge same";
+      sentCmp.textContent = "Tom is as tall as Sara.";
+      setPattern(patCmp, [
+        { t: "as", c: "little" },
+        { t: "tall", c: "adj" },
+        { t: "as", c: "little" }
+      ]);
+      tipCmp.textContent = "Their heads touch the same line. They are the same height.";
+      seenCmp.eq = true;
+    } else {
+      setFace(faceCmp, "🙂");
+      eqBadge.textContent = "≠";
+      eqBadge.className = "eqbadge diff";
+      if (a < b) {
+        sentCmp.textContent = "Tom is not as tall as Sara.";
+        tipCmp.textContent = "Tom's head is under the line. Sara is taller than Tom.";
+      } else {
+        sentCmp.textContent = "Sara is not as tall as Tom.";
+        tipCmp.textContent = "Sara's head is under the line. Tom is taller than Sara.";
+      }
+      setPattern(patCmp, [
+        { t: "not", c: "" },
+        { t: "as", c: "little" },
+        { t: "tall", c: "adj" },
+        { t: "as", c: "little" }
+      ]);
+      seenCmp.neq = true;
+    }
+
+    sayCmp.setAttribute("data-say", sentCmp.textContent);
+    maybeUnlockCmp();
+  }
+  tomSlider.addEventListener("input", updCmp);
+  saraSlider.addEventListener("input", updCmp);
+
+  /* ---- quiz ---- */
+  var QUIZ = [
+    {
+      visual: '<div style="display:flex;flex-direction:column;gap:14px;width:100%;max-width:250px">' +
+        '<div class="qbar" style="width:150px">A</div>' +
+        '<div class="qbar" style="width:150px">B</div></div>',
+      options: [
+        "Pencil A is as long as pencil B.",
+        "Pencil A is not as long as pencil B."
+      ],
+      answer: 0
+    },
+    {
+      visual: '<span style="font-size:34px">🍦</span><span style="font-size:64px">🍦</span>',
+      options: [
+        "The small ice cream is as big as the big ice cream.",
+        "The small ice cream is not as big as the big ice cream."
+      ],
+      answer: 1
+    },
+    {
+      visual: '<div class="qtower" style="height:100px"></div>' +
+        '<div class="qtower" style="height:100px;background:#ffc7e0"></div>',
+      options: [
+        "Tower A is as tall as tower B.",
+        "Tower A is not as tall as tower B."
+      ],
+      answer: 0
+    },
+    {
+      visual: '<span style="font-size:26px">🐱</span><span style="font-size:58px">🐈</span>',
+      options: [
+        "The small cat is not as big as the big cat.",
+        "The small cat is as big as the big cat."
+      ],
+      answer: 0
+    }
+  ];
+
+  var qIndex = 0;
+  var qCorrect = 0;
+  var quizLock = false;
+  var quizFinished = false;
+
+  function loadQuiz() {
+    quizLock = false;
+    var q = QUIZ[qIndex];
+    $("#quizScene").innerHTML = q.visual;
+    var opts = $("#quizOpts");
+    opts.innerHTML = "";
+    $("#quizFb").textContent = "";
+    $("#quizFb").className = "feedback";
+    $("#quizCount").textContent = "Picture " + (qIndex + 1) + " of " + QUIZ.length;
+
+    q.options.forEach(function (text, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "qopt";
+      b.textContent = text;
+      b.addEventListener("click", function () {
+        if (quizLock) return;
+        if (i === q.answer) {
+          quizLock = true;
+          b.classList.add("good");
+          $("#quizFb").textContent = "✓ Yes! " + q.options[q.answer];
+          $("#quizFb").className = "feedback good";
+          say(q.options[q.answer]);
+          qCorrect++;
+          $("#quizCount").textContent = qCorrect + " of " + QUIZ.length + " correct";
+          setTimeout(function () {
+            qIndex++;
+            if (qIndex >= QUIZ.length) finishQuiz();
+            else loadQuiz();
+          }, 1600);
+        } else {
+          b.classList.add("bad");
+          $("#quizFb").textContent = "Look again — is it the same or different?";
+          $("#quizFb").className = "feedback bad";
+        }
+      });
+      opts.appendChild(b);
+    });
+  }
+
+  function finishQuiz() {
+    quizFinished = true;
+    $("#quizScene").innerHTML = '<span style="font-size:3rem">🏆</span>';
+    $("#quizOpts").innerHTML = "";
+    $("#quizFb").textContent = "✓ All four! You know when things are the same and when they are not.";
+    $("#quizFb").className = "feedback good";
+    $("#quizCount").textContent = "4 of 4 — done";
+    maybeUnlockCmp();
+  }
+
+  function maybeUnlockCmp() {
+    if (seenCmp.eq && seenCmp.neq && quizFinished) unlock(6);
+  }
+
+  /* =========================================================
+     STEP 8 — speaking
+     ========================================================= */
+  var CARD_GLASS = '<div class="scGlass" style="width:64px;height:90px">' +
+    '<div class="scWater" style="height:96%"></div></div>';
+
+  var SPEAK_CARDS = [
+    {
+      pic: '<span style="font-size:54px">🥣</span>' +
+           '<span style="font-size:30px">♨️</span>' +
+           '<span style="font-size:38px">🥵</span>',
+      starters: ["The soup is too ______ .", "The soup is ______ enough ."],
+      hint: "The adjective is HOT.",
+      model: "The soup is too hot."
+    },
+    {
+      pic: CARD_GLASS + '<span style="font-size:36px">💦</span>' +
+           '<span style="font-size:36px">😵</span>',
+      starters: ["The glass is too ______ .", "The glass is not ______ enough ."],
+      hint: "The adjective is FULL.",
+      model: "The glass is too full."
+    },
+    {
+      pic: '<span style="font-size:64px">🎒</span><span style="font-size:34px">🧑</span>',
+      starters: ["The bag is too ______ .", "The bag is ______ enough ."],
+      hint: "The adjective is BIG.",
+      model: "The bag is too big."
+    },
+    {
+      pic: '<span style="font-size:52px">🔊</span><span style="font-size:38px">🙉</span>',
+      starters: ["The music is too ______ .", "The music is not ______ enough ."],
+      hint: "The adjective is LOUD.",
+      model: "The music is too loud."
+    },
+    {
+      pic: '<span style="font-size:20px">🔑</span>' +
+           '<div class="scDoor" style="width:56px;height:84px">' +
+           '<span class="hTop"></span><span class="hSlot"></span></div>',
+      starters: ["The key is not ______ enough .", "The key is ______ enough ."],
+      hint: "The adjective is BIG.",
+      model: "The key is not big enough."
+    },
+    {
+      pic: '<span style="font-size:44px">🧥</span>' +
+           '<span style="font-size:22px">❄️</span>' +
+           '<span style="font-size:36px">🥶</span>',
+      starters: ["The jacket is not ______ enough .", "The jacket is ______ enough ."],
+      hint: "The adjective is WARM.",
+      model: "The jacket is not warm enough."
+    },
+    {
+      pic: '<span style="font-size:22px">🐭</span><span style="font-size:62px">🐘</span>',
+      starters: ["The mouse is not as ______ as the elephant.",
+                 "The mouse is as ______ as the elephant."],
+      hint: "The adjective is BIG.",
+      model: "The mouse is not as big as the elephant."
+    },
+    {
+      pic: '<span style="font-size:44px">🧑</span><span style="font-size:44px">🧍</span>',
+      starters: ["Tom is as ______ as Ben.", "Tom is not as ______ as Ben."],
+      hint: "The adjective is TALL.",
+      model: "Tom is as tall as Ben."
+    }
+  ];
+
+  var sIndex = -1;
+  var saidCards = {};
+  var saidCount = 0;
+
+  function pickCard() {
+    var pool = [];
+    for (var i = 0; i < SPEAK_CARDS.length; i++) {
+      if (!saidCards[i]) pool.push(i);
+    }
+    if (!pool.length) {
+      for (var j = 0; j < SPEAK_CARDS.length; j++) pool.push(j);
+    }
+    var choices = pool.filter(function (x) { return x !== sIndex; });
+    var list = choices.length ? choices : pool;
+    sIndex = list[Math.floor(Math.random() * list.length)];
+    showCard();
+  }
+
+  function showCard() {
+    var c = SPEAK_CARDS[sIndex];
+    $("#picFrame").innerHTML = c.pic;
+    $("#sTitle").textContent = "Picture card";
+    $("#sStarters").innerHTML = c.starters.map(function (s) {
+      return '<span class="starter">' + s + "</span>";
+    }).join("");
+
+    var hb = $("#sHint");
+    hb.textContent = c.hint;
+    hb.className = "hintbox";
+    var mb = $("#sModel");
+    mb.textContent = c.model;
+    mb.className = "hintbox model";
+
+    var btn = $("#saidBtn");
+    btn.disabled = !!saidCards[sIndex];
+    btn.textContent = saidCards[sIndex] ? "Already done ✓" : "I said it ✓";
+    $("#sCount").textContent = saidCount + " of 4 pictures done";
+  }
+
+  $("#spinBtn").addEventListener("click", pickCard);
+
+  $("#hintBtn").addEventListener("click", function () {
+    if (sIndex < 0) return;
+    var hb = $("#sHint");
+    hb.classList.toggle("show");
+  });
+
+  $("#modelBtn").addEventListener("click", function () {
+    if (sIndex < 0) return;
+    var c = SPEAK_CARDS[sIndex];
+    var mb = $("#sModel");
+    mb.classList.add("show");
+    say(c.model);
+  });
+
+  $("#saidBtn").addEventListener("click", function () {
+    if (sIndex < 0 || saidCards[sIndex]) return;
+    saidCards[sIndex] = true;
+    saidCount++;
+    $("#saidBtn").disabled = true;
+    $("#saidBtn").textContent = "Already done ✓";
+    $("#sCount").textContent = saidCount + " of 4 pictures done";
+
+    if (saidCount >= 4) {
+      $("#sCount").textContent = "✓ 4 pictures done — great speaking!";
+      unlock(7);
+      toast("You used it out loud! 🗣️");
+    } else {
+      toast("Great! Press “New picture” 🎲");
+    }
+  });
+
+  /* =========================================================
+     STEP 9 — poster
+     ========================================================= */
+  $("#printBtn").addEventListener("click", function () { window.print(); });
+
+  /* =========================================================
+     init
+     ========================================================= */
+  buildPool();
+  updSoup();
+  updKey();
+  updGlass();
+  updMusic();
+  updCmp();
+  loadQuiz();
+  render();
+
+  /* start speaking step with a card ready, but no answer shown */
+  pickCard();
+
+})();
+</script>
+</body>
+</html>
