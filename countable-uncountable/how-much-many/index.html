@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Counting Kitchen — how much / how many</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --paper:#edf2ec; --white:#fffef9; --ink:#123c3c; --ink2:#4b6868;
+  --line:rgba(18,60,60,.22); --line2:rgba(18,60,60,.10);
+  --teal:#0f7a70; --teal-soft:#d9ece6; --tomato:#d9533b; --tomato-soft:#fbe1d9;
+  --butter:#f6c65b; --butter-soft:#fdf0ce; --sky:#bfe0ee;
+  --shadow:6px 6px 0 rgba(18,60,60,.10);
+  --mono:ui-monospace,"Cascadia Mono","Consolas","Courier New",monospace;
+  --serif:Georgia,"Times New Roman",serif;
+}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--ink);line-height:1.55;
+  font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(rgba(18,60,60,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(18,60,60,.05) 1px,transparent 1px);
+  background-size:26px 26px;background-attachment:fixed;
+  -webkit-tap-highlight-color:transparent;
+}
+body::before{
+  content:"";position:fixed;left:0;right:0;top:0;height:420px;pointer-events:none;z-index:0;
+  background:radial-gradient(700px 300px at 50% 0,rgba(246,198,91,.22),transparent 70%);
+}
+h2,h3,h4{font-family:var(--serif);font-weight:700;letter-spacing:.01em;line-height:1.2;margin:0}
+p{margin:0 0 10px}
+b{font-weight:700}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+
+/* header */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(255,254,249,.95);backdrop-filter:blur(8px);border-bottom:2px solid var(--ink)}
+.topbar-stripe{height:4px;background:repeating-linear-gradient(90deg,var(--tomato) 0 24px,var(--butter) 24px 48px,var(--teal) 48px 72px)}
+.topbar-in{max-width:1040px;margin:0 auto;padding:9px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.mark{width:36px;height:36px;border:2px solid var(--ink);background:var(--butter);display:grid;place-items:center;font-family:var(--mono);font-size:.8rem;font-weight:700;box-shadow:3px 3px 0 var(--ink);flex:0 0 auto}
+.brand-title{font-family:var(--serif);font-size:.96rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;line-height:1.1}
+.brand-sub{font-family:var(--mono);font-size:.52rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink2);margin-top:2px}
+.progress{display:flex;align-items:center;gap:10px}
+.cardno{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--ink2)}
+.ticks{display:flex;gap:3px;flex-wrap:wrap}
+.tick{width:16px;height:9px;border:1.5px solid var(--ink);background:#fff;transition:.2s}
+.tick.done{background:var(--teal)}
+.tick.active{background:var(--butter);transform:translateY(-2px)}
+
+/* layout */
+main{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:26px 20px 8px}
+.step{display:none}
+.step.on{display:block;animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.step-head{margin-bottom:16px;padding-bottom:14px;border-bottom:2px dashed var(--line)}
+.stamp{display:inline-block;transform:rotate(-2deg);border:2px solid var(--tomato);color:var(--tomato);background:#fff;font-family:var(--mono);font-size:.56rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;margin-bottom:9px}
+.stamp.ok{border-color:var(--teal);color:var(--teal)}
+.step-head h2{font-size:clamp(1.5rem,3.6vw,2.05rem);margin-bottom:6px}
+.lead{font-size:1rem;color:var(--ink2);max-width:68ch}
+.panel{background:var(--white);border:2px solid var(--ink);box-shadow:var(--shadow);padding:18px}
+.panel + .panel{margin-top:16px}
+.panel-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1.5px solid var(--line);padding-bottom:7px;margin-bottom:14px;font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.hint{font-size:.78rem;color:var(--ink2);margin:10px 0 0}
+
+/* buttons */
+.btn{font:inherit;font-family:var(--mono);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 18px;border:2px solid var(--ink);background:var(--butter);color:var(--ink);box-shadow:4px 4px 0 var(--ink);cursor:pointer;transition:transform .1s,box-shadow .1s,background .15s;border-radius:2px}
+.btn:hover:not(:disabled){background:#ffd479}
+.btn:active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:2px 2px 0 var(--ink)}
+.btn.ghost{background:#fff}
+.btn.ghost:hover:not(:disabled){background:#f6f9f5}
+.btn.teal{background:var(--teal);color:#fff}
+.btn.small{padding:7px 12px;font-size:.6rem}
+.row{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:14px}
+
+/* sliders */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;cursor:pointer;margin:10px 0 0;display:block}
+input[type=range]::-webkit-slider-runnable-track{height:12px;background:#fff;border:2px solid var(--ink);background-image:repeating-linear-gradient(90deg,transparent 0 15px,rgba(18,60,60,.16) 15px 16px)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:30px;margin-top:-11px;background:var(--teal);border:2px solid var(--ink);border-radius:2px;box-shadow:2px 2px 0 rgba(18,60,60,.25)}
+input[type=range]::-moz-range-track{height:12px;background:#fff;border:2px solid var(--ink);background-image:repeating-linear-gradient(90deg,transparent 0 15px,rgba(18,60,60,.16) 15px 16px)}
+input[type=range]::-moz-range-thumb{width:18px;height:30px;background:var(--teal);border:2px solid var(--ink);border-radius:2px}
+.rulerlabels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.54rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-top:2px}
+
+/* sorting */
+.pool{display:flex;flex-wrap:wrap;gap:8px;padding:14px;border:2px dashed var(--line);background:rgba(255,254,249,.55);min-height:80px}
+.word{font:inherit;font-size:.92rem;font-weight:600;padding:7px 12px;border:2px solid var(--ink);background:#fff;box-shadow:3px 3px 0 rgba(18,60,60,.12);cursor:pointer;color:var(--ink)}
+.word .we{margin-right:5px}
+.word:hover{background:var(--butter-soft)}
+.word.on{background:var(--butter);transform:translateY(-3px);box-shadow:3px 6px 0 rgba(18,60,60,.14)}
+.word.sorted{background:#f2f8f4;box-shadow:none;border-color:var(--teal);cursor:default;font-size:.8rem;padding:5px 8px;pointer-events:none}
+.word .ck{color:var(--teal);font-weight:700}
+.shake{animation:shake .42s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px) rotate(-1deg)}75%{transform:translateX(6px) rotate(1deg)}}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.bin{border:2px solid var(--ink);background:var(--white);box-shadow:4px 4px 0 rgba(18,60,60,.08);cursor:pointer;transition:.14s}
+.bin:hover{transform:translateY(-2px)}
+.bin-count{border-top:7px solid var(--tomato)}
+.bin-uncount{border-top:7px solid var(--teal)}
+.bin-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-bottom:1.5px dashed var(--line)}
+.bin-title{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.bin-sub{font-size:.7rem;color:var(--ink2)}
+.bin-emoji{font-size:1.1rem;letter-spacing:-2px}
+.bin-body{min-height:90px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.bin-note{padding:0 12px 11px;font-size:.72rem;color:var(--ink2)}
+.complete{display:none;margin-top:16px;padding:14px;border:2px dashed var(--teal);background:#f4fbf7}
+.complete.show{display:block;animation:rise .3s ease both}
+.complete p{margin:4px 0 0;font-size:.86rem;color:var(--ink2)}
+
+/* lab shells */
+.lab{display:grid;grid-template-columns:250px 1fr;gap:20px;align-items:start}
+.stage{background:#fbfcf8;border:1.5px solid var(--line);padding:12px;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:150px;justify-content:center}
+.bigword{font-size:4.4rem;line-height:1}
+.shelf{position:relative;width:100%;min-height:150px;padding:12px 12px 22px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-end;justify-content:center;background:linear-gradient(180deg,#faf4e6,#f1e6cf);border:2px solid #c9a97b;overflow:hidden}
+.shelf::after{content:"";position:absolute;left:0;right:0;bottom:0;height:13px;background:#c9a97b;border-top:2px solid #8f6d42}
+.apple{font-size:1.9rem;line-height:1;animation:pop .25s ease both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.price{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--butter);border:2px solid var(--ink);padding:4px 10px;transform:rotate(-2deg);box-shadow:2px 2px 0 rgba(18,60,60,.18)}
+.jug{display:flex;flex-direction:column;align-items:center}
+.jugcap{width:38px;height:12px;border:2px solid var(--ink);border-bottom:none;background:var(--teal-soft);border-radius:3px 3px 0 0}
+.jugbody{position:relative;width:110px;height:148px;border:3px solid var(--ink);border-radius:6px 6px 16px 16px;background:#eef7fb;overflow:hidden}
+.milkfill{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#fffdf5,#f2e8d2);transition:height .18s ease-out}
+.milkfill::before{content:"";position:absolute;top:-4px;left:-6%;width:112%;height:8px;background:#fffdf5;border-radius:50%}
+.jugticks{position:absolute;top:10px;bottom:10px;right:7px;width:14px;background:repeating-linear-gradient(180deg,rgba(18,60,60,.28) 0 2px,transparent 2px 17px)}
+.juglabel{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-90deg);font-family:var(--mono);font-size:.54rem;letter-spacing:.22em;color:rgba(18,60,60,.35)}
+.no-milk{font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:var(--tomato);border:1.5px dashed var(--tomato);padding:3px 8px}
+
+/* question + answer */
+.qline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--serif);font-size:clamp(1.05rem,2.5vw,1.3rem);font-weight:700;line-height:1.35}
+.chip{display:inline-block;padding:1px 8px;border:1.5px solid var(--ink);font-family:var(--mono);font-size:.78em;letter-spacing:.04em;border-radius:2px}
+.chip.many{background:var(--tomato-soft)}
+.chip.much{background:var(--teal-soft)}
+.answerline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;padding:9px 11px;border-left:5px solid var(--teal);background:#f2f9f5;font-weight:600;font-size:.94rem}
+.say{width:26px;height:26px;display:grid;place-items:center;border:1.5px solid var(--ink);background:#fff;border-radius:2px;cursor:pointer;font-size:.7rem;flex:0 0 auto}
+.say:hover{background:var(--butter)}
+.goals{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:5px;font-size:.76rem;color:var(--ink2)}
+.goals li{display:flex;gap:7px;align-items:center}
+.goals li::before{content:"";width:13px;height:13px;border:2px solid var(--ink);background:#fff;flex:0 0 auto}
+.goals li.done{color:var(--teal);text-decoration:line-through}
+.goals li.done::before{background:var(--teal);box-shadow:inset 0 0 0 2px #fff}
+
+/* mini builder */
+.buildzone{margin-top:18px;padding-top:14px;border-top:1.5px dashed var(--line)}
+.mini-head{font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px}
+.mini-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--serif);font-size:1.04rem;font-weight:700}
+.mini-slots{display:flex;flex-wrap:wrap;gap:6px}
+.slot{min-width:64px;height:36px;padding:0 8px;border:2px dashed var(--line);background:#fff;font:inherit;font-family:var(--mono);font-size:.76rem;font-weight:700;color:var(--ink);display:grid;place-items:center;cursor:default}
+.slot.filled{border-style:solid;border-color:var(--ink);background:var(--butter);cursor:pointer;animation:pop .18s ease both}
+.slot.good{background:#d9f2e6;border-color:var(--teal)}
+.slot.bad{background:var(--tomato-soft);border-color:var(--tomato)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.buildchip{font:inherit;font-family:var(--mono);font-size:.74rem;font-weight:700;padding:6px 11px;border:2px solid var(--ink);background:#fff;color:var(--ink);box-shadow:2px 2px 0 rgba(18,60,60,.14);cursor:pointer}
+.buildchip:hover{background:var(--butter-soft)}
+.buildchip.on{background:var(--sky);transform:translateY(-2px)}
+.buildchip[disabled]{opacity:.5}
+.mini-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.fb{font-size:.8rem;font-weight:600;min-height:1.2em;margin-top:8px;color:var(--ink2)}
+.fb.good{color:var(--teal)}
+.fb.bad{color:var(--tomato)}
+
+/* rule card */
+.rulecard{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.rc{border:2px solid var(--ink);background:#fff;padding:11px 9px;cursor:pointer;text-align:center;transition:.12s;box-shadow:3px 3px 0 rgba(18,60,60,.10)}
+.rc:hover{transform:translateY(-2px)}
+.rc.unc{border-top:8px solid var(--teal)}
+.rc.cnt{border-top:8px solid var(--tomato)}
+.rc-tag{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.rc-emoji{font-size:1.45rem;margin:4px 0 2px;letter-spacing:2px;line-height:1.1}
+.rc-big{font-family:var(--serif);font-size:1.4rem;font-weight:700;line-height:1.1}
+.rc.unc .rc-big{color:var(--teal)}
+.rc.cnt .rc-big{color:var(--tomato)}
+.rc-verb{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;background:var(--butter);border:1.5px solid var(--ink);padding:1px 8px;margin-top:4px}
+.rc-ex{font-size:.72rem;color:var(--ink2);margin-top:7px;line-height:1.4}
+
+/* drill */
+.drill-scene{border:2px dashed var(--line);background:#fbfcf8;min-height:154px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px}
+.scenerow{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-end;justify-content:center}
+.bigemoji{font-size:2.3rem;line-height:1}
+.scenecap{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);text-align:center}
+.drill-sentence{font-family:var(--serif);font-size:clamp(1.08rem,2.8vw,1.4rem);font-weight:700;line-height:2;margin:14px 0 0;text-align:center}
+.gapbtn{display:inline-grid;place-items:center;min-width:88px;height:34px;margin:0 3px;padding:0 8px;border:2px dashed var(--teal);background:#f1faf7;color:var(--teal);font-family:var(--mono);font-size:.78rem;font-weight:700;vertical-align:middle;cursor:pointer;border-radius:2px;transition:.12s}
+.gapbtn.sel{border-style:solid;border-color:var(--ink);background:var(--butter-soft);color:var(--ink);box-shadow:0 0 0 3px rgba(246,198,91,.5)}
+.gapbtn.filled{background:var(--butter);border:2px solid var(--ink);color:var(--ink);box-shadow:2px 2px 0 rgba(18,60,60,.2)}
+.gapbtn.good{background:#d9f2e6;border-color:var(--teal);color:var(--teal)}
+.gapbtn.bad{background:var(--tomato-soft);border-color:var(--tomato);color:var(--tomato)}
+.drill-choices{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;min-height:44px}
+.choice{font:inherit;font-family:var(--mono);font-size:.86rem;font-weight:700;letter-spacing:.06em;padding:9px 22px;border:2px solid var(--ink);background:#fff;color:var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer;border-radius:2px}
+.choice:hover{background:var(--butter-soft)}
+.drill-clue{margin-top:10px;font-size:.78rem;color:var(--ink);background:var(--butter-soft);border-left:4px solid var(--butter);padding:8px 10px;display:none}
+.drill-clue.show{display:block;animation:rise .25s ease both}
+
+/* frame lab */
+.framescene{border:2px dashed var(--line);background:#fbfcf8;padding:14px;display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px}
+.fslots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
+.fslotwrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.fslabel{font-family:var(--mono);font-size:.48rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);background:#eef3ee;border:1px solid var(--line);padding:1px 5px;white-space:nowrap}
+.fslot{min-width:84px;height:44px;padding:0 9px;border:2px dashed var(--line);background:#fff;display:grid;place-items:center;font:inherit;font-weight:700;font-size:.86rem;color:var(--ink);cursor:pointer}
+.fslot:hover{border-color:var(--ink)}
+.fslot.filled{background:var(--butter);border:2px solid var(--ink);box-shadow:2px 2px 0 rgba(18,60,60,.16)}
+.fslot.good{background:#d9f2e6;border-color:var(--teal)}
+.fslot.bad{background:var(--tomato-soft);border-color:var(--tomato)}
+.fslot.over{background:var(--butter-soft);border-style:solid;border-color:var(--ink);transform:scale(1.04)}
+
+/* smoothie */
+.smoothie{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+.blenderbox{border:1.5px solid var(--line);background:#fbfcf8;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.blender{width:150px}
+.blenderlid{width:92px;height:14px;background:var(--butter);border:2px solid var(--ink);border-radius:3px 3px 0 0;margin:0 auto;position:relative;z-index:2}
+.blenderlid::after{content:"";position:absolute;left:50%;top:-5px;transform:translateX(-50%);width:20px;height:5px;background:var(--ink)}
+.blenderjug{position:relative;width:130px;height:158px;margin:0 auto;border:3px solid var(--ink);border-top:none;background:#f7faf7;overflow:hidden}
+.blendfill{position:absolute;left:0;right:0;bottom:0;height:0;background:#f2cf9a;transition:height .3s ease,background .3s ease}
+.blendfill::before{content:"";position:absolute;top:-5px;left:-8%;width:116%;height:10px;background:rgba(255,255,255,.45);border-radius:50%}
+.blenderbase{width:108px;height:12px;margin:0 auto;background:var(--ink);border-radius:0 0 3px 3px}
+.blender.blending{animation:shake .2s infinite}
+.blender.ready .blenderjug{box-shadow:0 0 0 6px rgba(15,122,112,.15)}
+.inggrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ing{display:flex;align-items:center;gap:8px;border:2px solid var(--ink);background:#fff;padding:7px 8px;cursor:pointer;text-align:left;color:var(--ink);box-shadow:2px 2px 0 rgba(18,60,60,.10);font:inherit}
+.ing:hover{background:var(--butter-soft)}
+.ing .ie{font-size:1.35rem;line-height:1}
+.ing .iname{display:block;font-size:.82rem;font-weight:700;line-height:1.15}
+.ing .icat{display:block;font-family:var(--mono);font-size:.45rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.ing .icount{margin-left:auto;min-width:22px;text-align:center;font-family:var(--mono);font-size:.7rem;font-weight:700;background:var(--butter);border:1.5px solid var(--ink);padding:2px 4px}
+.ticket{background:#fffdf3;border:2px solid var(--ink);padding:12px;font-family:var(--mono);font-size:.64rem;letter-spacing:.02em}
+.ticket-head{font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);border-bottom:1.5px solid var(--line);padding-bottom:6px;margin-bottom:6px}
+.tline{padding:5px 0;border-bottom:1px dashed var(--line)}
+.tline:last-child{border-bottom:none}
+.tline span{color:var(--ink2);display:block}
+.tline b{font-family:"Segoe UI",system-ui,sans-serif;font-size:.78rem;display:block}
+.ticket-empty{color:var(--ink2);line-height:1.5}
+.blendmsg{font-size:.72rem;color:var(--teal);font-weight:600;text-align:center;min-height:2.4em;max-width:23ch}
+
+/* speaking */
+.picstage{min-height:210px;border:2px dashed var(--line);background:#fbfcf8;display:flex;align-items:center;justify-content:center;gap:14px;padding:16px;flex-wrap:wrap;margin-bottom:12px}
+.picgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;font-size:1.8rem;line-height:1.15}
+.bigemoji2{font-size:4rem;line-height:1}
+.minijug{position:relative;width:84px;height:118px;border:3px solid var(--ink);border-radius:5px 5px 14px 14px;background:#eef7fb;overflow:hidden}
+.minijug .mf{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#fffdf5,#f2e8d2)}
+.minibowl{width:118px;height:62px;border:3px solid var(--ink);border-radius:5px 5px 58px 58px;background:#fff;display:grid;place-items:center;font-size:2rem}
+.plate{width:168px;height:116px;border:3px dashed var(--line);border-radius:50%;background:#fff;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:2px;font-size:1.6rem}
+.speakprompt{text-align:center;font-weight:700;font-size:.98rem;margin-bottom:10px}
+.starters{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px}
+.starter{font-family:var(--mono);font-size:.63rem;border:1.5px solid var(--ink);background:#fff;padding:4px 9px}
+.reveal{display:none;margin:10px auto 0;max-width:440px;border:2px dashed var(--teal);background:#f2faf6;padding:9px 12px;font-size:.8rem;color:var(--ink)}
+.reveal.show{display:block;animation:rise .25s ease both}
+
+/* poster */
+.poster{max-width:760px;margin:0 auto;background:#fffdf3;border:2px solid var(--ink);box-shadow:var(--shadow);padding:22px}
+.poster-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:3px double var(--ink);padding-bottom:12px;margin-bottom:14px;flex-wrap:wrap}
+.poster-title{font-family:var(--serif);font-size:1.5rem;margin:2px 0 0}
+.poster-sub{font-family:var(--mono);font-size:.53rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.poster-name{display:flex;flex-direction:column;gap:4px;min-width:180px}
+.pname{font:inherit;font-family:var(--serif);font-size:1rem;border:none;border-bottom:2px solid var(--ink);background:transparent;padding:4px 2px;color:var(--ink)}
+.pname:focus{outline:none;border-bottom-color:var(--teal)}
+.rules{display:grid;gap:11px}
+.rule{display:grid;grid-template-columns:30px 1fr;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:9px}
+.rule:last-child{border-bottom:none;padding-bottom:0}
+.rulen{width:26px;height:26px;border:2px solid var(--ink);background:var(--butter);display:grid;place-items:center;font-family:var(--mono);font-size:.64rem;font-weight:700}
+.rule h4{margin:0 0 2px;font-size:.92rem;font-family:"Segoe UI",system-ui,sans-serif;font-weight:700}
+.rule p{margin:0;font-size:.82rem;color:var(--ink2);line-height:1.45}
+.ptable{width:100%;border-collapse:collapse;margin-top:10px;font-size:.78rem}
+.ptable th,.ptable td{border:1.5px solid var(--ink);padding:5px 7px;text-align:left}
+.ptable th{background:var(--butter-soft);font-family:var(--mono);font-size:.54rem;letter-spacing:.08em;text-transform:uppercase}
+.ptable td:first-child{font-family:var(--mono);font-size:.54rem;letter-spacing:.06em;text-transform:uppercase;background:#f4f8f4;width:92px}
+.poster-foot{margin-top:14px;padding-top:10px;border-top:1.5px dashed var(--line);font-size:.76rem;color:var(--ink2)}
+.tag{display:inline-block;font-family:var(--mono);font-size:.51rem;letter-spacing:.12em;text-transform:uppercase;background:var(--teal);color:#fff;padding:2px 6px;margin-right:5px}
+
+/* nav */
+.nav{position:sticky;bottom:0;z-index:55;background:linear-gradient(transparent,var(--paper) 32%);padding:14px 20px 18px}
+.nav-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--white);border:2px solid var(--ink);box-shadow:4px 4px 0 rgba(18,60,60,.12);padding:7px 8px}
+.navmid{font-family:var(--mono);font-size:.51rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);text-align:center;flex:1;display:none}
+.toast{position:fixed;left:50%;bottom:88px;transform:translate(-50%,12px);background:var(--ink);color:#fff;font-size:.76rem;font-weight:600;padding:9px 16px;border-radius:2px;opacity:0;pointer-events:none;transition:.22s;z-index:200;max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(min-width:640px){.navmid{display:block}}
+@media(max-width:720px){.lab{grid-template-columns:1fr}.smoothie{grid-template-columns:1fr}}
+@media(max-width:560px){
+  .brand-sub{display:none}
+  .tick{width:11px}
+  .bins{grid-template-columns:1fr}
+  .panel{padding:13px}
+  .fslot{min-width:72px;font-size:.8rem}
+  .inggrid{grid-template-columns:1fr}
+  .poster{padding:16px}
+  .pslot{min-width:74px}
+  .gapbtn{min-width:76px;font-size:.72rem}
+}
+@media print{
+  .topbar,.nav,.say,.btn,.hint,.goals,.stamp{display:none!important}
+  body{background:#fff}
+  body::before{display:none}
+  .step{display:none!important}
+  .step.on{display:block!important}
+  .poster{box-shadow:none;border-color:#000;max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-stripe"></div>
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="mark">1·2</div>
+      <div>
+        <div class="brand-title">The Counting Kitchen</div>
+        <div class="brand-sub">how much · how many · countable / uncountable</div>
+      </div>
+    </div>
+    <div class="progress">
+      <span class="cardno" id="stepNo">01 / 11</span>
+      <div class="ticks" id="ticks"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ 1 · SORT ============ -->
+  <section class="step" data-step="0">
+    <div class="step-head">
+      <span class="stamp">STEP 01 · SORT</span>
+      <h2>Can you count it, or do you measure it?</h2>
+      <p class="lead">Tap a food word. Then tap the box where it belongs. Think:
+        can you say <b>one</b>, <b>two</b>, <b>three</b>?</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-bar"><span>THE FOOD BASKET</span><span id="sortCount">0 / 8 SORTED</span></div>
+      <div class="pool" id="pool"></div>
+      <p class="hint">Tap a word once. It turns yellow. Then tap a box.</p>
+    </div>
+
+    <div class="bins">
+      <div class="bin bin-count" data-bin="count" role="button" tabindex="0" aria-label="Countable box">
+        <div class="bin-head">
+          <div>
+            <div class="bin-title">COUNTABLE</div>
+            <div class="bin-sub">one cup · two cups</div>
+          </div>
+          <div class="bin-emoji">🍪🍪🍪</div>
+        </div>
+        <div class="bin-body"></div>
+        <div class="bin-note">We can count them. They can take <b>-s</b>.</div>
+      </div>
+
+      <div class="bin bin-uncount" data-bin="uncount" role="button" tabindex="0" aria-label="Uncountable box">
+        <div class="bin-head">
+          <div>
+            <div class="bin-title">UNCOUNTABLE</div>
+            <div class="bin-sub">water · sugar</div>
+          </div>
+          <div class="bin-emoji">🫙</div>
+        </div>
+        <div class="bin-body"></div>
+        <div class="bin-note">We measure them. No <b>-s</b>.</div>
+      </div>
+    </div>
+
+    <div class="complete" id="sortDone">
+      <span class="stamp ok">ALL SORTED ✓</span>
+      <p>Countable food: 1, 2, 3. Uncountable food: we measure it.</p>
+    </div>
+  </section>
+
+  <!-- ============ 2 · PLURALS ============ -->
+  <section class="step" data-step="1">
+    <div class="step-head">
+      <span class="stamp">STEP 02 · PLURALS</span>
+      <h2>One apple, two apples</h2>
+      <p class="lead">Look at the picture. Choose the word that fits the sentence.
+        Countable food can take <b>-s</b>. Uncountable food never takes <b>-s</b>.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-bar"><span>PLURAL CHECK</span><span id="pBar">1 / 5</span></div>
+      <div id="pluralDrill"></div>
+    </div>
+  </section>
+
+  <!-- ============ 3 · HOW MANY ============ -->
+  <section class="step" data-step="2">
+    <div class="step-head">
+      <span class="stamp">STEP 03 · HOW MANY</span>
+      <h2>Count the apples → how many?</h2>
+      <p class="lead">Move the slider. The question stays the same, but the answer changes.
+        Then build the question underneath.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-bar"><span>THE FRUIT CRATE</span><span>COUNTABLE</span></div>
+      <div class="lab">
+        <div class="stage">
+          <div class="shelf" id="appleShelf"></div>
+          <div class="price" id="countTag">4 apples</div>
+        </div>
+        <div>
+          <div class="qline">
+            <span>How <span class="chip many">many</span> apples are there?</span>
+            <button class="say" type="button" data-say="How many apples are there?">🔊</button>
+          </div>
+          <input type="range" id="countSlider" min="2" max="8" value="4" aria-label="Number of apples">
+          <div class="rulerlabels"><span>2</span><span>4</span><span>6</span><span>8</span></div>
+          <div class="answerline">
+            <span id="countAnswer">There are 4 apples.</span>
+            <button class="say" type="button" id="countSay" data-say="There are 4 apples.">🔊</button>
+          </div>
+          <ul class="goals">
+            <li id="countGoalA">Move the slider to 3 different numbers</li>
+            <li id="countGoalB">Build the question</li>
+          </ul>
+        </div>
+      </div>
+      <div class="buildzone" id="countBuild"></div>
+    </div>
+  </section>
+
+  <!-- ============ 4 · HOW MUCH ============ -->
+  <section class="step" data-step="3">
+    <div class="step-head">
+      <span class="stamp">STEP 04 · HOW MUCH</span>
+      <h2>Pour the milk → how much?</h2>
+      <p class="lead">We cannot say “one milk, two milks”. We measure milk.
+        Move the slider and watch the jug.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-bar"><span>THE MILK JUG</span><span>UNCOUNTABLE</span></div>
+      <div class="lab">
+        <div class="stage">
+          <div class="jug">
+            <div class="jugcap"></div>
+            <div class="jugbody">
+              <div class="milkfill" id="milkFill" style="height:55%"></div>
+              <div class="jugticks"></div>
+              <div class="juglabel">MILK</div>
+            </div>
+          </div>
+          <div class="no-milk">1 milk ✗</div>
+          <div class="price" id="milkTag">a lot</div>
+        </div>
+        <div>
+          <div class="qline">
+            <span>How <span class="chip much">much</span> milk is there?</span>
+            <button class="say" type="button" data-say="How much milk is there?">🔊</button>
+          </div>
+          <input type="range" id="milkSlider" min="0" max="100" value="55" aria-label="Amount of milk">
+          <div class="rulerlabels"><span>empty</span><span>a little</span><span>a lot</span></div>
+          <div class="answerline">
+            <span id="milkAnswer">There is a lot of milk.</span>
+            <button class="say" type="button" id="milkSay" data-say="There is a lot of milk.">🔊</button>
+          </div>
+          <ul class="goals">
+            <li id="milkGoalA">Move the slider to 3 different amounts</li>
+            <li id="milkGoalB">Build the question</li>
+          </ul>
+        </div>
+      </div>
+      <div class="buildzone" id="milkBuild"></div>
+    </div>
+  </section>
+
+  <!-- ============ 5 · MUCH OR MANY ============ -->
+  <section class="step" data-step="4">
+    <div class="step-head">
+      <span class="stamp">STEP 05 · MUCH OR MANY</span>
+      <h2>Which word? much or many?</h2>
+      <p class="lead">This is the big one. <b>many</b> goes with food you can count.
+        <b>much</b> goes with food you measure. Read the sentence, then tap the gap and
+        choose the word.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-bar"><span>CHOOSE THE QUANTITY WORD</span><span id="mmBar">1 / 6</span></div>
+
+      <div class="rulecard">
+        <div class="rc unc" data-say="How much milk is there?">
+          <div class="rc-tag">measure it</div>
+          <div class="rc-emoji">🥛</div>
+          <div class="rc-big">much</div>
+          <div class="rc-verb">+ is</div>
+          <div class="rc-ex">How much milk is there?</div>
+        </div>
+        <div class="rc cnt" data-say="How many apples are there?">
+          <div class="rc-tag">count it</div>
+          <div class="rc-emoji">🍎🍎🍎</div>
+          <div class="rc-big">many</div>
+          <div class="rc-verb">+ are</div>
+          <div class="rc-ex">How many apples are there?</div>
+        </div>
+      </div>
+
+      <div id="mmDrill"></div>
+    </div>
+  </section>
+
+  <!-- ============ 6 · IS OR ARE ============ -->
+  <section class="step" data-step="5">
+    <div class="step-head">
+      <span class="stamp">STEP 06 · IS OR ARE</span>
+      <h2>The little verb: is or are?</h2>
+      <p class="lead">This word is easy to forget. Look at the food first.
+        One thing, or food we measure → <b>is</b>. More than one thing → <b>are</b>.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-bar"><span>CHOOSE THE VERB</span><span id="iaBar">1 / 6</span></div>
+
+      <div class="rulecard">
+        <div class="rc unc" data-say="There is some cheese.">
+          <div class="rc-tag">one thing / measure it</div>
+          <div class="rc-emoji">🧀</div>
+          <div class="rc-big">is</div>
+          <div class="rc-verb">there is</div>
+          <div class="rc-ex">There is some cheese.</div>
+        </div>
+        <div class="rc cnt" data-say="There are three bananas.">
+          <div class="rc-tag">more than one</div>
+          <div class="rc-emoji">🍌🍌🍌</div>
+          <div class="rc-big">are</div>
+          <div class="rc-verb">there are</div>
+          <div class="rc-ex">There are three bananas.</div>
+        </div>
+      </div>
+
+      <div id="iaDrill"></div>
+    </div>
+  </section>
+
+  <!-- ============ 7 · FRAME LAB ============ -->
+  <section class="step" data-step="6">
+    <div class="step-head">
+      <span class="stamp">STEP 07 · WORD JOBS</span>
+      <h2>Every word has a job</h2>
+      <p class="lead">Drag a word into a space with the right job. You can also tap a word,
+        then tap a space. Look at the picture first.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-bar"><span>FRAME LAB</span><span id="fNo">FRAME 1 / 4</span></div>
+      <div class="framescene">
+        <div id="fStage"></div>
+        <div class="scenecap" id="fCaption"></div>
+      </div>
+      <div class="fslots" id="fSlots"></div>
+      <div class="chips" id="fBank"></div>
+      <div class="fb" id="fFb"></div>
+      <div class="row">
+        <button class="btn" id="fCheck" type="button">CHECK ✓</button>
+        <button class="btn ghost" id="fReset" type="button">CLEAR</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8 · DETECTIVE ============ -->
+  <section class="step" data-step="7">
+    <div class="step-head">
+      <span class="stamp">STEP 08 · BOTH GAPS</span>
+      <h2>Two gaps, one sentence</h2>
+      <p class="lead">Now you must think about <b>two</b> things at the same time:
+        the word (much / many) and the verb (is / are). Tap a gap, then tap the word.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-bar"><span>DETECTIVE WORK</span><span id="dtBar">1 / 6</span></div>
+      <div id="dtDrill"></div>
+    </div>
+  </section>
+
+  <!-- ============ 9 · FREE LAB ============ -->
+  <section class="step" data-step="8">
+    <div class="step-head">
+      <span class="stamp">STEP 09 · FREE LAB</span>
+      <h2>Make a smoothie</h2>
+      <p class="lead">Add food. The order ticket writes the questions and the answers for you.
+        Add at least one countable food and one uncountable food, then blend.</p>
+    </div>
+
+    <div class="panel">
+      <div class="smoothie">
+        <div class="blenderbox">
+          <div class="blender" id="blender">
+            <div class="blenderlid"></div>
+            <div class="blenderjug"><div class="blendfill" id="blendFill"></div></div>
+            <div class="blenderbase"></div>
+          </div>
+          <div class="scenecap" id="blendCount">0 things</div>
+          <button class="btn teal" id="blendBtn" type="button" disabled>BLEND 🥤</button>
+          <button class="btn ghost small" id="clearBtn" type="button">CLEAR</button>
+          <div class="blendmsg" id="blendMsg"></div>
+        </div>
+
+        <div>
+          <div class="panel-bar"><span>ADD FOOD</span><span>CLICK TO ADD</span></div>
+          <div class="inggrid" id="ingGrid"></div>
+          <ul class="goals" style="margin-top:12px">
+            <li id="sGoal1">Add a countable food</li>
+            <li id="sGoal2">Add an uncountable food</li>
+            <li id="sGoal3">Press BLEND</li>
+          </ul>
+          <div class="ticket" id="ticket" style="margin-top:14px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 · SPEAK ============ -->
+  <section class="step" data-step="9">
+    <div class="step-head">
+      <span class="stamp">STEP 10 · SPEAK</span>
+      <h2>What do you see?</h2>
+      <p class="lead">Look at the picture. Ask your partner a question. Your partner answers.
+        The answer is not on the screen.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-bar"><span>PICTURE CARD</span><span id="sCardNo">CARD 1</span></div>
+      <div class="picstage" id="picStage"><span class="bigemoji2">🎲</span></div>
+      <p class="speakprompt">Ask about the food in the picture.</p>
+      <div class="starters" id="starters"></div>
+      <div class="row">
+        <button class="btn ghost" id="hintBtn" type="button">HINT 💡</button>
+        <button class="btn ghost" id="exampleBtn" type="button">EXAMPLE 🔊</button>
+        <button class="btn teal" id="saidBtn" type="button" disabled>WE SAID IT ✓</button>
+      </div>
+      <div class="reveal" id="hintBox"></div>
+      <div class="reveal" id="exampleBox"></div>
+      <div class="row">
+        <button class="btn" id="newCard" type="button">NEW PICTURE 🎲</button>
+      </div>
+      <div class="scenecap" id="sCount" style="margin-top:10px">0 OF 4 CARDS DONE</div>
+    </div>
+  </section>
+
+  <!-- ============ 11 · POSTER ============ -->
+  <section class="step" data-step="10">
+    <div class="step-head">
+      <span class="stamp">STEP 11 · KITCHEN RULES</span>
+      <h2>Your kitchen card</h2>
+      <p class="lead">Write your name. Read the card out loud. Then print it.</p>
+    </div>
+
+    <div class="poster">
+      <div class="poster-head">
+        <div>
+          <div class="poster-sub">THE COUNTING KITCHEN · GRAMMAR CARD</div>
+          <h3 class="poster-title">How much or how many?</h3>
+        </div>
+        <div class="poster-name">
+          <label for="nameIn" class="poster-sub">MY NAME</label>
+          <input id="nameIn" class="pname" maxlength="22" placeholder="write here">
+        </div>
+      </div>
+
+      <div class="rules">
+        <div class="rule">
+          <div class="rulen">1</div>
+          <div>
+            <h4>COUNTABLE — we can count it.</h4>
+            <p>One apple, two apples, three apples. Plural nouns take <b>-s</b>.</p>
+          </div>
+        </div>
+
+        <div class="rule">
+          <div class="rulen">2</div>
+          <div>
+            <h4>UNCOUNTABLE — we measure it.</h4>
+            <p>Milk, rice, bread, cheese. No <b>-s</b>. We say <b>some milk</b>, not “two milks”.</p>
+          </div>
+        </div>
+
+        <div class="rule">
+          <div class="rulen">3</div>
+          <div>
+            <h4>The two pairs — learn them together.</h4>
+            <table class="ptable">
+              <tr><th></th><th>uncountable</th><th>countable (plural)</th></tr>
+              <tr><td>word</td><td><b>much</b></td><td><b>many</b></td></tr>
+              <tr><td>verb</td><td><b>is</b></td><td><b>are</b></td></tr>
+              <tr><td>example</td><td>How much milk is there?</td><td>How many apples are there?</td></tr>
+              <tr><td>negative</td><td>There isn't much milk.</td><td>There aren't many apples.</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="rule">
+          <div class="rulen">4</div>
+          <div>
+            <h4>Short answers</h4>
+            <p>There is a lot of milk. · There are six apples. ·
+              There isn't much rice. · There aren't many cookies.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="poster-foot">
+        <span class="tag">TIP</span>
+        <b>a lot of</b> works with both: a lot of apples, a lot of milk.
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="btn" id="printBtn" type="button">PRINT MY CARD 🖨</button>
+    </div>
+  </section>
+
+</main>
+
+<nav class="nav">
+  <div class="nav-in">
+    <button class="btn ghost" id="btnBack" type="button">← BACK</button>
+    <span class="navmid" id="navHint">FINISH THE TASK TO UNLOCK</span>
+    <button class="btn" id="btnNext" type="button" disabled>CONTINUE →</button>
+  </div>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var $ = function (s) { return document.querySelector(s); };
+  var $$ = function (s) {
+    return Array.prototype.slice.call(document.querySelectorAll(s));
+  };
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $("#toast");
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2600);
+  }
+
+  function say(text) {
+    if (!text) return;
+    if (!("speechSynthesis" in window)) { toast("No voice on this device."); return; }
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  }
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest(".say") : null;
+    if (b) { say(b.getAttribute("data-say") || ""); return; }
+    var rc = e.target.closest ? e.target.closest(".rc") : null;
+    if (rc) say(rc.getAttribute("data-say") || "");
+  });
+
+  /* =====================================================
+     PROGRESS
+     ===================================================== */
+  var steps = $$(".step");
+  var TOTAL = steps.length;
+  var unlocked = {};
+  var current = 0;
+
+  var ticksEl = $("#ticks");
+  for (var ti = 0; ti < TOTAL; ti++) {
+    var tk = document.createElement("span");
+    tk.className = "tick";
+    ticksEl.appendChild(tk);
+  }
+
+  function unlock(i) {
+    if (unlocked[i]) return;
+    unlocked[i] = true;
+    render();
+  }
+
+  function pad(n) { return ("0" + n).slice(-2); }
+
+  function render() {
+    steps.forEach(function (s, i) { s.classList.toggle("on", i === current); });
+
+    $$(".tick").forEach(function (t, i) {
+      t.classList.toggle("done", !!unlocked[i] && i !== current);
+      t.classList.toggle("active", i === current);
+    });
+
+    $("#stepNo").textContent = pad(current + 1) + " / " + pad(TOTAL);
+    $("#btnBack").style.visibility = current === 0 ? "hidden" : "visible";
+
+    var nx = $("#btnNext");
+    if (current === TOTAL - 1) {
+      nx.textContent = "START AGAIN ↻";
+      nx.disabled = false;
+      nx.title = "";
+      $("#navHint").textContent = "PRINT OR READ YOUR CARD";
+    } else {
+      nx.textContent = "CONTINUE →";
+      nx.disabled = !unlocked[current];
+      nx.title = nx.disabled ? "Finish the task first" : "";
+      $("#navHint").textContent = unlocked[current]
+        ? "STEP CLEAR ✓"
+        : "FINISH THE TASK TO UNLOCK";
+    }
+  }
+
+  $("#btnNext").addEventListener("click", function () {
+    if (current === TOTAL - 1) {
+      current = 0;
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (!unlocked[current]) return;
+    current = Math.min(TOTAL - 1, current + 1);
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  $("#btnBack").addEventListener("click", function () {
+    current = Math.max(0, current - 1);
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* =====================================================
+     STEP 1 — countable / uncountable sort
+     ===================================================== */
+  var SORT = [
+    { w: "apple", e: "🍎", type: "count" },
+    { w: "egg", e: "🥚", type: "count" },
+    { w: "banana", e: "🍌", type: "count" },
+    { w: "carrot", e: "🥕", type: "count" },
+    { w: "milk", e: "🥛", type: "uncount" },
+    { w: "rice", e: "🍚", type: "uncount" },
+    { w: "bread", e: "🍞", type: "uncount" },
+    { w: "cheese", e: "🧀", type: "uncount" }
+  ];
+
+  var pickedWord = null;
+  var sortedCount = 0;
+
+  function buildPool() {
+    var pool = $("#pool");
+    pool.innerHTML = "";
+    shuffle(SORT).forEach(function (item) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "word";
+      b.setAttribute("data-type", item.type);
+      b.innerHTML = '<span class="we">' + item.e + "</span> " + item.w;
+      b.addEventListener("click", function () {
+        if (b.classList.contains("sorted")) return;
+        $$(".word.on").forEach(function (x) { x.classList.remove("on"); });
+        b.classList.add("on");
+        pickedWord = b;
+      });
+      pool.appendChild(b);
+    });
+  }
+
+  $$(".bin").forEach(function (bin) {
+    function commit() {
+      if (!pickedWord) {
+        if (sortedCount === 0) toast("Tap a food word first.");
+        return;
+      }
+      if (pickedWord.classList.contains("sorted")) return;
+
+      var target = bin.getAttribute("data-bin");
+      if (pickedWord.getAttribute("data-type") === target) {
+        pickedWord.classList.remove("on");
+        pickedWord.classList.add("sorted");
+        pickedWord.innerHTML += ' <span class="ck">✓</span>';
+        bin.querySelector(".bin-body").appendChild(pickedWord);
+        pickedWord = null;
+        sortedCount++;
+        $("#sortCount").textContent = sortedCount + " / " + SORT.length + " SORTED";
+        if (sortedCount === SORT.length) {
+          $("#sortDone").classList.add("show");
+          unlock(0);
+        }
+      } else {
+        var el = pickedWord;
+        el.classList.add("shake");
+        setTimeout(function () { el.classList.remove("shake"); }, 450);
+        toast(el.getAttribute("data-type") === "count"
+          ? "That one is countable: one, two, three. Try COUNTABLE."
+          : "That one is uncountable: we measure it. Try UNCOUNTABLE.");
+      }
+    }
+
+    bin.addEventListener("click", function (e) {
+      if (e.target.closest(".word")) return;
+      commit();
+    });
+    bin.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        commit();
+      }
+    });
+  });
+
+  buildPool();
+
+  /* =====================================================
+     GAP DRILL ENGINE
+     items: [{ scene, cap, segs:[{x:'text'} | {g:0}], opts:[[..]], ans:[..], why, clue }]
+     ===================================================== */
+  function buildSentence(item, vals) {
+    var out = "";
+    item.segs.forEach(function (s) {
+      out += (s.g !== undefined) ? String(vals[s.g]) : s.x;
+    });
+    return out.replace(/\s+/g, " ").replace(/\s+([.,?!])/g, "$1").trim();
+  }
+
+  function gapDrill(root, items, onDone, cfg) {
+    cfg = cfg || {};
+
+    var idx = 0;
+    var filled = [];
+    var active = 0;
+    var locked = false;
+
+    var wrap = document.createElement("div");
+    wrap.innerHTML =
+      '<div class="drill-scene"></div>' +
+      '<div class="scenecap drill-cap"></div>' +
+      '<div class="drill-sentence"></div>' +
+      '<div class="drill-choices"></div>' +
+      '<div class="fb drill-fb"></div>' +
+      '<div class="drill-clue"></div>';
+    root.appendChild(wrap);
+
+    var sceneEl = wrap.querySelector(".drill-scene");
+    var capEl = wrap.querySelector(".drill-cap");
+    var sentEl = wrap.querySelector(".drill-sentence");
+    var chEl = wrap.querySelector(".drill-choices");
+    var fbEl = wrap.querySelector(".drill-fb");
+    var clueEl = wrap.querySelector(".drill-clue");
+
+    function gapTotal(it) {
+      var n = 0;
+      it.segs.forEach(function (s) { if (s.g !== undefined) n++; });
+      return n;
+    }
+
+    function setBar(n, total) {
+      if (!cfg.bar) return;
+      var b = document.querySelector(cfg.bar);
+      if (b) b.textContent = n + " / " + total;
+    }
+
+    function load() {
+      var it = items[idx];
+      locked = false;
+      filled = [];
+      for (var i = 0; i < gapTotal(it); i++) filled.push(null);
+      active = 0;
+
+      sceneEl.innerHTML = it.scene || "";
+      capEl.textContent = it.cap || "";
+      capEl.style.display = it.cap ? "block" : "none";
+      fbEl.textContent = "";
+      fbEl.className = "fb drill-fb";
+      clueEl.textContent = it.clue || "";
+      clueEl.className = "drill-clue";
+
+      setBar(idx + 1, items.length);
+      draw();
+    }
+
+    function draw() {
+      var it = items[idx];
+      sentEl.innerHTML = "";
+
+      it.segs.forEach(function (s) {
+        if (s.g !== undefined) {
+          var gi = s.g;
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "gapbtn";
+          var val = filled[gi];
+          if (val) {
+            b.textContent = val;
+            b.classList.add("filled");
+          } else {
+            b.textContent = "?";
+          }
+          if (!locked && gi === active) b.classList.add("sel");
+          b.addEventListener("click", function () {
+            if (locked) return;
+            active = gi;
+            draw();
+          });
+          sentEl.appendChild(b);
+        } else {
+          var sp = document.createElement("span");
+          sp.textContent = s.x;
+          sentEl.appendChild(sp);
+        }
+      });
+
+      chEl.innerHTML = "";
+      if (locked) return;
+
+      var opts = it.opts[active] || [];
+      opts.forEach(function (o) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "choice";
+        b.textContent = o;
+        b.addEventListener("click", function () { choose(o); });
+        chEl.appendChild(b);
+      });
+    }
+
+    function choose(word) {
+      if (locked) return;
+      filled[active] = word;
+
+      var next = -1;
+      for (var i = 0; i < filled.length; i++) {
+        if (!filled[i]) { next = i; break; }
+      }
+
+      if (next === -1) {
+        draw();
+        setTimeout(check, 260);
+      } else {
+        active = next;
+        draw();
+      }
+    }
+
+    function check() {
+      var it = items[idx];
+      var ok = true;
+      for (var i = 0; i < it.ans.length; i++) {
+        if (filled[i] !== it.ans[i]) { ok = false; break; }
+      }
+
+      if (ok) {
+        locked = true;
+        draw();
+        $$(".gapbtn", sentEl).forEach(function (g) { g.classList.add("good"); });
+        fbEl.textContent = "✓ " + it.why;
+        fbEl.className = "fb drill-fb good";
+        chEl.innerHTML = "";
+        say(buildSentence(it, it.ans));
+        idx++;
+        setTimeout(function () {
+          if (idx >= items.length) finish();
+          else load();
+        }, 1750);
+      } else {
+        locked = true;
+        draw();
+        $$(".gapbtn", sentEl).forEach(function (g) { g.classList.add("bad"); });
+        fbEl.textContent = "Not yet. Look at the food again.";
+        fbEl.className = "fb drill-fb bad";
+        if (it.clue) clueEl.className = "drill-clue show";
+        setTimeout(function () {
+          locked = false;
+          for (var m = 0; m < filled.length; m++) filled[m] = null;
+          active = 0;
+          fbEl.textContent = "";
+          fbEl.className = "fb drill-fb";
+          draw();
+        }, 1300);
+      }
+    }
+
+    function finish() {
+      locked = true;
+      sceneEl.innerHTML = '<span class="bigword" style="font-size:3rem">🏆</span>';
+      capEl.style.display = "none";
+      sentEl.textContent = cfg.doneText || "All done!";
+      chEl.innerHTML = "";
+      fbEl.textContent = "✓ Complete. Continue is open.";
+      fbEl.className = "fb drill-fb good";
+      clueEl.className = "drill-clue";
+      setBar(items.length, items.length);
+      if (onDone) onDone();
+    }
+
+    load();
+  }
+
+  /* ---------- STEP 2 data : plurals ---------- */
+  var PLURAL = [
+    {
+      scene: '<div class="scenerow"><span class="bigemoji">🍎</span>' +
+             '<span class="bigemoji">🍎</span></div>',
+      cap: "",
+      segs: [{ x: "one apple + one apple = two " }, { g: 0 }, { x: "." }],
+      opts: [["apple", "apples"]],
+      ans: ["apples"],
+      why: "We can count apples, so we add -s: apples.",
+      clue: "One apple… two apples. Countable food takes -s."
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji">🥚</span>' +
+             '<span class="bigemoji">🥚</span></div>',
+      cap: "",
+      segs: [{ x: "one egg + one egg = two " }, { g: 0 }, { x: "." }],
+      opts: [["egg", "eggs"]],
+      ans: ["eggs"],
+      why: "Eggs are countable: two eggs.",
+      clue: "One egg… two eggs. Countable food takes -s."
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji">🍌</span>' +
+             '<span class="bigemoji">🍌</span></div>',
+      cap: "",
+      segs: [{ x: "one banana + one banana = two " }, { g: 0 }, { x: "." }],
+      opts: [["bananas", "banana"]],
+      ans: ["bananas"],
+      why: "Bananas are countable: two bananas.",
+      clue: "One banana… two bananas. Countable food takes -s."
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.8rem">🍚</span></div>',
+      cap: "",
+      segs: [{ x: "I want " }, { g: 0 }, { x: "." }],
+      opts: [["two rices", "some rice"]],
+      ans: ["some rice"],
+      why: "Rice is uncountable. We never say “rices”.",
+      clue: "Rice is uncountable. No -s. Use some."
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.8rem">🧀</span></div>',
+      cap: "",
+      segs: [{ x: "I want " }, { g: 0 }, { x: "." }],
+      opts: [["some cheese", "two cheeses"]],
+      ans: ["some cheese"],
+      why: "Cheese is uncountable. We never say “cheeses”.",
+      clue: "Cheese is uncountable. No -s. Use some."
+    }
+  ];
+
+  gapDrill($("#pluralDrill"), PLURAL, function () { unlock(1); }, {
+    bar: "#pBar",
+    doneText: "Countable → -s. Uncountable → no -s."
+  });
+
+  /* =====================================================
+     MINI BUILDER
+     ===================================================== */
+  function miniBuild(root, cfg) {
+    var idc = 0;
+    var slots = [];
+    for (var i = 0; i < cfg.answers.length; i++) slots.push(null);
+    var bank = shuffle(cfg.tokens).map(function (w) {
+      idc++;
+      return { w: w, id: "m" + idc };
+    });
+    var done = false;
+
+    root.innerHTML =
+      '<div class="mini-head">BUILD THE QUESTION</div>' +
+      '<div class="mini-line"><span class="mini-slots"></span></div>' +
+      '<div class="chips mini-bank"></div>' +
+      '<div class="mini-foot">' +
+        '<button type="button" class="btn small mini-check">CHECK</button>' +
+        '<span class="fb mini-fb"></span>' +
+      "</div>";
+
+    var slotsEl = root.querySelector(".mini-slots");
+    var bankEl = root.querySelector(".mini-bank");
+    var fb = root.querySelector(".mini-fb");
+    var check = root.querySelector(".mini-check");
+
+    function draw() {
+      slotsEl.innerHTML = "";
+      slots.forEach(function (tok, i) {
+        var s = document.createElement("button");
+        s.type = "button";
+        s.className = "slot" + (tok ? " filled" : "");
+        s.textContent = tok ? tok.w : "";
+        s.addEventListener("click", function () {
+          if (done || !tok) return;
+          bank.push(tok);
+          slots[i] = null;
+          draw();
+        });
+        slotsEl.appendChild(s);
+      });
+
+      bankEl.innerHTML = "";
+      bank.forEach(function (tok) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "buildchip";
+        b.textContent = tok.w;
+        b.disabled = done;
+        b.addEventListener("click", function () {
+          if (done) return;
+          var empty = slots.indexOf(null);
+          if (empty < 0) { toast("The line is full. Tap a word to take it back."); return; }
+          bank = bank.filter(function (x) { return x.id !== tok.id; });
+          slots[empty] = tok;
+          draw();
+        });
+        bankEl.appendChild(b);
+      });
+
+      check.disabled = slots.some(function (x) { return !x; });
+    }
+
+    check.addEventListener("click", function () {
+      if (done) return;
+      var ok = true;
+      for (var i = 0; i < cfg.answers.length; i++) {
+        if (!slots[i] || slots[i].w !== cfg.answers[i]) { ok = false; break; }
+      }
+
+      if (ok) {
+        done = true;
+        $$(".slot", slotsEl).forEach(function (s) { s.classList.add("good"); });
+        fb.textContent = "✓ " + cfg.sentence;
+        fb.className = "fb mini-fb good";
+        say(cfg.sentence);
+        check.disabled = true;
+        bankEl.innerHTML = "";
+        if (cfg.onDone) cfg.onDone();
+      } else {
+        $$(".slot", slotsEl).forEach(function (s, i) {
+          if (slots[i] && slots[i].w !== cfg.answers[i]) {
+            s.classList.add("bad");
+            setTimeout(function () { s.classList.remove("bad"); }, 700);
+          }
+        });
+        fb.textContent = "Look at the order. Try again.";
+        fb.className = "fb mini-fb bad";
+      }
+    });
+
+    draw();
+  }
+
+  /* =====================================================
+     STEP 3 — how many
+     ===================================================== */
+  var countSlider = $("#countSlider");
+  var triedCounts = {};
+  var countBuildDone = false;
+
+  function countGoalA() { return Object.keys(triedCounts).length >= 3; }
+
+  function maybeCount() {
+    $("#countGoalA").classList.toggle("done", countGoalA());
+    $("#countGoalB").classList.toggle("done", countBuildDone);
+    if (countGoalA() && countBuildDone) unlock(2);
+  }
+
+  function updCount() {
+    var n = +countSlider.value;
+    triedCounts[n] = true;
+
+    var shelf = $("#appleShelf");
+    shelf.innerHTML = "";
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement("span");
+      s.className = "apple";
+      s.textContent = "🍎";
+      shelf.appendChild(s);
+    }
+
+    $("#countTag").textContent = n + " apples";
+    var ans = "There are " + n + " apples.";
+    $("#countAnswer").textContent = ans;
+    $("#countSay").setAttribute("data-say", ans);
+    maybeCount();
+  }
+
+  miniBuild($("#countBuild"), {
+    tokens: ["How", "many", "apples", "much"],
+    answers: ["How", "many", "apples"],
+    sentence: "How many apples are there?",
+    onDone: function () {
+      countBuildDone = true;
+      maybeCount();
+      toast(countGoalA()
+        ? "Question built. Step clear!"
+        : "Question built! Now move the slider to 3 different numbers.");
+    }
+  });
+
+  countSlider.addEventListener("input", updCount);
+  updCount();
+
+  /* =====================================================
+     STEP 4 — how much
+     ===================================================== */
+  var milkSlider = $("#milkSlider");
+  var triedMilk = {};
+  var milkBuildDone = false;
+
+  function milkGoalA() { return Object.keys(triedMilk).length >= 3; }
+
+  function maybeMilk() {
+    $("#milkGoalA").classList.toggle("done", milkGoalA());
+    $("#milkGoalB").classList.toggle("done", milkBuildDone);
+    if (milkGoalA() && milkBuildDone) unlock(3);
+  }
+
+  function updMilk() {
+    var v = +milkSlider.value;
+    triedMilk[v] = true;
+
+    $("#milkFill").style.height = v + "%";
+
+    var txt, tag;
+    if (v <= 8) {
+      txt = "There isn't any milk.";
+      tag = "empty";
+    } else if (v <= 48) {
+      txt = "There is a little milk.";
+      tag = "a little";
+    } else {
+      txt = "There is a lot of milk.";
+      tag = "a lot";
+    }
+
+    $("#milkAnswer").textContent = txt;
+    $("#milkSay").setAttribute("data-say", txt);
+    $("#milkTag").textContent = tag;
+    maybeMilk();
+  }
+
+  miniBuild($("#milkBuild"), {
+    tokens: ["How", "much", "milk", "many"],
+    answers: ["How", "much", "milk"],
+    sentence: "How much milk is there?",
+    onDone: function () {
+      milkBuildDone = true;
+      maybeMilk();
+      toast(milkGoalA()
+        ? "Question built. Step clear!"
+        : "Question built! Now move the slider to 3 different amounts.");
+    }
+  });
+
+  milkSlider.addEventListener("input", updMilk);
+  updMilk();
+
+  /* =====================================================
+     STEP 5 — much or many
+     ===================================================== */
+  function row(emoji, n, size) {
+    var out = '<div class="scenerow">';
+    for (var i = 0; i < n; i++) {
+      out += '<span class="bigemoji"' +
+        (size ? ' style="font-size:' + size + '"' : "") + ">" + emoji + "</span>";
+    }
+    return out + "</div>";
+  }
+
+  var MM = [
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.9rem">🥛</span>' +
+             '<span class="bigemoji" style="font-size:1.6rem">🥄</span></div>',
+      cap: "a jug of milk",
+      segs: [{ x: "How " }, { g: 0 }, { x: " milk is there?" }],
+      opts: [["much", "many"]],
+      ans: ["much"],
+      why: "Milk is uncountable. We measure it, so we use much.",
+      clue: "You cannot count milk: one milk ✗. You measure it → much."
+    },
+    {
+      scene: row("🍎", 3),
+      cap: "three apples",
+      segs: [{ x: "How " }, { g: 0 }, { x: " apples are there?" }],
+      opts: [["many", "much"]],
+      ans: ["many"],
+      why: "Apples are countable. One, two, three → many.",
+      clue: "You can count them: one, two, three → many."
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.9rem">🍚</span></div>',
+      cap: "rice in a bowl",
+      segs: [{ x: "How " }, { g: 0 }, { x: " rice is there?" }],
+      opts: [["much", "many"]],
+      ans: ["much"],
+      why: "Rice is uncountable. No -s, and we use much.",
+      clue: "Rice is uncountable. One rice ✗ → much."
+    },
+    {
+      scene: row("🥚", 4),
+      cap: "four eggs",
+      segs: [{ x: "How " }, { g: 0 }, { x: " eggs are there?" }],
+      opts: [["much", "many"]],
+      ans: ["many"],
+      why: "Eggs are countable: one egg, two eggs → many.",
+      clue: "You can count them one by one → many."
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.9rem">🧀</span></div>',
+      cap: "cheese",
+      segs: [{ x: "How " }, { g: 0 }, { x: " cheese is there?" }],
+      opts: [["many", "much"]],
+      ans: ["much"],
+      why: "Cheese is uncountable. We use much.",
+      clue: "Cheese is uncountable. Two cheeses ✗ → much."
+    },
+    {
+      scene: row("🍪", 3),
+      cap: "cookies",
+      segs: [{ x: "How " }, { g: 0 }, { x: " cookies are there?" }],
+      opts: [["much", "many"]],
+      ans: ["many"],
+      why: "Cookies are countable: one, two, three → many.",
+      clue: "You can count them → many."
+    }
+  ];
+
+  gapDrill($("#mmDrill"), MM, function () { unlock(4); }, {
+    bar: "#mmBar",
+    doneText: "much + uncountable. many + countable."
+  });
+
+  /* =====================================================
+     STEP 6 — is or are
+     ===================================================== */
+  var IA = [
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.9rem">🥛</span></div>',
+      cap: "a lot of milk",
+      segs: [{ x: "There " }, { g: 0 }, { x: " a lot of milk." }],
+      opts: [["is", "are"]],
+      ans: ["is"],
+      why: "Milk is uncountable, so we say there is.",
+      clue: "Milk = one amount, not a plural. → is"
+    },
+    {
+      scene: row("🍎", 3),
+      cap: "three apples",
+      segs: [{ x: "There " }, { g: 0 }, { x: " three apples." }],
+      opts: [["are", "is"]],
+      ans: ["are"],
+      why: "Three apples is plural, so we say there are.",
+      clue: "Three apples = more than one → are"
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.9rem">🍚</span></div>',
+      cap: "rice",
+      segs: [{ x: "How much rice " }, { g: 0 }, { x: " there?" }],
+      opts: [["is", "are"]],
+      ans: ["is"],
+      why: "Rice is uncountable. How much… is there?",
+      clue: "How much + uncountable → is"
+    },
+    {
+      scene: row("🥚", 5),
+      cap: "five eggs",
+      segs: [{ x: "How many eggs " }, { g: 0 }, { x: " there?" }],
+      opts: [["are", "is"]],
+      ans: ["are"],
+      why: "Eggs are plural. How many… are there?",
+      clue: "How many + plural countable → are"
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.9rem">🧀</span></div>',
+      cap: "some cheese",
+      segs: [{ x: "There " }, { g: 0 }, { x: " some cheese." }],
+      opts: [["is", "are"]],
+      ans: ["is"],
+      why: "Cheese is uncountable, so we use is.",
+      clue: "Cheese is uncountable → is"
+    },
+    {
+      scene: row("🍌", 4),
+      cap: "four bananas",
+      segs: [{ x: "There " }, { g: 0 }, { x: " four bananas." }],
+      opts: [["are", "is"]],
+      ans: ["are"],
+      why: "Four bananas is plural, so we use are.",
+      clue: "Bananas is plural → are"
+    }
+  ];
+
+  gapDrill($("#iaDrill"), IA, function () { unlock(5); }, {
+    bar: "#iaBar",
+    doneText: "is + one / uncountable. are + plural."
+  });
+
+  /* =====================================================
+     STEP 7 — frame lab
+     ===================================================== */
+  var FRAMES = [
+    {
+      visual: row("🥚", 5) + '<div class="scenecap">5 eggs on the counter</div>',
+      caption: "5 eggs on the counter",
+      slots: ["QUESTION WORD", "NOUN", "VERB", "THERE"],
+      answers: ["How many", "eggs", "are", "there"],
+      tray: ["How many", "How much", "eggs", "milk", "is", "are", "there"],
+      sentence: "How many eggs are there?"
+    },
+    {
+      visual: '<div class="scenerow"><span class="bigemoji" style="font-size:2.4rem">🧀</span>' +
+        '<span class="bigemoji" style="font-size:2.4rem">🧀</span>' +
+        '<span class="bigemoji" style="font-size:2.4rem">🧀</span></div>' +
+        '<div class="scenecap">a lot of cheese</div>',
+      caption: "a lot of cheese",
+      slots: ["QUESTION WORD", "NOUN", "VERB", "THERE"],
+      answers: ["How much", "cheese", "is", "there"],
+      tray: ["How many", "How much", "cheese", "eggs", "is", "are", "there"],
+      sentence: "How much cheese is there?"
+    },
+    {
+      visual: row("🍪", 2) + '<div class="scenecap">only 2 cookies</div>',
+      caption: "only two cookies",
+      slots: ["THERE", "VERB + NOT", "QUANTITY", "NOUN"],
+      answers: ["There", "aren't", "many", "cookies"],
+      tray: ["There", "aren't", "isn't", "much", "many", "cookies", "cookie"],
+      sentence: "There aren't many cookies."
+    },
+    {
+      visual: '<div class="scenerow"><span class="bigemoji" style="font-size:2.4rem">🍚</span></div>' +
+        '<div class="scenecap">a little rice</div>',
+      caption: "a little rice",
+      slots: ["THERE", "VERB + NOT", "QUANTITY", "NOUN"],
+      answers: ["There", "isn't", "much", "rice"],
+      tray: ["There", "aren't", "isn't", "much", "many", "rice", "rices"],
+      sentence: "There isn't much rice."
+    }
+  ];
+
+  var fIdx = 0;
+  var fPlaced = [];
+  var fBank = [];
+  var fSel = null;
+  var fBusy = false;
+
+  function loadFrame() {
+    fBusy = false;
+    fSel = null;
+    var t = FRAMES[fIdx];
+
+    $("#fStage").innerHTML = t.visual;
+    $("#fCaption").textContent = t.caption;
+    $("#fNo").textContent = "FRAME " + (fIdx + 1) + " / " + FRAMES.length;
+
+    fPlaced = [];
+    for (var i = 0; i < t.answers.length; i++) fPlaced.push(null);
+
+    fBank = shuffle(t.tray.map(function (w, i) {
+      return { w: w, id: "f" + fIdx + "-" + i };
+    }));
+
+    $("#fFb").textContent = "";
+    $("#fFb").className = "fb";
+    drawFrame();
+  }
+
+  function findFrameTok(id) {
+    for (var i = 0; i < fPlaced.length; i++) {
+      if (fPlaced[i] && fPlaced[i].id === id) return { tok: fPlaced[i], at: i };
+    }
+    for (var j = 0; j < fBank.length; j++) {
+      if (fBank[j].id === id) return { tok: fBank[j], at: -1 };
+    }
+    return null;
+  }
+
+  function placeFrameTok(id, slotIndex) {
+    if (fBusy) return;
+    var found = findFrameTok(id);
+    if (!found) return;
+
+    if (fPlaced[slotIndex]) fBank.push(fPlaced[slotIndex]);
+    if (found.at >= 0) fPlaced[found.at] = null;
+
+    fBank = fBank.filter(function (x) { return x.id !== id; });
+    fPlaced[slotIndex] = found.tok;
+    fSel = null;
+    drawFrame();
+  }
+
+  function drawFrame() {
+    var t = FRAMES[fIdx];
+    var slotsEl = $("#fSlots");
+    slotsEl.innerHTML = "";
+
+    t.slots.forEach(function (label, i) {
+      var wrap = document.createElement("div");
+      wrap.className = "fslotwrap";
+
+      var lab = document.createElement("span");
+      lab.className = "fslabel";
+      lab.textContent = label;
+
+      var s = document.createElement("button");
+      s.type = "button";
+      s.className = "fslot";
+      var tok = fPlaced[i];
+      s.textContent = tok ? tok.w : "?";
+      if (tok) s.classList.add("filled");
+
+      s.addEventListener("click", function () {
+        if (fBusy) return;
+        if (fPlaced[i]) {
+          fBank.push(fPlaced[i]);
+          fPlaced[i] = null;
+          fSel = null;
+          drawFrame();
+        } else if (fSel) {
+          placeFrameTok(fSel, i);
+        } else {
+          toast("Tap a word first, then tap this space.");
+        }
+      });
+
+      s.addEventListener("dragover", function (ev) {
+        ev.preventDefault();
+        s.classList.add("over");
+      });
+      s.addEventListener("dragleave", function () { s.classList.remove("over"); });
+      s.addEventListener("drop", function (ev) {
+        ev.preventDefault();
+        s.classList.remove("over");
+        var id = ev.dataTransfer.getData("text/plain");
+        if (id) placeFrameTok(id, i);
+      });
+
+      wrap.appendChild(lab);
+      wrap.appendChild(s);
+      slotsEl.appendChild(wrap);
+    });
+
+    var bankEl = $("#fBank");
+    bankEl.innerHTML = "";
+    fBank.forEach(function (tok) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "buildchip" + (fSel === tok.id ? " on" : "");
+      b.textContent = tok.w;
+      b.draggable = true;
+
+      b.addEventListener("dragstart", function (ev) {
+        ev.dataTransfer.setData("text/plain", tok.id);
+        ev.dataTransfer.effectAllowed = "move";
+      });
+      b.addEventListener("click", function () {
+        if (fBusy) return;
+        fSel = (fSel === tok.id) ? null : tok.id;
+        drawFrame();
+      });
+
+      bankEl.appendChild(b);
+    });
+
+    $("#fCheck").disabled = fPlaced.some(function (x) { return !x; });
+  }
+
+  $("#fCheck").addEventListener("click", function () {
+    if (fBusy) return;
+    var t = FRAMES[fIdx];
+    var ok = true;
+    for (var i = 0; i < t.answers.length; i++) {
+      if (!fPlaced[i] || fPlaced[i].w !== t.answers[i]) { ok = false; break; }
+    }
+
+    if (ok) {
+      fBusy = true;
+      $$("#fSlots .fslot").forEach(function (s) { s.classList.add("good"); });
+      $("#fFb").textContent = "✓ " + t.sentence;
+      $("#fFb").className = "fb good";
+      say(t.sentence);
+
+      setTimeout(function () {
+        fIdx++;
+        if (fIdx >= FRAMES.length) {
+          $("#fStage").innerHTML = '<span class="bigemoji" style="font-size:3.4rem">🏆</span>';
+          $("#fCaption").textContent = "ALL FOUR FRAMES";
+          $("#fSlots").innerHTML = "";
+          $("#fBank").innerHTML = "";
+          $("#fNo").textContent = "FRAME LAB COMPLETE";
+          $("#fFb").textContent = "You know the job of every word. Continue is open.";
+          $("#fFb").className = "fb good";
+          $("#fCheck").disabled = true;
+          unlock(6);
+        } else {
+          loadFrame();
+        }
+      }, 1700);
+    } else {
+      $("#fFb").textContent = "Not yet. Read the job labels again.";
+      $("#fFb").className = "fb bad";
+      $$("#fSlots .fslot").forEach(function (s, i) {
+        if (fPlaced[i] && fPlaced[i].w !== t.answers[i]) {
+          s.classList.add("bad");
+          setTimeout(function () { s.classList.remove("bad"); }, 750);
+        }
+      });
+    }
+  });
+
+  $("#fReset").addEventListener("click", function () {
+    if (fBusy || !FRAMES[fIdx]) return;
+    fPlaced.forEach(function (x) { if (x) fBank.push(x); });
+    for (var i = 0; i < fPlaced.length; i++) fPlaced[i] = null;
+    fSel = null;
+    $("#fFb").textContent = "";
+    $("#fFb").className = "fb";
+    drawFrame();
+  });
+
+  loadFrame();
+
+  /* =====================================================
+     STEP 8 — both gaps
+     ===================================================== */
+  var DT = [
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.9rem">🥛</span>' +
+             '<span class="bigemoji" style="font-size:1.6rem">🥄</span></div>',
+      cap: "a jug of milk",
+      segs: [{ x: "How " }, { g: 0 }, { x: " milk " }, { g: 1 }, { x: " there?" }],
+      opts: [["much", "many"], ["is", "are"]],
+      ans: ["much", "is"],
+      why: "Much + is, because milk is uncountable.",
+      clue: "Milk: uncountable → much. And one amount → is."
+    },
+    {
+      scene: row("🍎", 4),
+      cap: "four apples",
+      segs: [{ x: "How " }, { g: 0 }, { x: " apples " }, { g: 1 }, { x: " there?" }],
+      opts: [["much", "many"], ["are", "is"]],
+      ans: ["many", "are"],
+      why: "Many + are, because apples are countable and plural.",
+      clue: "Apples: countable and plural → many + are."
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.9rem">🍚</span></div>',
+      cap: "not much rice",
+      segs: [{ x: "There " }, { g: 0 }, { x: " not " }, { g: 1 }, { x: " rice." }],
+      opts: [["is", "are"], ["many", "much"]],
+      ans: ["is", "much"],
+      why: "There is not much rice. Rice is uncountable.",
+      clue: "One amount of rice → is. Uncountable → much."
+    },
+    {
+      scene: row("🍪", 2),
+      cap: "only two cookies",
+      segs: [{ x: "There " }, { g: 0 }, { x: " not " }, { g: 1 }, { x: " cookies." }],
+      opts: [["are", "is"], ["much", "many"]],
+      ans: ["are", "many"],
+      why: "There are not many cookies. Cookies is plural.",
+      clue: "Cookies is plural → are. Plural → many."
+    },
+    {
+      scene: '<div class="scenerow"><span class="bigemoji" style="font-size:2.9rem">🧀</span></div>',
+      cap: "cheese",
+      segs: [{ x: "How " }, { g: 0 }, { x: " cheese " }, { g: 1 }, { x: " there?" }],
+      opts: [["much", "many"], ["is", "are"]],
+      ans: ["much", "is"],
+      why: "Much + is, because cheese is uncountable.",
+      clue: "Cheese: uncountable → much. One amount → is."
+    },
+    {
+      scene: row("🥚", 5),
+      cap: "five eggs",
+      segs: [{ x: "How " }, { g: 0 }, { x: " eggs " }, { g: 1 }, { x: " there?" }],
+      opts: [["much", "many"], ["are", "is"]],
+      ans: ["many", "are"],
+      why: "Many + are, because eggs is countable and plural.",
+      clue: "Eggs: countable and plural → many + are."
+    }
+  ];
+
+  gapDrill($("#dtDrill"), DT, function () { unlock(7); }, {
+    bar: "#dtBar",
+    doneText: "Both gaps, both correct. That is the hard part done."
+  });
+
+  /* =====================================================
+     STEP 9 — smoothie
+     ===================================================== */
+  var ING = [
+    { id: "banana", name: "banana", plural: "bananas", emoji: "🍌", type: "count", color: "#f2d06b", max: 5 },
+    { id: "strawberry", name: "strawberry", plural: "strawberries", emoji: "🍓", type: "count", color: "#e26d6d", max: 5 },
+    { id: "apple", name: "apple", plural: "apples", emoji: "🍎", type: "count", color: "#d9533b", max: 5 },
+    { id: "milk", name: "milk", plural: "milk", emoji: "🥛", type: "uncount", color: "#f7f0dd", max: 3 },
+    { id: "yogurt", name: "yogurt", plural: "yogurt", emoji: "🥣", type: "uncount", color: "#fbf7ea", max: 3 },
+    { id: "honey", name: "honey", plural: "honey", emoji: "🍯", type: "uncount", color: "#e5b34a", max: 3 },
+    { id: "juice", name: "juice", plural: "juice", emoji: "🧃", type: "uncount", color: "#f3a25c", max: 3 }
+  ];
+
+  var counts = {};
+  var order = [];
+  var blendDone = false;
+
+  function ingOf(id) {
+    for (var i = 0; i < ING.length; i++) if (ING[i].id === id) return ING[i];
+    return null;
+  }
+
+  function countC() {
+    return ING.filter(function (i) { return i.type === "count"; })
+      .reduce(function (a, i) { return a + (counts[i.id] || 0); }, 0);
+  }
+
+  function countU() {
+    return ING.filter(function (i) { return i.type === "uncount"; })
+      .reduce(function (a, i) { return a + (counts[i.id] || 0); }, 0);
+  }
+
+  function totalAmt() { return countC() + countU(); }
+
+  function buildIng() {
+    var grid = $("#ingGrid");
+    grid.innerHTML = "";
+    ING.forEach(function (it) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ing";
+      b.innerHTML =
+        '<span class="ie">' + it.emoji + "</span>" +
+        '<span class="itext"><span class="iname">' + it.name + "</span>" +
+        '<span class="icat">' +
+        (it.type === "count" ? "countable" : "uncountable") +
+        "</span></span>" +
+        '<span class="icount" id="ic-' + it.id + '">0</span>';
+      b.addEventListener("click", function () { addIng(it.id); });
+      grid.appendChild(b);
+    });
+  }
+
+  function addIng(id) {
+    if (blendDone) return;
+    var it = ingOf(id);
+    if (!it) return;
+
+    if ((counts[id] || 0) >= it.max) {
+      toast("That is enough " + (it.type === "count" ? it.plural : it.name) + ".");
+      return;
+    }
+
+    counts[id] = (counts[id] || 0) + 1;
+    order.push(id);
+    updateSmoothie();
+  }
+
+  function renderTicket() {
+    var el = $("#ticket");
+    var lines = "";
+
+    ING.forEach(function (it) {
+      var n = counts[it.id] || 0;
+      if (!n) return;
+
+      if (it.type === "count") {
+        lines +=
+          '<div class="tline">' +
+            "<span>How many " + it.plural + " are there?</span>" +
+            "<b>There are " + n + " " + it.plural + ".</b>" +
+          "</div>";
+      } else {
+        var q = n === 1 ? "a little" : "a lot of";
+        lines +=
+          '<div class="tline">' +
+            "<span>How much " + it.name + " is there?</span>" +
+            "<b>There is " + q + " " + it.name + ".</b>" +
+          "</div>";
+      }
+    });
+
+    if (!lines) {
+      lines = '<div class="ticket-empty">Click a food to add it.<br>' +
+        "The ticket will write the question and the answer.</div>";
+    }
+
+    el.innerHTML = '<div class="ticket-head">ORDER TICKET</div>' + lines;
+  }
+
+  function updateSmoothie() {
+    ING.forEach(function (it) {
+      var el = document.getElementById("ic-" + it.id);
+      if (el) el.textContent = counts[it.id] || 0;
+    });
+
+    var t = totalAmt();
+    $("#blendFill").style.height = Math.min(88, (t ? 12 + t * 8 : 0)) + "%";
+
+    var cols = [];
+    order.slice(-3).forEach(function (id) {
+      var it = ingOf(id);
+      if (it && cols.indexOf(it.color) < 0) cols.push(it.color);
+    });
+
+    var bg;
+    if (!cols.length) bg = "#f2cf9a";
+    else if (cols.length === 1) bg = cols[0];
+    else bg = "linear-gradient(180deg," + cols.join(",") + ")";
+    $("#blendFill").style.background = bg;
+
+    $("#blendCount").textContent = t + (t === 1 ? " thing" : " things");
+
+    var c = countC();
+    var u = countU();
+    $("#sGoal1").classList.toggle("done", c > 0);
+    $("#sGoal2").classList.toggle("done", u > 0);
+    $("#sGoal3").classList.toggle("done", blendDone);
+
+    $("#blendBtn").disabled = blendDone || !(c > 0 && u > 0);
+    renderTicket();
+  }
+
+  $("#blendBtn").addEventListener("click", function () {
+    var c = countC();
+    var u = countU();
+    if (!c || !u || blendDone) return;
+
+    blendDone = true;
+    $("#blender").classList.add("blending");
+    $("#blendBtn").disabled = true;
+    $("#blendMsg").textContent = "Blending…";
+
+    setTimeout(function () {
+      $("#blender").classList.remove("blending");
+      $("#blender").classList.add("ready");
+      $("#blendMsg").textContent = "🥤 Ready! Read the ticket out loud.";
+      updateSmoothie();
+      unlock(8);
+    }, 1200);
+  });
+
+  $("#clearBtn").addEventListener("click", function () {
+    counts = {};
+    order = [];
+    blendDone = false;
+    $("#blender").classList.remove("ready", "blending");
+    $("#blendMsg").textContent = "";
+    updateSmoothie();
+  });
+
+  buildIng();
+  updateSmoothie();
+
+  /* =====================================================
+     STEP 10 — speaking
+     ===================================================== */
+  var SPEAK = [
+    {
+      pic: '<div class="picgrid">' + new Array(10).join("<span>🥚</span>") + "</div>",
+      starters: ["How ______ eggs are there?", "There ______ nine eggs."],
+      hint: "Eggs are countable. Use many + are. There are nine.",
+      model: "How many eggs are there? There are nine eggs."
+    },
+    {
+      pic: '<div class="minijug"><div class="mf" style="height:62%"></div></div>',
+      starters: ["How ______ milk is there?", "There ______ a lot of milk."],
+      hint: "Milk is uncountable. Use much + is.",
+      model: "How much milk is there? There is a lot of milk."
+    },
+    {
+      pic: '<div class="picgrid" style="grid-template-columns:repeat(4,1fr);font-size:2.2rem">' +
+        new Array(5).join("<span>🍌</span>") + "</div>",
+      starters: ["How ______ bananas are there?", "There ______ four bananas."],
+      hint: "Bananas are countable. Use many + are.",
+      model: "How many bananas are there? There are four bananas."
+    },
+    {
+      pic: '<div class="minibowl"><span>🍚</span></div>',
+      starters: ["How ______ rice is there?", "There ______ a lot of rice."],
+      hint: "Rice is uncountable. Use much + is.",
+      model: "How much rice is there? There is a lot of rice."
+    },
+    {
+      pic: '<div class="plate">' + new Array(7).join("<span>🍪</span>") + "</div>",
+      starters: ["How ______ cookies are there?", "There ______ six cookies."],
+      hint: "Cookies are countable. Use many + are.",
+      model: "How many cookies are there? There are six cookies."
+    },
+    {
+      pic: '<span class="bigemoji2">🧃</span>',
+      starters: ["How ______ juice is there?", "There ______ a little juice."],
+      hint: "Juice is uncountable. Use much + is.",
+      model: "How much juice is there? There is a little juice."
+    }
+  ];
+
+  var sIdx = -1;
+  var sSaid = {};
+  var sCountDone = 0;
+
+  function newSpeak() {
+    var pool = [];
+    for (var i = 0; i < SPEAK.length; i++) {
+      if (!sSaid[i]) pool.push(i);
+    }
+    if (!pool.length) {
+      for (var j = 0; j < SPEAK.length; j++) pool.push(j);
+    }
+
+    var pick = pool[Math.floor(Math.random() * pool.length)];
+    if (pick === sIdx && pool.length > 1) {
+      pick = pool[(pool.indexOf(pick) + 1) % pool.length];
+    }
+    sIdx = pick;
+    renderSpeak();
+  }
+
+  function renderSpeak() {
+    var c = SPEAK[sIdx];
+    $("#picStage").innerHTML = c.pic;
+    $("#sCardNo").textContent = "PICTURE CARD";
+    $("#starters").innerHTML = c.starters.map(function (s) {
+      return '<span class="starter">' + s + "</span>";
+    }).join("");
+
+    $("#hintBox").textContent = c.hint;
+    $("#hintBox").classList.remove("show");
+    $("#exampleBox").textContent = c.model;
+    $("#exampleBox").classList.remove("show");
+
+    var b = $("#saidBtn");
+    b.disabled = !!sSaid[sIdx];
+    b.textContent = sSaid[sIdx] ? "ALREADY DONE ✓" : "WE SAID IT ✓";
+
+    $("#sCount").textContent = sCountDone >= 4
+      ? "4 OF 4 — GREAT SPEAKING ✓"
+      : sCountDone + " OF 4 CARDS DONE";
+  }
+
+  $("#newCard").addEventListener("click", newSpeak);
+
+  $("#hintBtn").addEventListener("click", function () {
+    if (sIdx < 0) return;
+    $("#hintBox").classList.toggle("show");
+  });
+
+  $("#exampleBtn").addEventListener("click", function () {
+    if (sIdx < 0) return;
+    $("#exampleBox").classList.add("show");
+    say(SPEAK[sIdx].model);
+  });
+
+  $("#saidBtn").addEventListener("click", function () {
+    if (sIdx < 0 || sSaid[sIdx]) return;
+    sSaid[sIdx] = true;
+    sCountDone++;
+
+    $("#saidBtn").disabled = true;
+    $("#saidBtn").textContent = "ALREADY DONE ✓";
+    $("#sCount").textContent = sCountDone >= 4
+      ? "4 OF 4 — GREAT SPEAKING ✓"
+      : sCountDone + " OF 4 CARDS DONE";
+
+    if (sCountDone >= 4) {
+      unlock(9);
+      toast("Speaking step clear!");
+    } else {
+      toast("Good! Press NEW PICTURE.");
+    }
+  });
+
+  newSpeak();
+
+  /* =====================================================
+     STEP 11 — print
+     ===================================================== */
+  $("#printBtn").addEventListener("click", function () { window.print(); });
+
+  /* =====================================================
+     INIT
+     ===================================================== */
+  render();
+})();
+</script>
+</body>
+</html>
