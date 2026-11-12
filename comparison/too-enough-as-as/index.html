@@ -24,7 +24,7 @@ body{
 }
 h1,h2{margin:0 0 8px;line-height:1.15;letter-spacing:-.01em}
 h1{font-size:clamp(1.55rem,4vw,2.15rem)}
-h2{font-size:clamp(1.3rem,3.4vw,1.75rem)}
+h2{font-size:clamp(1.28rem,3.4vw,1.7rem)}
 p{margin:0 0 12px}
 b{font-weight:900}
 button:focus-visible,input:focus-visible{outline:3px solid var(--sky);outline-offset:4px}
@@ -39,19 +39,19 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--sky);outline-of
 }
 .brand{
   display:flex;align-items:center;gap:8px;font-weight:900;
-  font-size:clamp(.8rem,2.2vw,1rem);
+  font-size:clamp(.78rem,2.1vw,.96rem);
   background:#fff;border:3px solid var(--ink);border-radius:999px;
   padding:6px 14px;box-shadow:0 4px 0 var(--ink);white-space:nowrap;
 }
 .progwrap{display:flex;align-items:center;gap:10px}
-.blocks{display:flex;gap:4px;flex-wrap:wrap}
+.blocks{display:flex;gap:3px;flex-wrap:wrap}
 .blk{
-  width:16px;height:16px;border-radius:5px;border:2.5px solid var(--ink);
+  width:14px;height:14px;border-radius:4px;border:2.5px solid var(--ink);
   background:#fff;transition:.25s ease;
 }
 .blk.active{background:var(--sun);transform:translateY(-3px)}
 .blk.done{background:var(--mint);transform:translateY(-3px) rotate(-6deg)}
-.steplabel{font-size:.7rem;font-weight:900;opacity:.65;white-space:nowrap}
+.steplabel{font-size:.68rem;font-weight:900;opacity:.65;white-space:nowrap}
 
 /* ---------- layout ---------- */
 main{max-width:960px;margin:0 auto;padding:clamp(16px,4vw,32px) clamp(14px,3vw,24px) 8px}
@@ -104,6 +104,7 @@ input[type=range]::-moz-range-thumb{
 }
 .hotrange{background:linear-gradient(90deg,#6cc4f5,#ffd166,#ff5c48)!important}
 .scale{display:flex;justify-content:space-between;font-size:.66rem;font-weight:900;opacity:.55}
+.littlelabel{font-size:.66rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:.5;margin-top:6px}
 
 /* ---------- step 1 ---------- */
 .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
@@ -255,8 +256,48 @@ input[type=range]::-moz-range-thumb{
 .feedback.bad{color:#c93a2c}
 .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 
+/* ---------- NEW frame lab ---------- */
+.framelab{
+  background:#fff;border:3px solid var(--ink);border-radius:26px;
+  padding:clamp(14px,3vw,22px);box-shadow:var(--shadow);
+}
+.sceneSide{
+  display:flex;align-items:flex-end;justify-content:center;gap:12px;
+  min-height:134px;background:#fffaf0;border:3px dashed rgba(32,36,58,.25);
+  border-radius:18px;padding:12px;margin-bottom:14px;
+}
+.slotrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:flex-end}
+.slotcol{display:flex;flex-direction:column;align-items:center;gap:5px}
+.slotlabel{
+  font-size:.54rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+  background:#eef2ff;border:2px solid rgba(32,36,58,.35);color:#39406b;
+  border-radius:6px;padding:2px 7px;white-space:nowrap;
+}
+.slotlabel.small{background:#fff6d9;color:#7a5a00;border-color:#b58a00}
+.fslot{
+  min-width:88px;height:50px;padding:0 10px;border:3px dashed rgba(32,36,58,.3);
+  border-radius:12px;background:#fffdf6;display:grid;place-items:center;
+  font:inherit;font-weight:900;font-size:.95rem;color:var(--ink);cursor:pointer;
+  transition:.12s;
+}
+.fslot:hover{border-color:var(--ink);background:#fff}
+.fslot.empty{color:rgba(32,36,58,.22)}
+.fslot.over{background:#fff6d9;border-color:var(--ink);border-style:solid;transform:scale(1.06)}
+.fslot.filled{background:var(--sun);border-style:solid;box-shadow:0 4px 0 var(--ink);color:var(--ink)}
+.fslot.good{background:#d9f7ea;border-color:#12855f}
+.fslot.bad{background:#ffe7e4;border-color:#c93a2c}
+.piece{
+  font:inherit;font-weight:900;font-size:.95rem;padding:8px 15px;
+  border:3px solid var(--ink);border-radius:12px;background:#fff;
+  box-shadow:0 4px 0 var(--ink);cursor:grab;transition:transform .1s,background .15s;
+  touch-action:manipulation;
+}
+.piece:hover{transform:translateY(-2px)}
+.piece.sel{background:var(--sky);transform:translateY(-4px);box-shadow:0 8px 0 var(--ink)}
+.piece:active{cursor:grabbing}
+
 /* ---------- mini scenes ---------- */
-.sc{display:flex;align-items:center;justify-content:center;gap:9px;min-height:150px}
+.sc{display:flex;align-items:center;justify-content:center;gap:9px;min-height:130px}
 .scIco{font-size:42px;line-height:1}
 .scEmo{font-size:2.2rem;line-height:1}
 .scPot{
@@ -276,15 +317,17 @@ input[type=range]::-moz-range-thumb{
   position:relative;width:52px;height:78px;border:5px solid var(--ink);
   border-radius:6px 6px 3px 3px;background:linear-gradient(160deg,#e0ac72,#b8763f);
 }
-.scDoor .hTop{
-  position:absolute;top:36%;left:50%;transform:translateX(-50%);
-  width:13px;height:13px;border-radius:50%;background:#20243a;
+.hTop{
+  position:absolute;top:32%;left:50%;transform:translateX(-50%);
+  width:16px;height:16px;border-radius:50%;background:#20243a;transition:.25s;
 }
-.scDoor .hSlot{
-  position:absolute;top:45%;left:50%;transform:translateX(-50%);
-  width:8px;height:16px;background:#20243a;
-  clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);
+.hSlot{
+  position:absolute;top:44%;left:50%;transform:translateX(-50%);
+  width:10px;height:22px;background:#20243a;
+  clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);transition:.25s;
 }
+.scDoor .hTop{width:13px;height:13px}
+.scDoor .hSlot{width:8px;height:16px;top:45%}
 
 /* ---------- key + door ---------- */
 .doorwrap{display:flex;align-items:center;justify-content:center;gap:10px;min-height:170px}
@@ -295,15 +338,6 @@ input[type=range]::-moz-range-thumb{
   width:64px;height:86px;border:6px solid var(--ink);border-radius:10px;
   background:linear-gradient(160deg,#e0ac72,#b8763f);position:relative;
   transition:transform .35s,box-shadow .3s;
-}
-.hTop{
-  position:absolute;top:32%;left:50%;transform:translateX(-50%);
-  width:16px;height:16px;border-radius:50%;background:#20243a;transition:.25s;
-}
-.hSlot{
-  position:absolute;top:44%;left:50%;transform:translateX(-50%);
-  width:10px;height:22px;background:#20243a;
-  clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);transition:.25s;
 }
 .fitsign{
   font-size:1.3rem;font-weight:900;border:3px solid var(--ink);border-radius:50%;
@@ -353,14 +387,11 @@ input[type=range]::-moz-range-thumb{
 .glass-wrap.spilling .puddle{opacity:1;transform:translateX(-50%) scale(1.15)}
 .gauge{position:relative;width:66px;height:180px;flex:0 0 auto}
 .glabel{
-  position:absolute;left:6px;font-size:.52rem;font-weight:900;line-height:1.1;
+  position:absolute;left:6px;font-size:.5rem;font-weight:900;line-height:1.1;
   white-space:nowrap;padding:2px 5px;border-radius:5px;border:2px solid var(--ink);
 }
-.glabel::before{
-  content:"";position:absolute;left:-9px;top:50%;width:6px;border-top:2px dashed currentColor;
-}
-.glabel.low{bottom:26%;background:#eaf4ff;color:#2b6bb0}
-.glabel.mid{bottom:74%;background:#d9f7ea;color:#0d6b50}
+.glabel.low{bottom:24%;background:#eaf4ff;color:#2b6bb0}
+.glabel.mid{bottom:72%;background:#d9f7ea;color:#0d6b50}
 .glabel.top{bottom:92%;background:#ffe7e4;color:#b83020}
 
 /* ---------- music lab ---------- */
@@ -405,6 +436,8 @@ input[type=range]::-moz-range-thumb{
 .eqbadge.diff{background:var(--sun)}
 
 /* ---------- quiz ---------- */
+.quizbox{background:#fff;border:3px solid var(--ink);border-radius:26px;
+  padding:clamp(16px,3.5vw,22px);box-shadow:var(--shadow);margin-top:16px}
 .quizscene{
   display:flex;align-items:flex-end;justify-content:center;gap:26px;
   min-height:150px;padding:16px;background:#fffaf0;border-radius:16px;
@@ -432,7 +465,7 @@ input[type=range]::-moz-range-thumb{
 }
 .speaktitle{font-weight:900;margin-top:6px;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;opacity:.55}
 .picFrame{
-  min-height:186px;display:flex;align-items:flex-end;justify-content:center;gap:18px;
+  min-height:190px;display:flex;align-items:flex-end;justify-content:center;gap:18px;
   background:#fffaf0;border:3px dashed rgba(32,36,58,.25);border-radius:20px;
   padding:16px;margin:10px 0 12px;
 }
@@ -495,8 +528,10 @@ input[type=range]::-moz-range-thumb{
   .bins{grid-template-columns:1fr}
   .bin{min-height:66px}
   .bin-body{min-height:28px}
-  .blk{width:13px;height:13px}
+  .blk{width:11px;height:11px}
   .cmpStage{height:225px}
+  .fslot{min-width:76px;height:46px;font-size:.88rem}
+  .slotlabel{font-size:.5rem;padding:2px 5px}
 }
 @media print{
   .topbar,.nav,.speak,.btn,.hintbox{display:none!important}
@@ -512,22 +547,22 @@ input[type=range]::-moz-range-thumb{
   <div class="brand"><span>🧪</span> Grammar Lab · too · enough · as…as</div>
   <div class="progwrap">
     <div class="blocks" id="blocks"></div>
-    <span class="steplabel" id="stepLabel">Step 1 of 9</span>
+    <span class="steplabel" id="stepLabel">Step 1 of 11</span>
   </div>
 </header>
 
 <main id="stage">
 
-  <!-- ================= STEP 1 ================= -->
+  <!-- ================= 1 ================= -->
   <section class="step" data-step="0">
     <div class="kicker">Step 1 · Word blocks</div>
     <h1>First, the three kinds of words</h1>
     <p class="lead">A sentence is made of blocks. Tap a word, then tap the box where it belongs.</p>
 
     <div class="legend">
-      <div class="legend-item adj"><b>ADJECTIVE</b><span>describes a thing — big, hot, full, loud</span></div>
-      <div class="legend-item noun"><b>NOUN</b><span>a thing — key, door, soup, glass</span></div>
-      <div class="legend-item verb"><b>VERB</b><span>an action — run, swim, eat, sing</span></div>
+      <div class="legend-item adj"><b>ADJECTIVE</b><span>describes a thing — small, cold, happy, fast</span></div>
+      <div class="legend-item noun"><b>NOUN</b><span>a thing or a person — book, bag, chair, teacher</span></div>
+      <div class="legend-item verb"><b>VERB</b><span>an action — jump, read, sleep, draw</span></div>
     </div>
 
     <div class="pool" id="wordPool"></div>
@@ -547,11 +582,11 @@ input[type=range]::-moz-range-thumb{
     <p class="status" id="sortStatus">0 of 12 words sorted</p>
   </section>
 
-  <!-- ================= STEP 2 ================= -->
+  <!-- ================= 2 ================= -->
   <section class="step" data-step="1">
     <div class="kicker">Step 2 · Meet the words</div>
     <h2>Ben likes cool soup and warm soup. Never hot!</h2>
-    <p class="lead">Slide the temperature. Watch the soup colour, the steam and Ben's face.
+    <p class="lead">Slide the temperature. Watch the colour, the steam and Ben's face.
       Find the happy face twice, then make him too hot.</p>
 
     <div class="lab">
@@ -582,12 +617,12 @@ input[type=range]::-moz-range-thumb{
     </div>
   </section>
 
-  <!-- ================= STEP 3 ================= -->
+  <!-- ================= 3 ================= -->
   <section class="step" data-step="2">
     <div class="kicker">Step 3 · How to build it</div>
     <h2>Look at the picture. Build the sentence.</h2>
-    <p class="lead">The picture shows you the meaning. Tap a word from the bottom and it jumps into
-      the next empty box. Tap a box to take the word back.</p>
+    <p class="lead">The picture shows the meaning. Tap a word and it jumps into the next empty box.
+      Tap a box to take the word back.</p>
 
     <div class="helper">
       <span>👉</span>
@@ -598,12 +633,12 @@ input[type=range]::-moz-range-thumb{
     <div id="labA"></div>
   </section>
 
-  <!-- ================= STEP 4 ================= -->
+  <!-- ================= 4 ================= -->
   <section class="step" data-step="3">
     <div class="kicker">Step 4 · Big enough?</div>
     <h2>The key and the keyhole</h2>
     <p class="lead">The key must be big enough for the hole. Slide it and watch the size.
-      When it fits, the hole turns green and the door opens.</p>
+      When it fits, the hole turns green.</p>
 
     <div class="lab">
       <div class="lab-visual">
@@ -639,7 +674,7 @@ input[type=range]::-moz-range-thumb{
     </div>
   </section>
 
-  <!-- ================= STEP 5 ================= -->
+  <!-- ================= 5 ================= -->
   <section class="step" data-step="4">
     <div class="kicker">Step 5 · How to build it</div>
     <h2>Now add the word “not”</h2>
@@ -654,13 +689,29 @@ input[type=range]::-moz-range-thumb{
     <div id="labB"></div>
   </section>
 
-  <!-- ================= STEP 6 ================= -->
+  <!-- ================= 6 : FRAME LAB A ================= -->
   <section class="step" data-step="5">
-    <div class="kicker">Step 6 · Free lab</div>
+    <div class="kicker">Step 6 · Sentence frames</div>
+    <h2>Where does each word go?</h2>
+    <p class="lead">Every sentence is a frame. Each space has a label that tells you the job of the
+      word. Drag a word into a space — or tap a word, then tap a space.</p>
+
+    <div class="helper">
+      <span>👉</span>
+      <span><b>SUBJECT</b> = who or what. · <b>VERB</b> = is / are. ·
+        <b>TOO</b> and <b>ENOUGH</b> have their own spaces, so their position is always the same.</span>
+    </div>
+
+    <div id="frameA"></div>
+  </section>
+
+  <!-- ================= 7 : FREE LAB ================= -->
+  <section class="step" data-step="6">
+    <div class="kicker">Step 7 · Free lab</div>
     <h2>All three states, two machines</h2>
-    <p class="lead">The green band on the glass is the “enough” zone. Fill the glass to the band
-      and it is full enough. Go above the band and it spills. On the speaker, the green bars are
-      the “enough” zone too. Find all three faces on both machines.</p>
+    <p class="lead">The green band on the glass is the “enough” zone. Fill the glass to the band and
+      it is full enough. Go above the band and it spills. On the speaker, the green bars are the
+      “enough” zone too.</p>
 
     <div class="lab">
       <div class="lab-visual">
@@ -728,9 +779,9 @@ input[type=range]::-moz-range-thumb{
     </div>
   </section>
 
-  <!-- ================= STEP 7 ================= -->
-  <section class="step" data-step="6">
-    <div class="kicker">Step 7 · The same or different?</div>
+  <!-- ================= 8 : AS...AS PLAYGROUND ================= -->
+  <section class="step" data-step="7">
+    <div class="kicker">Step 8 · The same or different?</div>
     <h2>as tall as … not as tall as</h2>
     <p class="lead">Move the two sliders. When the heads reach the same line, we say
       <b>as tall as</b>. When they do not, we say <b>not as tall as</b>.</p>
@@ -766,9 +817,25 @@ input[type=range]::-moz-range-thumb{
         <p class="status" id="tipCmp" style="margin:10px 0 0">Try to make them the same, then different.</p>
       </div>
     </div>
+  </section>
 
-    <div class="quizbox" style="background:#fff;border:3px solid var(--ink);border-radius:26px;padding:clamp(16px,3.5vw,22px);box-shadow:var(--shadow);margin-top:16px">
-      <div class="hintline">Now look and choose — same or different?</div>
+  <!-- ================= 9 : AS...AS FRAME + QUIZ ================= -->
+  <section class="step" data-step="8">
+    <div class="kicker">Step 9 · The as…as frame</div>
+    <h2>Two “as” words, one frame</h2>
+    <p class="lead">The adjective sits <b>between</b> the two “as” words. Drag the words into the
+      labelled spaces. Then look at four pictures and choose the right sentence.</p>
+
+    <div class="helper">
+      <span>👉</span>
+      <span><b>as</b> + adjective + <b>as</b> — the first “as” comes before the adjective,
+        the second one after it. For “different”, put <b>not</b> before the first “as”.</span>
+    </div>
+
+    <div id="frameB"></div>
+
+    <div class="quizbox">
+      <div class="hintline">Look at the picture, then choose</div>
       <div class="quizscene" id="quizScene"></div>
       <div class="quizopts" id="quizOpts"></div>
       <div class="feedback" id="quizFb"></div>
@@ -776,12 +843,13 @@ input[type=range]::-moz-range-thumb{
     </div>
   </section>
 
-  <!-- ================= STEP 8 ================= -->
-  <section class="step" data-step="7">
-    <div class="kicker">Step 8 · Say it out loud</div>
+  <!-- ================= 10 : SPEAKING ================= -->
+  <section class="step" data-step="9">
+    <div class="kicker">Step 10 · Say it out loud</div>
     <h2>What do you see?</h2>
     <p class="lead">Look at the picture first. There is no answer on the screen.
-      Tell your partner what you see. Use the sentence starters. Press a button only if you need help.</p>
+      Tell your partner what you see and use the sentence starters.
+      Press a button only if you need help.</p>
 
     <div class="speakcard">
       <div class="speaktitle" id="sTitle">Picture card</div>
@@ -804,9 +872,9 @@ input[type=range]::-moz-range-thumb{
     </div>
   </section>
 
-  <!-- ================= STEP 9 ================= -->
-  <section class="step" data-step="8">
-    <div class="kicker">Step 9 · Your poster</div>
+  <!-- ================= 11 : POSTER ================= -->
+  <section class="step" data-step="10">
+    <div class="kicker">Step 11 · Your poster</div>
     <h2>You built it. Here it is.</h2>
     <p class="lead">Put your name on your grammar poster and read it out loud one more time.</p>
 
@@ -822,7 +890,7 @@ input[type=range]::-moz-range-thumb{
         <div>
           <div style="font-weight:900">TOO + adjective = more than we want.</div>
           <div style="font-size:.9rem;opacity:.85">The soup is <b>too hot</b>. ·
-            The glass is <b>too full</b>. · The bag is <b>too heavy</b>.</div>
+            The glass is <b>too full</b>. · The music is <b>too loud</b>.</div>
         </div>
       </div>
 
@@ -848,7 +916,7 @@ input[type=range]::-moz-range-thumb{
         <div class="rulenum">4</div>
         <div>
           <div style="font-weight:900">AS + adjective + AS = the same.</div>
-          <div style="font-size:.9rem;opacity:.85">Tom is <b>as tall as</b> Sara.</div>
+          <div style="font-size:.9rem;opacity:.85">Tom is <b>as tall as</b> Ben.</div>
         </div>
       </div>
 
@@ -856,7 +924,7 @@ input[type=range]::-moz-range-thumb{
         <div class="rulenum">5</div>
         <div>
           <div style="font-weight:900">NOT AS + adjective + AS = different.</div>
-          <div style="font-size:.9rem;opacity:.85">Tom is <b>not as tall as</b> Sara.</div>
+          <div style="font-size:.9rem;opacity:.85">The mouse is <b>not as big as</b> the elephant.</div>
         </div>
       </div>
     </div>
@@ -933,6 +1001,14 @@ input[type=range]::-moz-range-thumb{
 
   function setPattern(el, parts) {
     if (el) el.innerHTML = chipsHtml(parts);
+  }
+
+  function makeBtn(text, cls) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = cls;
+    b.textContent = text;
+    return b;
   }
 
   /* ---------------- steps / progress ---------------- */
@@ -1014,10 +1090,11 @@ input[type=range]::-moz-range-thumb{
     { w: "sing",  t: "verb" }
   ];
 
+  /* Hint examples are deliberately NOT words from the exercise. */
   var HINTS = {
-    adj:  "Adjectives describe: big, hot, full, loud.",
-    noun: "Nouns are things: key, door, soup, glass.",
-    verb: "Verbs are actions: run, swim, eat, sing."
+    adj:  "Adjectives describe a thing. Examples: small, cold, happy, fast.",
+    noun: "Nouns are things or people. Examples: book, bag, chair, teacher.",
+    verb: "Verbs are actions. Examples: jump, read, sleep, draw."
   };
 
   var picked = null;
@@ -1077,7 +1154,7 @@ input[type=range]::-moz-range-thumb{
   });
 
   /* =========================================================
-     STEP 2 — soup: too + adj  /  adj + enough
+     STEP 2 — soup
      ========================================================= */
   var soupSlider = $("#soupSlider");
   var soupLiquid = $("#soupLiquid");
@@ -1134,7 +1211,7 @@ input[type=range]::-moz-range-thumb{
   soupSlider.addEventListener("input", updSoup);
 
   /* =========================================================
-     SCENES for the build labs
+     SCENES
      ========================================================= */
   var SC = {
     hotSoup: '<div class="sc"><div class="scPot"><div class="scSoup" ' +
@@ -1144,6 +1221,10 @@ input[type=range]::-moz-range-thumb{
     coolSoup: '<div class="sc"><div class="scPot"><div class="scSoup" ' +
       'style="background:linear-gradient(180deg,#a8dcff,#3a90d0)"></div></div>' +
       '<span class="scEmo">😄</span></div>',
+
+    coldSoup: '<div class="sc"><div class="scPot"><div class="scSoup" ' +
+      'style="background:linear-gradient(180deg,#a8dcff,#3a90d0)"></div>' +
+      '<span class="scSteam">❄️</span></div><span class="scEmo">😕</span></div>',
 
     loud: '<div class="sc"><span class="scIco">🔊</span>' +
       '<span class="scBar" style="height:26px"></span>' +
@@ -1159,12 +1240,34 @@ input[type=range]::-moz-range-thumb{
       '<span style="font-size:20px">❄️</span><span class="scEmo">🥶</span></div>',
 
     fullGlass: '<div class="sc"><div class="scGlass">' +
-      '<div class="scWater" style="height:80%"></div><span class="scLine"></span></div>' +
-      '<span class="scEmo">😄</span></div>'
+      '<div class="scWater" style="height:78%"></div><span class="scLine"></span></div>' +
+      '<span class="scEmo">😄</span></div>',
+
+    tired: '<div class="sc"><span style="font-size:52px">🧑</span>' +
+      '<span style="font-size:32px">😴</span><span style="font-size:26px">💤</span></div>',
+
+    equalTowers:
+      '<div style="display:flex;align-items:flex-end;gap:36px">' +
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">' +
+          '<span style="font-size:22px">🧑</span>' +
+          '<div style="width:30px;height:70px;border:4px solid #20243a;' +
+            'border-radius:10px;background:#9ecbff"></div>' +
+          '<span style="font-weight:900;font-size:.62rem">Tom</span>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">' +
+          '<span style="font-size:22px">👦</span>' +
+          '<div style="width:30px;height:70px;border:4px solid #20243a;' +
+            'border-radius:10px;background:#ffc7e0"></div>' +
+          '<span style="font-weight:900;font-size:.62rem">Ben</span>' +
+        '</div>' +
+      '</div>',
+
+    mouseElephant: '<div class="sc"><span style="font-size:26px">🐭</span>' +
+      '<span style="font-size:64px">🐘</span></div>'
   };
 
   /* =========================================================
-     SLOT LAB ("how to build")
+     SLOT LAB (picture + boxes, auto-advance)
      ========================================================= */
   function slotLab(root, tasks, onAllDone) {
     var idx = 0, built = [], tray = [], busy = false;
@@ -1185,14 +1288,8 @@ input[type=range]::-moz-range-thumb{
     fb.className = "feedback";
     var row = document.createElement("div");
     row.className = "row";
-    var checkBtn = document.createElement("button");
-    checkBtn.type = "button";
-    checkBtn.className = "btn";
-    checkBtn.textContent = "Check ✓";
-    var resetBtn = document.createElement("button");
-    resetBtn.type = "button";
-    resetBtn.className = "btn ghost";
-    resetBtn.textContent = "Reset";
+    var checkBtn = makeBtn("Check ✓", "btn");
+    var resetBtn = makeBtn("Reset", "btn ghost");
     row.appendChild(checkBtn);
     row.appendChild(resetBtn);
     var rule = document.createElement("div");
@@ -1338,7 +1435,231 @@ input[type=range]::-moz-range-thumb{
     load();
   }
 
-  /* ---- Step 3 tasks: too + adj / adj + enough ---- */
+  /* =========================================================
+     FRAME LAB (labelled grammar slots + drag & drop)
+     ========================================================= */
+  function frameLab(root, tasks, onAllDone) {
+    var idx = 0;
+    var placed = [];
+    var tray = [];
+    var busy = false;
+    var selectedId = null;
+
+    var wrap = document.createElement("div");
+    wrap.className = "framelab";
+
+    var sceneEl = document.createElement("div");
+    sceneEl.className = "sceneSide";
+
+    var hint = document.createElement("div");
+    hint.className = "hintline";
+
+    var slotRow = document.createElement("div");
+    slotRow.className = "slotrow";
+
+    var bank = document.createElement("div");
+    bank.className = "bank";
+
+    var fb = document.createElement("div");
+    fb.className = "feedback";
+
+    var row = document.createElement("div");
+    row.className = "row";
+    var checkBtn = makeBtn("Check ✓", "btn");
+    var resetBtn = makeBtn("Reset", "btn ghost");
+    row.appendChild(checkBtn);
+    row.appendChild(resetBtn);
+
+    wrap.appendChild(sceneEl);
+    wrap.appendChild(hint);
+    wrap.appendChild(slotRow);
+    wrap.appendChild(bank);
+    wrap.appendChild(fb);
+    wrap.appendChild(row);
+    root.appendChild(wrap);
+
+    function load() {
+      busy = false;
+      selectedId = null;
+      var t = tasks[idx];
+      sceneEl.innerHTML = t.visual || "";
+      hint.textContent = "Frame " + (idx + 1) + " of " + tasks.length +
+        " — drag a word into a space, or tap a word then tap a space";
+      placed = [];
+      for (var k = 0; k < t.slots.length; k++) placed.push(null);
+      tray = t.tray.map(function (w, i) {
+        return { w: w, id: "f" + idx + "-" + i };
+      });
+      shuffle(tray);
+      fb.textContent = "";
+      fb.className = "feedback";
+      checkBtn.disabled = false;
+      draw();
+    }
+
+    function findTok(id) {
+      for (var i = 0; i < placed.length; i++) {
+        if (placed[i] && placed[i].id === id) return { tok: placed[i], from: i };
+      }
+      for (var j = 0; j < tray.length; j++) {
+        if (tray[j].id === id) return { tok: tray[j], from: -1 };
+      }
+      return null;
+    }
+
+    function place(id, slotIndex) {
+      var found = findTok(id);
+      if (!found) return;
+
+      if (placed[slotIndex]) tray.push(placed[slotIndex]);
+      if (found.from >= 0) placed[found.from] = null;
+
+      tray = tray.filter(function (x) { return x.id !== id; });
+      placed[slotIndex] = found.tok;
+      selectedId = null;
+      draw();
+    }
+
+    function draw() {
+      var t = tasks[idx];
+
+      slotRow.innerHTML = "";
+      t.slots.forEach(function (label, i) {
+        var col = document.createElement("div");
+        col.className = "slotcol";
+
+        var lab = document.createElement("span");
+        lab.className = "slotlabel" + (label === "TOO" ? " small" : "");
+        lab.textContent = label;
+        col.appendChild(lab);
+
+        var tok = placed[i];
+        var s = document.createElement("button");
+        s.type = "button";
+        s.className = "fslot" + (tok ? " filled" : " empty");
+        s.textContent = tok ? tok.w : "?";
+
+        s.addEventListener("click", function () {
+          if (busy) return;
+          if (placed[i]) {
+            tray.push(placed[i]);
+            placed[i] = null;
+            draw();
+          } else if (selectedId) {
+            place(selectedId, i);
+          } else {
+            toast("Tap a word first, then tap this space 👆");
+          }
+        });
+
+        s.addEventListener("dragover", function (ev) {
+          ev.preventDefault();
+          s.classList.add("over");
+        });
+        s.addEventListener("dragleave", function () { s.classList.remove("over"); });
+        s.addEventListener("drop", function (ev) {
+          ev.preventDefault();
+          s.classList.remove("over");
+          if (busy) return;
+          var id = ev.dataTransfer.getData("text/plain");
+          if (id) place(id, i);
+        });
+
+        col.appendChild(s);
+        slotRow.appendChild(col);
+      });
+
+      bank.innerHTML = "";
+      tray.forEach(function (tok) {
+        var p = document.createElement("button");
+        p.type = "button";
+        p.className = "piece" + (selectedId === tok.id ? " sel" : "");
+        p.textContent = tok.w;
+        p.draggable = true;
+
+        p.addEventListener("dragstart", function (ev) {
+          ev.dataTransfer.setData("text/plain", tok.id);
+          ev.dataTransfer.effectAllowed = "move";
+        });
+        p.addEventListener("click", function () {
+          if (busy) return;
+          selectedId = (selectedId === tok.id) ? null : tok.id;
+          draw();
+        });
+
+        bank.appendChild(p);
+      });
+    }
+
+    checkBtn.addEventListener("click", function () {
+      if (busy) return;
+      var t = tasks[idx];
+
+      var emptyCount = 0;
+      for (var i = 0; i < t.answers.length; i++) if (!placed[i]) emptyCount++;
+      if (emptyCount) {
+        fb.textContent = "Some spaces are empty. Fill every space. 🔍";
+        fb.className = "feedback bad";
+        return;
+      }
+
+      var ok = true;
+      for (var j = 0; j < t.answers.length; j++) {
+        if (placed[j].w !== t.answers[j]) ok = false;
+      }
+
+      var slotEls = $$(".fslot", slotRow);
+
+      if (ok) {
+        busy = true;
+        slotEls.forEach(function (s) { s.classList.add("good"); });
+        fb.textContent = "✓ " + t.sentence;
+        fb.className = "feedback good";
+        say(t.sentence);
+        idx++;
+        setTimeout(function () {
+          if (idx >= tasks.length) finish();
+          else load();
+        }, 1700);
+      } else {
+        fb.textContent = "Not yet — think about the job of each word. 🔍";
+        fb.className = "feedback bad";
+        slotRow.classList.add("shake");
+        setTimeout(function () { slotRow.classList.remove("shake"); }, 420);
+        slotEls.forEach(function (s, i) {
+          if (placed[i] && placed[i].w !== t.answers[i]) {
+            s.classList.add("bad");
+            setTimeout(function () { s.classList.remove("bad"); }, 750);
+          }
+        });
+      }
+    });
+
+    resetBtn.addEventListener("click", function () {
+      if (busy) return;
+      placed.forEach(function (b) { if (b) tray.push(b); });
+      for (var k = 0; k < placed.length; k++) placed[k] = null;
+      selectedId = null;
+      fb.textContent = "";
+      fb.className = "feedback";
+      draw();
+    });
+
+    function finish() {
+      busy = true;
+      sceneEl.innerHTML = '<span style="font-size:3rem">🏆</span>';
+      hint.textContent = "Done!";
+      fb.textContent = "🏆 Every frame is complete. You know where each word goes.";
+      fb.className = "feedback good";
+      slotRow.innerHTML = "";
+      checkBtn.disabled = true;
+      if (onAllDone) onAllDone();
+    }
+
+    load();
+  }
+
+  /* ---- Step 3 tasks ---- */
   slotLab($("#labA"), [
     {
       visual: SC.hotSoup,
@@ -1417,7 +1738,7 @@ input[type=range]::-moz-range-thumb{
   }
   keySlider.addEventListener("input", updKey);
 
-  /* ---- Step 5 tasks: not + adj + enough ---- */
+  /* ---- Step 5 tasks ---- */
   slotLab($("#labB"), [
     {
       visual: SC.smallKey,
@@ -1456,8 +1777,33 @@ input[type=range]::-moz-range-thumb{
     }
   ], function () { unlock(4); });
 
+  /* ---- Step 6 frames: too / not + adj + enough ---- */
+  frameLab($("#frameA"), [
+    {
+      visual: SC.tired,
+      sentence: "Bob is too tired.",
+      slots: ["SUBJECT", "VERB", "TOO", "ADJECTIVE"],
+      answers: ["Bob", "is", "too", "tired"],
+      tray: ["Bob", "is", "too", "tired", "hungry", "enough"]
+    },
+    {
+      visual: SC.coldSoup,
+      sentence: "The soup is not hot enough.",
+      slots: ["SUBJECT", "VERB", "NOT", "ADJECTIVE", "ENOUGH"],
+      answers: ["The soup", "is", "not", "hot", "enough"],
+      tray: ["The soup", "is", "not", "hot", "warm", "too", "enough"]
+    },
+    {
+      visual: SC.fullGlass,
+      sentence: "The glass is full enough.",
+      slots: ["SUBJECT", "VERB", "ADJECTIVE", "ENOUGH"],
+      answers: ["The glass", "is", "full", "enough"],
+      tray: ["The glass", "is", "full", "empty", "too", "enough"]
+    }
+  ], function () { unlock(5); });
+
   /* =========================================================
-     STEP 6 — glass and music
+     STEP 7 — free lab
      ========================================================= */
   var glassSlider = $("#glassSlider");
   var waterFill   = $("#waterFill");
@@ -1519,8 +1865,7 @@ input[type=range]::-moz-range-thumb{
 
   function updMusic() {
     var v = +musicSlider.value;
-    var txt, state, pat, face, color;
-    var barColor;
+    var txt, state, pat, face, color, barColor;
 
     if (v < 38) {
       state = "low";
@@ -1574,11 +1919,11 @@ input[type=range]::-moz-range-thumb{
   function checkFreeLab() {
     var glassDone = seenGlass.low && seenGlass.ok && seenGlass.high;
     var musicDone = seenMusic.low && seenMusic.ok && seenMusic.high;
-    if (glassDone && musicDone) unlock(5);
+    if (glassDone && musicDone) unlock(6);
   }
 
   /* =========================================================
-     STEP 7 — as ... as
+     STEP 8 — as ... as playground
      ========================================================= */
   var tomSlider  = $("#tomSlider");
   var saraSlider = $("#saraSlider");
@@ -1638,12 +1983,37 @@ input[type=range]::-moz-range-thumb{
     }
 
     sayCmp.setAttribute("data-say", sentCmp.textContent);
-    maybeUnlockCmp();
+
+    if (seenCmp.eq && seenCmp.neq) unlock(7);
   }
   tomSlider.addEventListener("input", updCmp);
   saraSlider.addEventListener("input", updCmp);
 
-  /* ---- quiz ---- */
+  /* =========================================================
+     STEP 9 — as ... as frames + quiz
+     ========================================================= */
+  var frameBDone = false;
+
+  frameLab($("#frameB"), [
+    {
+      visual: SC.equalTowers,
+      sentence: "Tom is as tall as Ben.",
+      slots: ["SUBJECT", "VERB", "AS", "ADJECTIVE", "AS", "NOUN"],
+      answers: ["Tom", "is", "as", "tall", "as", "Ben"],
+      tray: ["Tom", "is", "as", "tall", "as", "Ben", "shorter", "than"]
+    },
+    {
+      visual: SC.mouseElephant,
+      sentence: "The mouse is not as big as the elephant.",
+      slots: ["SUBJECT", "VERB", "NOT", "AS", "ADJECTIVE", "AS", "NOUN"],
+      answers: ["The mouse", "is", "not", "as", "big", "as", "the elephant"],
+      tray: ["The mouse", "is", "not", "as", "big", "as", "the elephant", "smaller"]
+    }
+  ], function () {
+    frameBDone = true;
+    maybeUnlockAs();
+  });
+
   var QUIZ = [
     {
       visual: '<div style="display:flex;flex-direction:column;gap:14px;width:100%;max-width:250px">' +
@@ -1734,15 +2104,15 @@ input[type=range]::-moz-range-thumb{
     $("#quizFb").textContent = "✓ All four! You know when things are the same and when they are not.";
     $("#quizFb").className = "feedback good";
     $("#quizCount").textContent = "4 of 4 — done";
-    maybeUnlockCmp();
+    maybeUnlockAs();
   }
 
-  function maybeUnlockCmp() {
-    if (seenCmp.eq && seenCmp.neq && quizFinished) unlock(6);
+  function maybeUnlockAs() {
+    if (frameBDone && quizFinished) unlock(8);
   }
 
   /* =========================================================
-     STEP 8 — speaking
+     STEP 10 — speaking
      ========================================================= */
   var CARD_GLASS = '<div class="scGlass" style="width:64px;height:90px">' +
     '<div class="scWater" style="height:96%"></div></div>';
@@ -1764,13 +2134,16 @@ input[type=range]::-moz-range-thumb{
       model: "The glass is too full."
     },
     {
-      pic: '<span style="font-size:64px">🎒</span><span style="font-size:34px">🧑</span>',
+      pic: '<span style="font-size:62px">🎒</span>' +
+           '<span style="font-size:26px">📚</span>' +
+           '<span style="font-size:26px">📚</span>' +
+           '<span style="font-size:38px">😰</span>',
       starters: ["The bag is too ______ .", "The bag is ______ enough ."],
-      hint: "The adjective is BIG.",
-      model: "The bag is too big."
+      hint: "The adjective is HEAVY.",
+      model: "The bag is too heavy. I can't carry it."
     },
     {
-      pic: '<span style="font-size:52px">🔊</span><span style="font-size:38px">🙉</span>',
+      pic: '<span style="font-size:54px">🔊</span><span style="font-size:38px">🙉</span>',
       starters: ["The music is too ______ .", "The music is not ______ enough ."],
       hint: "The adjective is LOUD.",
       model: "The music is too loud."
@@ -1799,10 +2172,20 @@ input[type=range]::-moz-range-thumb{
       model: "The mouse is not as big as the elephant."
     },
     {
-      pic: '<span style="font-size:44px">🧑</span><span style="font-size:44px">🧍</span>',
-      starters: ["Tom is as ______ as Ben.", "Tom is not as ______ as Ben."],
+      pic: '<div style="display:flex;align-items:flex-end;gap:34px">' +
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:5px">' +
+          '<div style="width:34px;height:104px;border:4px solid #20243a;' +
+            'border-radius:6px;background:#6aa9ff"></div>' +
+          '<span style="font-weight:900;font-size:.72rem">A</span></div>' +
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:5px">' +
+          '<div style="width:34px;height:104px;border:4px solid #20243a;' +
+            'border-radius:6px;background:#ff8ac0"></div>' +
+          '<span style="font-weight:900;font-size:.72rem">B</span></div>' +
+        '</div>',
+      starters: ["Tower A is as ______ as tower B.",
+                 "Tower A is not as ______ as tower B."],
       hint: "The adjective is TALL.",
-      model: "Tom is as tall as Ben."
+      model: "Tower A is as tall as tower B."
     }
   ];
 
@@ -1849,16 +2232,13 @@ input[type=range]::-moz-range-thumb{
 
   $("#hintBtn").addEventListener("click", function () {
     if (sIndex < 0) return;
-    var hb = $("#sHint");
-    hb.classList.toggle("show");
+    $("#sHint").classList.toggle("show");
   });
 
   $("#modelBtn").addEventListener("click", function () {
     if (sIndex < 0) return;
-    var c = SPEAK_CARDS[sIndex];
-    var mb = $("#sModel");
-    mb.classList.add("show");
-    say(c.model);
+    $("#sModel").classList.add("show");
+    say(SPEAK_CARDS[sIndex].model);
   });
 
   $("#saidBtn").addEventListener("click", function () {
@@ -1871,7 +2251,7 @@ input[type=range]::-moz-range-thumb{
 
     if (saidCount >= 4) {
       $("#sCount").textContent = "✓ 4 pictures done — great speaking!";
-      unlock(7);
+      unlock(9);
       toast("You used it out loud! 🗣️");
     } else {
       toast("Great! Press “New picture” 🎲");
@@ -1879,7 +2259,7 @@ input[type=range]::-moz-range-thumb{
   });
 
   /* =========================================================
-     STEP 9 — poster
+     STEP 11 — poster
      ========================================================= */
   $("#printBtn").addEventListener("click", function () { window.print(); });
 
@@ -1893,10 +2273,8 @@ input[type=range]::-moz-range-thumb{
   updMusic();
   updCmp();
   loadQuiz();
-  render();
-
-  /* start speaking step with a card ready, but no answer shown */
   pickCard();
+  render();
 
 })();
 </script>
