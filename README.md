@@ -39,13 +39,14 @@ No login, no software, and no downloads are needed. It works in any modern web b
 
 | Lesson | Link |
 | --- | --- |
-| The Passive Voice 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/passive-voice/) |
+| The Passive Voice | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/passive-voice/) |
 
 ### 📚 Other Grammar Topics
 
 | Lesson | Link |
 | --- | --- |
-| Modifying Comparatives & Superlatives 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/modifying-comparatives-superlatives/) |
+| Too, Enough & As…As 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/comparison/too-enough-as-as/) |
+| Modifying Comparatives & Superlatives | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/modifying-comparatives-superlatives/) |
 | Second & Third Conditionals | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/second-third-conditionals/) |
 
 > More topics coming soon — keep an eye on this page!
