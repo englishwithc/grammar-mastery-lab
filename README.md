@@ -45,9 +45,10 @@ No login, no software, and no downloads are needed. It works in any modern web b
 
 | Lesson | Link |
 | --- | --- |
-| Too, Enough & As…As 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/comparison/too-enough-as-as/) |
+| Too, Enough & As…As | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/comparison/too-enough-as-as/) |
 | Modifying Comparatives & Superlatives | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/modifying-comparatives-superlatives/) |
 | Second & Third Conditionals | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/second-third-conditionals/) |
+| How Much & How Many 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/countable-uncountable/how-much-many/) |
 
 > More topics coming soon — keep an eye on this page!
 
