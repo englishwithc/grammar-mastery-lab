@@ -31,7 +31,8 @@ No login, no software, and no downloads are needed. It works in any modern web b
 | Present Simple Mastery Lab | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-simple/present-simple-mastery-lab/) |
 | Present Simple: -s, -es, -ies | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-simple-s-es-ies/) |
 | Present Simple Questions | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-simple-questions/) |
-| Past Simple POWER — Block by Block | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/past-simple/past-simple-step-by-step/) |
+| Present Simple — Super Basic 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-simple/prsim-super-basic/) |
+| Past Simple POWER — Block by Block 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/past-simple/past-simple-step-by-step/) |
 | Past Simple Mastery Lab | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/past-simple/past-simple-mastery-lab/) |
 | Present Perfect Simple | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/present-perfect-simple/) |
 | Past Perfect | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/past-perfect/) |
@@ -49,7 +50,7 @@ No login, no software, and no downloads are needed. It works in any modern web b
 | Too, Enough & As…As | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/comparison/too-enough-as-as/) |
 | Modifying Comparatives & Superlatives | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/modifying-comparatives-superlatives/) |
 | Second & Third Conditionals | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/second-third-conditionals/) |
-| How Much & How Many 🆕 | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/countable-uncountable/how-much-many/) |
+| How Much & How Many | [Open lesson](https://englishwithc.github.io/grammar-mastery-lab/countable-uncountable/how-much-many/) |
 
 > More topics coming soon — keep an eye on this page!
 
