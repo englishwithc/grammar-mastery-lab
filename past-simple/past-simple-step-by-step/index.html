@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DINO PAST POWER — stomp through the past</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root{
+  --ink:#241C12; --sand:#FFF6E4;
+  --leaf:#2E9E4F; --lime:#A3E635; --amber:#FFB020;
+  --lava:#FF6B3D; --sky:#3FB6E8; --grape:#7C5CD6;
+  --rose:#FB7185; --stone:#64748B; --clay:#C1673B;
+  --a:#2E9E4F; --s:#DCF7E3; --d:#166534;
+}
+html,body{margin:0}
+body{
+  font-family:'Nunito',-apple-system,'Segoe UI',Roboto,sans-serif;
+  color:var(--ink); background-color:var(--sand);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170' viewBox='0 0 170 170'%3E%3Cg fill='%23241C12' opacity='0.045'%3E%3Cellipse cx='42' cy='58' rx='12' ry='14'/%3E%3Ccircle cx='26' cy='36' r='5.5'/%3E%3Ccircle cx='42' cy='32' r='6'/%3E%3Ccircle cx='58' cy='36' r='5.5'/%3E%3Cellipse cx='118' cy='128' rx='11' ry='13'/%3E%3Ccircle cx='103' cy='107' r='5'/%3E%3Ccircle cx='118' cy='103' r='5.5'/%3E%3Ccircle cx='133' cy='107' r='5'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(circle at 12% 3%, rgba(255,176,32,.36), transparent 40%),
+    radial-gradient(circle at 92% 5%, rgba(63,182,232,.26), transparent 42%),
+    radial-gradient(circle at 50% 102%, rgba(46,158,79,.24), transparent 55%);
+  background-attachment:fixed; min-height:100vh; padding-bottom:50px;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.f{font-family:'Fredoka','Nunito',sans-serif;font-weight:600}
+
+/* ---------- top bar ---------- */
+.bar{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
+  justify-content:space-between;flex-wrap:wrap;padding:10px 16px;
+  background:rgba(255,246,228,.94);backdrop-filter:blur(8px);
+  border-bottom:3px solid var(--ink);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.bot{
+  width:50px;height:50px;border-radius:16px;display:grid;place-items:center;
+  font-size:27px;background:var(--leaf);border:3px solid var(--ink);
+  box-shadow:0 4px 0 var(--ink);animation:bob 2.6s ease-in-out infinite;
+  transform:rotate(-3deg);
+}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(2deg)}}
+.brand h1{margin:0;font-size:1.12rem;line-height:1}
+.brand h1 em{font-style:normal;color:var(--lava)}
+.brand p{margin:3px 0 0;font-size:.72rem;font-weight:900;opacity:.6}
+.hud{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;font-weight:900;font-size:.86rem;
+  background:#fff;border:3px solid var(--ink);border-radius:999px;
+  padding:5px 12px;box-shadow:0 3px 0 var(--ink);
+}
+.chip.bones{background:#FFF3C4}
+.chip.fire{background:#FFE0D6}
+.ico{
+  width:44px;height:44px;border-radius:14px;cursor:pointer;font-size:1.05rem;
+  background:#fff;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);
+  transition:.06s;
+}
+.ico:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+
+.screen{max-width:870px;margin:0 auto;padding:0 16px}
+.view{display:none}
+.view.on{display:block;animation:in .22s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- hero ---------- */
+.hero{
+  display:flex;gap:16px;align-items:center;margin:18px 0 20px;position:relative;
+  background:#fff;border:3px solid var(--ink);border-radius:26px;
+  padding:18px;box-shadow:0 7px 0 var(--ink);overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;inset:auto -30px -40px auto;width:170px;height:170px;
+  border-radius:50%;background:radial-gradient(circle,rgba(255,176,32,.35),transparent 70%);
+}
+.hero .big{font-size:54px;line-height:1;animation:bob 2.4s ease-in-out infinite;position:relative;z-index:1}
+.hero-txt{position:relative;z-index:1}
+.hero h2{margin:0 0 5px;font-size:clamp(1.3rem,3.4vw,1.72rem);line-height:1.12}
+.hero p{margin:0;font-weight:800;font-size:.9rem;opacity:.72}
+.hero .prog{margin-top:8px;display:inline-block;font-weight:900;font-size:.74rem;
+  background:#FFF3C4;border:2px solid var(--ink);border-radius:999px;padding:3px 10px}
+
+/* ---------- tower ---------- */
+.tower{display:flex;flex-direction:column;gap:13px}
+.step{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+  font-family:inherit;color:inherit;padding:13px 16px;border-radius:22px;
+  border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink);
+  border-left:14px solid var(--c,#ccc);
+  background:linear-gradient(100deg,var(--soft) 0%,#fff 62%);
+  transition:.07s;
+}
+.step:hover{transform:translateY(-3px);box-shadow:0 9px 0 var(--ink)}
+.step:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.step.lock{background:#EFE8DD;border-left-color:#B9AFA1;box-shadow:0 6px 0 #B9AFA1;cursor:not-allowed}
+.step-e{font-size:31px;line-height:1;flex:0 0 auto}
+.step.lock .step-e{filter:grayscale(1);opacity:.5}
+.step-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.step-n{font-size:.71rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:.55}
+.step-t{font-family:'Fredoka',sans-serif;font-size:1.06rem;font-weight:600}
+.step-s{font-size:.82rem;font-weight:700;opacity:.6}
+.step-go{
+  flex:0 0 auto;font-weight:900;font-size:.78rem;background:var(--c,var(--amber));
+  border:3px solid var(--ink);border-radius:12px;padding:6px 10px;white-space:nowrap;
+}
+.step.lock .step-go{background:#D9D0C2;color:#8A8073}
+.steps-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;justify-content:center}
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:.98rem;cursor:pointer;
+  border:3px solid var(--ink);border-radius:16px;padding:12px 22px;background:#fff;
+  color:var(--ink);box-shadow:0 5px 0 var(--ink);transition:.06s;
+}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn.pri{background:var(--a);color:#fff}
+.btn.mint{background:var(--lime)}
+.btn.sm{padding:8px 14px;font-size:.85rem;border-radius:12px;box-shadow:0 4px 0 var(--ink)}
+.btn.wide{width:100%;margin-top:14px}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* ---------- play head ---------- */
+.phead{display:flex;align-items:center;gap:12px;margin:16px 0 10px}
+.phtxt{flex:1;min-width:0}
+.phtxt b{display:block;font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600}
+.strip{display:flex;gap:4px;margin:0 0 10px}
+.sb{
+  flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:5px 1px;border-radius:11px;border:2px solid #E0D5C4;background:#fff;
+  font-size:.55rem;font-weight:900;line-height:1;opacity:.5;
+}
+.sb.cur{opacity:1;border-color:var(--ink);box-shadow:0 3px 0 var(--ink)}
+.sb.done{opacity:1}
+.dots{display:flex;gap:5px;flex-wrap:wrap;margin:0 0 12px}
+.dot{height:9px;flex:1 1 14px;border-radius:999px;background:#E7DCCB;border:2px solid transparent}
+.dot.done{background:var(--a)}
+.dot.cur{background:var(--a);border-color:var(--ink)}
+
+/* ---------- question card ---------- */
+.qcard{
+  background:#fff;border:3px solid var(--ink);border-top:12px solid var(--a);
+  border-radius:26px;padding:20px;box-shadow:0 8px 0 var(--ink);
+  animation:pop .2s ease;
+}
+@keyframes pop{from{transform:scale(.98);opacity:.5}to{transform:scale(1);opacity:1}}
+.qtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.tag{
+  display:inline-block;background:var(--s);border:2px solid var(--ink);border-radius:999px;
+  font-size:.68rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase;
+  padding:4px 10px;
+}
+.tag.flash{background:#FFE0D6}
+.hintbtn{
+  flex:0 0 auto;font-family:'Nunito',sans-serif;font-weight:900;font-size:.78rem;
+  cursor:pointer;background:var(--s);border:2px solid var(--ink);border-radius:999px;
+  padding:5px 11px;box-shadow:0 3px 0 var(--ink);transition:.06s;
+}
+.hintbtn:active{transform:translateY(3px);box-shadow:none}
+.hintbtn:disabled{opacity:.55;cursor:default;box-shadow:none;transform:translateY(2px)}
+.hintbox{
+  background:var(--s);border:3px dashed var(--d);border-radius:14px;
+  padding:10px 13px;font-weight:800;font-size:.88rem;line-height:1.35;
+  margin-bottom:12px;animation:pop .16s;
+}
+.hintbox:empty{display:none}
+.qprompt{font-family:'Fredoka',sans-serif;font-size:clamp(1.1rem,2.6vw,1.45rem);font-weight:600;line-height:1.3}
+.quote{
+  display:flex;align-items:center;gap:10px;justify-content:space-between;
+  margin-top:12px;background:#F7F2E8;border:3px solid var(--ink);border-radius:16px;
+  padding:12px 14px;font-size:clamp(1.02rem,2.2vw,1.25rem);font-weight:900;
+}
+.listen{
+  flex:0 0 auto;background:var(--sky);border:3px solid var(--ink);border-radius:12px;
+  width:42px;height:42px;font-size:1.05rem;cursor:pointer;box-shadow:0 3px 0 var(--ink);
+}
+.listen:active{transform:translateY(3px);box-shadow:none}
+.blank{display:inline-block;min-width:56px;border-bottom:4px solid var(--a);margin:0 3px;vertical-align:-2px}
+.hl{background:#FFE58F;border-radius:7px;padding:0 5px;font-weight:900}
+
+.opts{display:grid;gap:10px;margin-top:16px}
+.opt{
+  display:block;width:100%;text-align:left;font-family:'Nunito',sans-serif;
+  font-weight:800;font-size:clamp(.95rem,2vw,1.08rem);padding:14px 16px;cursor:pointer;
+  background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:16px;
+  box-shadow:0 4px 0 var(--ink);transition:.06s;
+}
+.opt:hover:not(:disabled){background:var(--s);transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.opt:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.opt:disabled{cursor:default}
+.opt.ok{background:#DCFCE7;box-shadow:0 4px 0 #15803D}
+.opt.ok::after{content:' ✓';font-weight:900;color:#15803D}
+.opt.no{background:#FEE2E2;box-shadow:0 4px 0 #B91C1C}
+.opt.no::after{content:' ✗';font-weight:900;color:#B91C1C}
+
+.trow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.tin{
+  flex:1;min-width:190px;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;
+  padding:13px 15px;border-radius:16px;border:3px solid var(--ink);outline:none;
+  box-shadow:inset 0 3px 0 rgba(0,0,0,.06);
+}
+.tin:focus{background:#FFF9E8}
+.tin.ok{background:#DCFCE7}
+.tin.no{background:#FEE2E2}
+
+.fb{margin-top:16px;border:3px solid var(--ink);border-radius:16px;padding:13px 15px;animation:pop .18s}
+.fb.ok{background:#DCFCE7}
+.fb.no{background:#FEE2E2}
+.fb b{display:block;font-family:'Fredoka',sans-serif;font-size:1rem;margin-bottom:3px}
+.fb span{font-weight:800;font-size:.9rem;line-height:1.35}
+.fb .pen{display:inline-block;margin-top:6px;font-size:.74rem;font-weight:900;opacity:.7}
+
+/* ---------- teach ---------- */
+.teach{
+  background:#fff;border:3px solid var(--ink);border-top:12px solid var(--a);
+  border-radius:26px;padding:22px;box-shadow:0 8px 0 var(--ink);animation:pop .2s;
+}
+.teach .head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.teach .head span{font-size:36px;line-height:1}
+.teach .head h3{margin:0;font-size:1.2rem}
+.teach ul{margin:0 0 14px;padding-left:20px}
+.teach li{font-weight:800;font-size:.95rem;margin:4px 0}
+.ex{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--s);border:3px solid var(--ink);border-radius:14px;
+  padding:11px 13px;margin-bottom:8px;font-weight:900;font-size:1.02rem;
+}
+.note{background:#FFF3C4;border-radius:14px;padding:11px 13px;font-weight:800;font-size:.86rem;border:3px dashed var(--ink)}
+
+/* ---------- result ---------- */
+.res{text-align:center}
+.res .big{font-size:62px;line-height:1;animation:bob 1.6s ease-in-out infinite}
+.res h2{margin:6px 0;font-size:1.5rem}
+.res p{font-weight:800;margin:4px 0;opacity:.75}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+
+/* ---------- speaking ---------- */
+.timer{
+  font-family:'Fredoka',sans-serif;font-size:2.6rem;text-align:center;
+  background:var(--s);border:3px solid var(--ink);border-radius:20px;padding:10px;margin:14px 0;
+}
+.timer.low{background:#FFE0D6}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(36,28,18,.45);opacity:0;pointer-events:none;transition:.2s;z-index:60}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;height:100%;width:min(400px,92vw);background:var(--sand);
+  z-index:70;transform:translateX(104%);transition:transform .24s;display:flex;flex-direction:column;
+  border-left:3px solid var(--ink);
+}
+.drawer.on{transform:none}
+.dhead{display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--ink);color:#fff}
+.dhead h3{margin:0;font-size:1.05rem}
+.dbody{padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.rcard{display:flex;gap:10px;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:12px;box-shadow:0 4px 0 var(--ink)}
+.rcard.lock{background:#EBE3D7;box-shadow:none;opacity:.6}
+.rcard .ic{font-size:1.3rem}
+.rcard b{display:block;font-family:'Fredoka',sans-serif;font-size:.95rem;margin-bottom:3px}
+.rcard li{font-size:.85rem;font-weight:800;margin:2px 0;list-style:none}
+.rcard ul{margin:0;padding:0}
+
+/* ---------- toast + confetti ---------- */
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);z-index:90;
+  background:var(--ink);color:#fff;border-radius:16px;padding:13px 20px;font-weight:900;
+  opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center;font-size:.9rem;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.conf{position:fixed;top:-16px;width:11px;height:15px;border-radius:3px;z-index:95;pointer-events:none;animation:fall 2.1s linear forwards}
+@keyframes fall{to{transform:translateY(107vh) rotate(720deg);opacity:.9}}
+
+@media(max-width:520px){
+  .brand p{display:none}
+  .bot{width:44px;height:44px;font-size:23px}
+  .hero .big{font-size:44px}
+  .sb{font-size:.5rem}
+  .step-t{font-size:1rem}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <div class="bot">🦖</div>
+    <div>
+      <h1>DINO PAST <em>POWER</em></h1>
+      <p>Stomp through the past. Block by block.</p>
+    </div>
+  </div>
+  <div class="hud">
+    <span class="chip bones">🦴 <b id="xpV">0</b></span>
+    <span class="chip fire">🔥 <b id="stkV">0</b></span>
+    <button class="ico" id="sndBtn" title="Sound">🔊</button>
+    <button class="ico" id="rulesBtn" title="My rules">📘</button>
+  </div>
+</header>
+
+<main class="screen">
+  <section class="view on" id="vMap">
+    <div class="hero">
+      <div class="big">🥚</div>
+      <div class="hero-txt">
+        <h2>Let's dig up the past!</h2>
+        <p>Nine blocks, nine colours. Clear one to unlock the next.</p>
+        <span class="prog" id="progTxt">0 / 9 cleared</span>
+      </div>
+    </div>
+    <div class="tower" id="tower"></div>
+    <div class="steps-row">
+      <button class="btn sm" id="mixBtn">⚡ Quick Mix</button>
+      <button class="btn sm" id="unlockBtn">🔓 Unlock all</button>
+      <button class="btn sm" id="resetBtn">↺ Reset</button>
+    </div>
+  </section>
+
+  <section class="view" id="vPlay">
+    <div class="phead">
+      <button class="btn sm" id="backBtn">←</button>
+      <div class="phtxt"><b id="phName"></b></div>
+      <span class="chip" id="phScore">0 / 0</span>
+    </div>
+    <div class="strip" id="strip"></div>
+    <div class="dots" id="dots"></div>
+    <div id="qArea"></div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <div class="dhead">
+    <h3>📘 My Rules</h3>
+    <button class="ico" id="dClose">✕</button>
+  </div>
+  <div class="dbody" id="ruleList"></div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const ri = n => Math.floor(Math.random() * n);
+const pick = a => a[ri(a.length)];
+const shuffle = a => {
+  const b = a.slice();
+  for (let i = b.length - 1; i > 0; i--) {
+    const j = ri(i + 1);
+    [b[i], b[j]] = [b[j], b[i]];
+  }
+  return b;
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const tall = s => esc(s).replace(/___/g, '<span class="blank"></span>');
+const plain = s => String(s).replace(/<[^>]+>/g, '');
+const norm = s => String(s).toLowerCase().replace(/[\u2019']/g, '')
+  .replace(/[.!?]+$/, '').replace(/\s+/g, ' ').trim();
+const S1 = s => s === 'i' ? 'I' : s.charAt(0).toUpperCase() + s.slice(1);
+const S2 = s => s === 'i' ? 'I' : s;
+
+function deck(arr) {
+  let pool = [], last = null;
+  return function next() {
+    if (!pool.length) {
+      pool = shuffle(arr);
+      if (pool.length > 1 && pool[pool.length - 1] === last) pool.unshift(pool.pop());
+    }
+    last = pool.pop();
+    return last;
+  };
+}
+function wrongsFrom(arr, exclude, n) {
+  return shuffle(arr.filter(x => x !== exclude)).slice(0, n);
+}
+function chq(prompt, good, wrongs, why, quote) {
+  const options = shuffle([good].concat(wrongs));
+  return { kind: 'choice', prompt, quote: quote || '', options, ci: options.indexOf(good), why };
+}
+function typ(prompt, answers, why, quote) {
+  return { kind: 'type', prompt, quote: quote || '', answers: answers.map(norm), show: answers[0], why };
+}
+function mist(wrong, right, d1, d2, why) {
+  const options = shuffle([right, d1, d2]);
+  return {
+    kind: 'choice',
+    prompt: 'One of these is fixed. Which one is correct?',
+    quote: '"' + wrong + '"',
+    options,
+    ci: options.indexOf(right),
+    why
+  };
+}
+function teachCard(emoji, title, lines, examples, note) {
+  return { kind: 'teach', emoji, title, lines, examples: examples || [], note: note || '' };
+}
+function sig(it) {
+  const body = it.options ? it.options.join('|') : (it.answers ? it.answers.join('|') : '');
+  return (it.prompt + '|' + (it.quote || '') + '|' + body).toLowerCase();
+}
+function planTypes(n, types) {
+  const list = types.slice();
+  const out = [];
+  for (let i = 0; i < n; i++) out.push(list[i % list.length]);
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = ri(i + 1);
+    const t = out[i]; out[i] = out[j]; out[j] = t;
+  }
+  for (let pass = 0; pass < 3; pass++) {
+    for (let i = 2; i < out.length; i++) {
+      if (out[i] === out[i - 1] && out[i] === out[i - 2]) {
+        for (let j = i + 1; j < out.length; j++) {
+          if (out[j] !== out[i]) { const t = out[i]; out[i] = out[j]; out[j] = t; break; }
+        }
+      }
+    }
+    for (let i = out.length - 3; i >= 0; i--) {
+      if (out[i] === out[i + 1] && out[i] === out[i + 2]) {
+        for (let j = i - 1; j >= 0; j--) {
+          if (out[j] !== out[i]) { const t = out[i]; out[i] = out[j]; out[j] = t; break; }
+        }
+      }
+    }
+  }
+  return out;
+}
+
+/* ================= sound ================= */
+let actx = null;
+function ac() {
+  if (!actx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    actx = new AC();
+  }
+  return actx;
+}
+function beep(f, at, dur, type, vol) {
+  const ctx = ac();
+  if (!ctx) return;
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = type || 'sine';
+  o.frequency.value = f;
+  o.connect(g); g.connect(ctx.destination);
+  const t0 = ctx.currentTime + at;
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.linearRampToValueAtTime(vol || 0.06, t0 + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.start(t0); o.stop(t0 + dur + 0.03);
+}
+function sfx(k) {
+  if (!state.sound) return;
+  try {
+    if (k === 'ok') { beep(620, 0, 0.1); beep(880, 0.07, 0.14); }
+    else if (k === 'no') { beep(220, 0, 0.14, 'square', 0.04); beep(150, 0.1, 0.18, 'square', 0.04); }
+    else if (k === 'level') { [523, 659, 784, 1046].forEach((f, i) => beep(f, i * 0.09, 0.2)); }
+    else if (k === 'hint') { beep(520, 0, 0.07, 'triangle', 0.04); beep(700, 0.06, 0.1, 'triangle', 0.04); }
+    else { beep(440, 0, 0.045, 'triangle', 0.03); }
+  } catch (e) {}
+}
+function say(text) {
+  if (!('speechSynthesis' in window)) { toast('No voice here 😕'); return; }
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(plain(text));
+    u.lang = 'en-GB'; u.rate = 0.85; u.pitch = 1.08;
+    window.speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
+/* ================= state ================= */
+const KEY = 'dino_past_power_v1';
+const state = { xp: 0, streak: 0, unlocked: 1, passed: {}, sound: true };
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (typeof s.xp === 'number') state.xp = s.xp;
+    if (typeof s.unlocked === 'number') state.unlocked = s.unlocked;
+    if (typeof s.sound === 'boolean') state.sound = s.sound;
+    if (s.passed && typeof s.passed === 'object') state.passed = s.passed;
+  } catch (e) {}
+}
+
+/* ================= palettes ================= */
+const PAL = {
+  0: { c: '#FFB020', s: '#FFF3C4', d: '#9A6510' },
+  1: { c: '#FFB020', s: '#FFF3C4', d: '#9A6510' },
+  2: { c: '#3FB6E8', s: '#DFF3FE', d: '#0369A1' },
+  3: { c: '#E08D3C', s: '#FFE9CC', d: '#92400E' },
+  4: { c: '#64748B', s: '#E7EDF3', d: '#334155' },
+  5: { c: '#2E9E4F', s: '#DCF7E3', d: '#166534' },
+  6: { c: '#FF6B3D', s: '#FFE4D8', d: '#9A3412' },
+  7: { c: '#7C5CD6', s: '#EDE9FE', d: '#4C1D95' },
+  8: { c: '#FFC531', s: '#FFF3C4', d: '#A16207' },
+  9: { c: '#FB7185', s: '#FFE3E9', d: '#9F1239' }
+};
+
+/* ================= content ================= */
+const PAST_SENT = [
+  'The dino hatched yesterday.',
+  'We found a big bone last week.',
+  'She walked to the river two days ago.',
+  'They cooked meat on the fire last night.',
+  'I saw a T-rex in the valley yesterday.',
+  'The cavemen painted the cave last summer.',
+  'He jumped in the mud yesterday morning.',
+  'My mum made a fur coat last winter.',
+  'The tribe moved to a new cave long ago.',
+  'I fed the baby dino last night.'
+];
+const PRES_SENT = [
+  'The dino is sleeping now.',
+  'We are looking for bones.',
+  'She walks to the river every day.',
+  'They cook meat every night.',
+  'He is jumping in the mud.',
+  'My mum makes fur coats every winter.',
+  'The tribe lives in a big cave.',
+  'I feed the baby dino every morning.',
+  'It is raining now.',
+  'We are painting the cave right now.'
+];
+const TRIPLES = [
+  { g: 'I played with the baby dino yesterday.',
+    o: ['I am playing with the baby dino now.', 'I play with the baby dino every day.'],
+    w: '"Yesterday" means it is finished. That is the past simple.' },
+  { g: 'We painted the cave last night.',
+    o: ['We are painting the cave now.', 'We paint the cave every night.'],
+    w: '"Last night" is finished time, so the verb goes to the past.' },
+  { g: 'She found a fossil two days ago.',
+    o: ['She is looking for a fossil now.', 'She finds a fossil every day.'],
+    w: '"Two days ago" is finished. Past simple.' },
+  { g: 'The egg hatched last spring.',
+    o: ['The egg is hatching now.', 'The egg hatches every spring.'],
+    w: '"Last spring" is over. Past simple.' },
+  { g: 'They ran from the T-rex last week.',
+    o: ['They are running from the T-rex now.', 'They run from the T-rex every day.'],
+    w: '"Last week" is finished, so we use the past.' }
+];
+
+const TIME_PAST = ['yesterday', 'yesterday morning', 'last night', 'last week', 'last summer',
+  'two days ago', 'a long time ago', 'in 2019', 'last Monday', 'when I was little'];
+const TIME_NOT = ['now', 'tomorrow', 'next week', 'every day', 'usually', 'right now',
+  'next summer', 'at the moment'];
+const TIME_TRIPLES = [
+  { g: 'We saw a mammoth last winter.',
+    o: ['We see a mammoth every winter.', 'We are seeing a mammoth now.'],
+    w: '"Last winter" is finished → past simple.' },
+  { g: 'The cavemen built a fire two days ago.',
+    o: ['The cavemen build a fire every day.', 'The cavemen are building a fire now.'],
+    w: '"Two days ago" is finished → past simple.' },
+  { g: 'I cleaned my cave yesterday.',
+    o: ['I clean my cave every day.', 'I am cleaning my cave now.'],
+    w: '"Yesterday" is finished → past simple.' },
+  { g: 'She told a story last night.',
+    o: ['She tells a story every night.', 'She is telling a story now.'],
+    w: '"Last night" is finished → past simple.' }
+];
+
+const SUBJ = ['i', 'you', 'he', 'she', 'we', 'they', 'the cavemen', 'my friend',
+  'the dino', 'my mum', 'the tribe', 'two hunters', 'my little brother'];
+
+const REG = [
+  { v: 'walk', p: 'walked', o: 'to the river' },
+  { v: 'play', p: 'played', o: 'with the baby dino' },
+  { v: 'jump', p: 'jumped', o: 'in the mud' },
+  { v: 'watch', p: 'watched', o: 'the stars' },
+  { v: 'clean', p: 'cleaned', o: 'the cave' },
+  { v: 'help', p: 'helped', o: 'the tribe' },
+  { v: 'talk', p: 'talked', o: 'to the mammoth' },
+  { v: 'cook', p: 'cooked', o: 'dino eggs' },
+  { v: 'climb', p: 'climbed', o: 'the big rock' },
+  { v: 'open', p: 'opened', o: 'the cave door' },
+  { v: 'dance', p: 'danced', o: 'round the fire' },
+  { v: 'paint', p: 'painted', o: 'the cave wall' },
+  { v: 'collect', p: 'collected', o: 'bones' },
+  { v: 'listen', p: 'listened', o: 'to the story' },
+  { v: 'call', p: 'called', o: 'my friend' },
+  { v: 'look', p: 'looked', o: 'at the footprints' }
+];
+
+const SPELL = [
+  { v: 'live', p: 'lived', w: ['liveed', 'livd'], r: 'd' },
+  { v: 'like', p: 'liked', w: ['likeed', 'likd'], r: 'd' },
+  { v: 'love', p: 'loved', w: ['loveed', 'lovd'], r: 'd' },
+  { v: 'smile', p: 'smiled', w: ['smileed', 'smild'], r: 'd' },
+  { v: 'dance', p: 'danced', w: ['danceed', 'dancd'], r: 'd' },
+  { v: 'arrive', p: 'arrived', w: ['arriveed', 'arrivd'], r: 'd' },
+  { v: 'study', p: 'studied', w: ['studyed', 'studys'], r: 'ies' },
+  { v: 'carry', p: 'carried', w: ['carryed', 'carrys'], r: 'ies' },
+  { v: 'try', p: 'tried', w: ['tryed', 'trys'], r: 'ies' },
+  { v: 'cry', p: 'cried', w: ['cryed', 'crys'], r: 'ies' },
+  { v: 'hurry', p: 'hurried', w: ['hurryed', 'hurrys'], r: 'ies' },
+  { v: 'play', p: 'played', w: ['playd', 'playied'], r: 'ys' },
+  { v: 'stay', p: 'stayed', w: ['stayd', 'staied'], r: 'ys' },
+  { v: 'enjoy', p: 'enjoyed', w: ['enjoyd', 'enjoied'], r: 'ys' },
+  { v: 'stop', p: 'stopped', w: ['stoped', 'stopd'], r: 'double' },
+  { v: 'plan', p: 'planned', w: ['planed', 'pland'], r: 'double' },
+  { v: 'hop', p: 'hopped', w: ['hoped', 'hopd'], r: 'double' },
+  { v: 'grab', p: 'grabbed', w: ['grabed', 'grabd'], r: 'double' },
+  { v: 'clap', p: 'clapped', w: ['claped', 'clapd'], r: 'double' },
+  { v: 'drop', p: 'dropped', w: ['droped', 'dropd'], r: 'double' }
+];
+const WHY4 = {
+  d: 'It ends in e → just add -d.',
+  ies: 'Consonant + y → change y to i and add -ed.',
+  ys: 'Vowel + y → just add -ed.',
+  double: 'Short word, one vowel + one consonant → double the consonant, then -ed.'
+};
+
+const WAS = [
+  { s: 'i', be: 'was', c: 'very hungry' },
+  { s: 'he', be: 'was', c: 'in the cave' },
+  { s: 'she', be: 'was', c: 'scared of the T-rex' },
+  { s: 'it', be: 'was', c: 'very cold' },
+  { s: 'the dino', be: 'was', c: 'big and green' },
+  { s: 'my friend', be: 'was', c: 'happy' },
+  { s: 'you', be: 'were', c: 'outside' },
+  { s: 'we', be: 'were', c: 'in the valley' },
+  { s: 'they', be: 'were', c: 'very loud' },
+  { s: 'the cavemen', be: 'were', c: 'tired' },
+  { s: 'my parents', be: 'were', c: 'at the river' },
+  { s: 'the hunters', be: 'were', c: 'ready' }
+];
+
+const IRR = [
+  { v: 'go', p: 'went', o: 'to the valley' },
+  { v: 'see', p: 'saw', o: 'a T-rex' },
+  { v: 'eat', p: 'ate', o: 'ten eggs' },
+  { v: 'have', p: 'had', o: 'a big fire' },
+  { v: 'make', p: 'made', o: 'a spear' },
+  { v: 'come', p: 'came', o: 'to the cave' },
+  { v: 'get', p: 'got', o: 'a big bone' },
+  { v: 'take', p: 'took', o: 'the egg' },
+  { v: 'find', p: 'found', o: 'footprints' },
+  { v: 'run', p: 'ran', o: 'very fast' },
+  { v: 'give', p: 'gave', o: 'me a rock' },
+  { v: 'say', p: 'said', o: 'hello' },
+  { v: 'drink', p: 'drank', o: 'the river water' },
+  { v: 'sleep', p: 'slept', o: 'in the cave' },
+  { v: 'swim', p: 'swam', o: 'in the river' },
+  { v: 'catch', p: 'caught', o: 'a big fish' },
+  { v: 'think', p: 'thought', o: 'about the dino' },
+  { v: 'fly', p: 'flew', o: 'over the mountain' }
+];
+
+/* ================= decks ================= */
+const D_PASTS = deck(PAST_SENT);
+const D_PRES = deck(PRES_SENT);
+const D_TRIP = deck(TRIPLES);
+const D_TIMEP = deck(TIME_PAST);
+const D_TIMEN = deck(TIME_NOT);
+const D_TTRIP = deck(TIME_TRIPLES);
+const D_REG = deck(REG);
+const D_SPELL = deck(SPELL);
+const D_WAS = deck(WAS);
+const D_IRR = deck(IRR);
+const D_SUBJ = deck(SUBJ);
+
+/* ================= teach cards ================= */
+const T1 = teachCard('🥚', 'What is the past for?', [
+  'The past simple is for things that are FINISHED.',
+  'They happened before now.',
+  'One action, or a story in order.'
+], [
+  'The dino <span class="hl">hatched</span> yesterday.',
+  'We <span class="hl">walked</span> to the river.'
+], 'Finished = over. If it is still true now, it is not the past.');
+
+const T2 = teachCard('⏰', 'Time words are your clue!', [
+  'yesterday · last night · last week',
+  'two days ago · a long time ago',
+  'in 2019 · when I was little'
+], [
+  'I saw a T-rex <span class="hl">yesterday</span>.',
+  'We moved cave <span class="hl">last summer</span>.'
+], 'now, tomorrow, every day and usually are NOT past words.');
+
+const T3 = teachCard('🦴', 'Add -ed and you are done', [
+  'subject + verb + ed',
+  'Everybody uses the SAME form!',
+  'I walked · she walked · they walked'
+], [
+  'The tribe <span class="hl">cooked</span> meat.',
+  'I <span class="hl">played</span> with the dino.'
+], 'No extra S! "She walked" ✔ — "She walkeds" ✘');
+
+const T4 = teachCard('🪨', 'Tricky spellings', [
+  'e at the end → just add -d',
+  'consonant + y → change to -ied',
+  'short word → double the letter'
+], [
+  'live → <span class="hl">lived</span>',
+  'study → <span class="hl">studied</span>',
+  'stop → <span class="hl">stopped</span>'
+], 'play → played. Vowel + y, so the y stays!');
+
+const T5 = teachCard('🦕', 'was / were', [
+  'I · he · she · it → was',
+  'you · we · they → were',
+  "negative: wasn't / weren't"
+], [
+  'The dino <span class="hl">was</span> hungry.',
+  'The cavemen <span class="hl">were</span> scared.'
+], 'Never "did was". Just was or were.');
+
+const T6 = teachCard('🌋', 'Irregulars — no -ed!', [
+  'Some verbs change completely.',
+  'go → went · see → saw · eat → ate',
+  'have → had · make → made · come → came'
+], [
+  'We <span class="hl">went</span> to the valley.',
+  'I <span class="hl">saw</span> a T-rex.'
+], 'They do not follow the -ed rule. You just learn them.');
+
+const T7 = teachCard('🚫', 'Saying NO and asking', [
+  "didn't + plain verb",
+  'Did + subject + plain verb?',
+  "didn't works for everybody!"
+], [
+  "She <span class=\"hl\">didn't see</span> the dino.",
+  '<span class="hl">Did</span> you <span class="hl">find</span> the egg?'
+], "After didn't and Did the verb goes back to normal. No -ed!");
+
+const T8 = teachCard('⚡', 'Boss battle!', [
+  'Everything you learned, mixed together.',
+  'Step 1: is it finished past?',
+  'Step 2: regular or irregular?',
+  "Step 3: is it a no or a question?"
+], [], 'Say the whole sentence in your head before you click.');
+
+const SPEAK = [
+  { p: 'Your day in the Stone Age. 3 sentences with "I".', t: 'I woke up. I ate eggs. I walked to the river.' },
+  { p: 'Talk about your pet dino. Use "he" or "she".', t: 'He was big. He ate a lot. He ran fast.' },
+  { p: 'Say 3 things you did NOT do yesterday.', t: "I didn't see a T-rex. I didn't eat a rock." },
+  { p: 'Ask your friend 3 questions about yesterday.', t: 'Did you see a dino? Did you swim?' },
+  { p: 'Tiny story: you found a dinosaur egg.', t: 'I found an egg. It was warm. I took it home.' },
+  { p: 'Say 2 things about your cave. Use was / were.', t: 'My cave was dark. The walls were cold.' }
+];
+const T9 = teachCard('🗣️', 'Your turn to speak', [
+  'No writing now — just talk!',
+  'You have 30 seconds for each one.'
+], [], 'Mistakes are fine. Say it again, that is how it sticks.');
+
+/* ================= generators ================= */
+function g1class() {
+  const isPast = Math.random() < 0.5;
+  const s = (isPast ? D_PASTS : D_PRES)();
+  return {
+    kind: 'choice',
+    prompt: pick(['Finished, or not the past?', 'Which one is this?', 'Is this the past?']),
+    quote: '"' + s + '"',
+    options: ['Finished past 🦴', 'Not the past ⏳'],
+    ci: isPast ? 0 : 1,
+    why: isPast
+      ? 'It is finished and before now. That is the past simple.'
+      : 'It happens now or every day, so it is not the past.'
+  };
+}
+function g1triple() {
+  const t = D_TRIP();
+  return chq('Which sentence is about the finished past?', t.g, t.o, t.w);
+}
+function g1pastverb() {
+  const t = D_TRIP();
+  return chq('Which sentence has a verb in the past?', t.g, t.o, t.w);
+}
+
+function g2word() {
+  const good = D_TIMEP();
+  return chq('Which time word goes with the past?', good,
+    wrongsFrom(TIME_NOT, good, 2),
+    '"' + good + '" means the action is finished, so we use the past.');
+}
+function g2not() {
+  const bad = D_TIMEN();
+  return chq('Which word does NOT go with the past?', bad,
+    wrongsFrom(TIME_PAST, bad, 2),
+    '"' + bad + '" is not a past word. Use yesterday, last week, two days ago…');
+}
+function g2sent() {
+  const t = D_TTRIP();
+  return chq('Which sentence has a finished time word?', t.g, t.o, t.w);
+}
+
+function g3mc() {
+  const r = D_REG(), s = D_SUBJ();
+  return chq(S1(s) + ' ___ (' + r.v + ') ' + r.o + ' yesterday.', r.p,
+    [r.v + 's', r.v + 'ing'],
+    'Finished yesterday → add -ed: ' + r.p + '.');
+}
+function g3type() {
+  const r = D_REG(), s = D_SUBJ();
+  return typ(S1(s) + ' ___ (' + r.v + ') ' + r.o + ' yesterday.', [r.p],
+    r.v + ' → ' + r.p + ' (just add -ed).');
+}
+function g3fix() {
+  const r = D_REG(), s = D_SUBJ();
+  return mist(
+    S1(s) + ' ' + r.v + ' ' + r.o + ' yesterday.',
+    S1(s) + ' ' + r.p + ' ' + r.o + ' yesterday.',
+    S1(s) + ' ' + r.v + 's ' + r.o + ' yesterday.',
+    S1(s) + ' is ' + r.v + 'ing ' + r.o + ' yesterday.',
+    'It happened yesterday, so use the past: ' + r.p + '.'
+  );
+}
+function g3all() {
+  const r = D_REG();
+  const good = S1(pick(['she', 'he', 'they', 'we'])) + ' ' + r.p + ' ' + r.o + ' yesterday.';
+  return chq('Past simple: everybody uses the same form. Which one is correct?', good,
+    [good.replace(' ' + r.p + ' ', ' ' + r.v + 's '), good.replace(' ' + r.p + ' ', ' ' + r.v + ' ')],
+    'He, she, they, we — in the past the verb never changes. Just ' + r.p + '.');
+}
+
+function g4mc() {
+  const it = D_SPELL();
+  return chq('What is the past of "' + it.v + '"?', it.p, it.w, WHY4[it.r]);
+}
+function g4type() {
+  const it = D_SPELL();
+  return typ('Type the past of "' + it.v + '".', [it.p], WHY4[it.r]);
+}
+function g4spell() {
+  const it = D_SPELL();
+  const opts = shuffle([it.p].concat(it.w));
+  return {
+    kind: 'choice',
+    prompt: 'Spelling check! Which one is right for "' + it.v + '"?',
+    quote: '', options: opts, ci: opts.indexOf(it.p), why: WHY4[it.r]
+  };
+}
+function g4fix() {
+  const it = D_SPELL();
+  const s = D_SUBJ();
+  const bad = S1(s) + ' ' + it.w[0] + ' in the cave.';
+  return mist(bad, S1(s) + ' ' + it.p + ' in the cave.',
+    bad, S1(s) + ' ' + it.w[1] + ' in the cave.', WHY4[it.r]);
+}
+
+function g5mc() {
+  const w = D_WAS();
+  return chq(S1(w.s) + ' ___ ' + w.c + ' yesterday.', w.be,
+    [w.be === 'was' ? 'were' : 'was'],
+    S1(w.s) + ' → ' + w.be + '.');
+}
+function g5type() {
+  const w = D_WAS();
+  return typ(S1(w.s) + ' ___ ' + w.c + ' yesterday.', [w.be],
+    S1(w.s) + ' → ' + w.be + '.');
+}
+function g5neg() {
+  const w = D_WAS();
+  const neg = w.be === 'was' ? "wasn't" : "weren't";
+  return chq(S1(w.s) + ' ___ ' + w.c + ' yesterday.', neg,
+    [w.be === 'was' ? "weren't" : "wasn't"],
+    'The negative of ' + w.be + ' is ' + neg + '.');
+}
+function g5fix() {
+  const w = D_WAS();
+  const wrongBe = w.be === 'was' ? 'were' : 'was';
+  return mist(S1(w.s) + ' ' + wrongBe + ' ' + w.c + ' yesterday.',
+    S1(w.s) + ' ' + w.be + ' ' + w.c + ' yesterday.',
+    S1(w.s) + ' ' + wrongBe + ' ' + w.c + ' yesterday.',
+    "S1".replace('S1', S1(w.s)) + ' did ' + w.be + ' ' + w.c + ' yesterday.',
+    S1(w.s) + ' → ' + w.be + '.');
+}
+
+function g6mc() {
+  const r = D_IRR(), s = D_SUBJ();
+  return chq(S1(s) + ' ___ (' + r.v + ') ' + r.o + ' yesterday.', r.p,
+    [r.v + 'ed', r.v],
+    r.v + ' is irregular: ' + r.v + ' → ' + r.p + '.');
+}
+function g6type() {
+  const r = D_IRR(), s = D_SUBJ();
+  return typ(S1(s) + ' ___ (' + r.v + ') ' + r.o + ' yesterday.', [r.p],
+    r.v + ' is irregular → ' + r.p + '.');
+}
+function g6fix() {
+  const r = D_IRR(), s = D_SUBJ();
+  const bad1 = r.v + 'ed', bad2 = r.v;
+  return mist(
+    S1(s) + ' ' + bad1 + ' ' + r.o + ' yesterday.',
+    S1(s) + ' ' + r.p + ' ' + r.o + ' yesterday.',
+    S1(s) + ' ' + bad1 + ' ' + r.o + ' yesterday.',
+    S1(s) + ' ' + bad2 + ' ' + r.o + ' yesterday.',
+    r.v + ' → ' + r.p + '. Irregular verbs do not take -ed.'
+  );
+}
+function g6pick() {
+  const r = D_IRR();
+  return chq('Which is the past of "' + r.v + '"?', r.p,
+    [r.v + 'ed', r.v + 'd'], r.v + ' → ' + r.p + '.');
+}
+
+function g7sign() {
+  const r = D_IRR(), s = D_SUBJ();
+  return chq(S1(s) + ' ___ ' + r.v + ' ' + r.o + ' yesterday.', "didn't",
+    ["doesn't", "don't"],
+    "In the past, didn't works for everybody: I didn't, she didn't, they didn't.");
+}
+function g7verb() {
+  const r = D_IRR(), s = D_SUBJ();
+  return chq(S1(s) + " didn't ___ (" + r.v + ') ' + r.o + ' yesterday.', r.v,
+    [r.p, r.v + 's'],
+    "The S is already inside didn't. So the verb stays plain: " + r.v + '.');
+}
+function g7type() {
+  const r = D_IRR(), s = D_SUBJ();
+  return typ(S1(s) + ' ___ (not / ' + r.v + ') ' + r.o + ' yesterday.',
+    ["didn't " + r.v, 'did not ' + r.v],
+    "The negative is didn't + plain verb.");
+}
+function g7q() {
+  const r = D_IRR(), s = D_SUBJ();
+  return chq('___ ' + S2(s) + ' ' + r.v + ' ' + r.o + ' yesterday?', 'Did',
+    ['Do', 'Does'],
+    'Past question → Did + subject + plain verb.');
+}
+function g7q2() {
+  const r = D_IRR(), s = D_SUBJ();
+  return chq('Did ' + S2(s) + ' ___ (' + r.v + ') ' + r.o + ' yesterday?', r.v,
+    [r.p, r.v + 's'],
+    'After Did, the verb is plain: Did ' + S2(s) + ' ' + r.v + '…?');
+}
+function g7fix() {
+  const r = D_IRR(), s = D_SUBJ();
+  return mist(
+    S1(s) + " didn't " + r.p + ' ' + r.o + ' yesterday.',
+    S1(s) + " didn't " + r.v + ' ' + r.o + ' yesterday.',
+    S1(s) + " didn't " + r.p + ' ' + r.o + ' yesterday.',
+    S1(s) + " doesn't " + r.v + ' ' + r.o + ' yesterday.',
+    "didn't + plain verb. No -ed after didn't."
+  );
+}
+
+/* ================= registry ================= */
+const GEN = {
+  b1_class: g1class, b1_triple: g1triple, b1_verb: g1pastverb,
+  b2_word: g2word, b2_not: g2not, b2_sent: g2sent,
+  b3_mc: g3mc, b3_type: g3type, b3_fix: g3fix, b3_all: g3all,
+  b4_mc: g4mc, b4_type: g4type, b4_spell: g4spell, b4_fix: g4fix,
+  b5_mc: g5mc, b5_type: g5type, b5_neg: g5neg, b5_fix: g5fix,
+  b6_mc: g6mc, b6_type: g6type, b6_fix: g6fix, b6_pick: g6pick,
+  b7_sign: g7sign, b7_verb: g7verb, b7_type: g7type, b7_q: g7q, b7_q2: g7q2, b7_fix: g7fix
+};
+
+const HINTS = {
+  b1_class: 'Ask: is it over, or does it still happen now?',
+  b1_triple: 'Look at the time words at the end.',
+  b1_verb: 'One sentence has a verb with -ed or an irregular past.',
+  b2_word: 'One word tells you it is finished and gone. The others are about now or later.',
+  b2_not: 'Three are finished words. One is about now.',
+  b2_sent: 'Find yesterday, last night, last week or ago.',
+  b3_mc: 'It happened yesterday. Add -ed.',
+  b3_type: 'It happened yesterday. Add -ed to the verb.',
+  b3_fix: 'Two are wrong: one uses the present, one is happening now.',
+  b3_all: 'In the past, he, she, they and we all take the same verb.',
+  b4_mc: 'Look at the last letters of the verb.',
+  b4_type: 'Look at the last letters of the verb.',
+  b4_spell: 'Say the verb first. Does it end in e, in y, or is it a short word?',
+  b4_fix: 'Only one spelling follows the rule.',
+  b5_mc: 'I / he / she / it go with was. you / we / they go with were.',
+  b5_type: 'I / he / she / it go with was. you / we / they go with were.',
+  b5_neg: 'Put n\'t on the end of was or were.',
+  b5_fix: 'Who is the subject? One or many?',
+  b6_mc: 'Irregular verbs do not take -ed. Think of the word you have heard.',
+  b6_type: 'Irregular verbs do not take -ed. Think of the word you have heard.',
+  b6_fix: 'Only one sentence uses the real past form.',
+  b6_pick: 'Say the sentence in your head: "Yesterday I ___ …".',
+  b7_sign: "In the past there is only one negative: didn't.",
+  b7_verb: "The word didn't already carries the past. So what does the verb need?",
+  b7_type: "Write didn't, then the plain verb.",
+  b7_q: 'A past question starts with Did.',
+  b7_q2: 'After Did, the verb goes back to plain.',
+  b7_fix: 'Only one has the right negative AND a plain verb after it.'
+};
+
+const BLOCK_TYPES = {
+  1: ['b1_class', 'b1_triple', 'b1_class', 'b1_verb'],
+  2: ['b2_word', 'b2_sent', 'b2_not', 'b2_word', 'b2_sent'],
+  3: ['b3_mc', 'b3_type', 'b3_fix', 'b3_all', 'b3_mc'],
+  4: ['b4_mc', 'b4_type', 'b4_spell', 'b4_fix', 'b4_mc'],
+  5: ['b5_mc', 'b5_type', 'b5_neg', 'b5_fix', 'b5_mc'],
+  6: ['b6_mc', 'b6_type', 'b6_fix', 'b6_pick', 'b6_mc'],
+  7: ['b7_sign', 'b7_verb', 'b7_type', 'b7_q', 'b7_q2', 'b7_fix']
+};
+
+const ALL_TYPES = [];
+for (let k = 1; k <= 7; k++) BLOCK_TYPES[k].forEach(t => ALL_TYPES.push(t));
+
+const BLOCKS = [
+  { id: 1, e: '🥚', t: 'What is it for?', s: 'finished things in the past', teach: T1, n: 8 },
+  { id: 2, e: '⏰', t: 'Time words', s: 'yesterday · last week · ago', teach: T2, n: 8 },
+  { id: 3, e: '🦴', t: 'Add -ed', s: 'walk → walked', teach: T3, n: 8 },
+  { id: 4, e: '🪨', t: 'Tricky spellings', s: 'lived · studied · stopped', teach: T4, n: 8 },
+  { id: 5, e: '🦕', t: 'was / were', s: 'the past of be', teach: T5, n: 8 },
+  { id: 6, e: '🌋', t: 'Irregular verbs', s: 'went · saw · ate', teach: T6, n: 8 },
+  { id: 7, e: '🚫', t: "didn't / Did", s: 'no and question', teach: T7, n: 8 },
+  { id: 8, e: '⚡', t: 'Boss battle', s: 'everything mixed', teach: T8, n: 10 },
+  { id: 9, e: '🗣️', t: 'Cave story', s: 'say it out loud', teach: T9, n: 0 }
+];
+
+const RULES = {
+  1: { ic: '🥚', t: 'When do we use it?', l: ['A finished action ✔', 'Before now ✔', 'now / every day ✘'] },
+  2: { ic: '⏰', t: 'Time words', l: ['yesterday, last night, last week', 'two days ago, long ago, in 2019', 'NOT now / tomorrow / every day'] },
+  3: { ic: '🦴', t: 'Add -ed', l: ['everybody: I / he / they walked', 'no extra S'] },
+  4: { ic: '🪨', t: 'Spelling', l: ['e → -d (lived)', 'consonant + y → -ied (studied)', 'short word → doubled (stopped)'] },
+  5: { ic: '🦕', t: 'was / were', l: ['I, he, she, it → was', 'you, we, they → were', "wasn't / weren't"] },
+  6: { ic: '🌋', t: 'Irregulars', l: ['go → went, see → saw', 'eat → ate, have → had', 'make → made, come → came'] },
+  7: { ic: '🚫', t: "didn't / Did", l: ["didn't + plain verb", 'Did + subject + plain verb?', 'same for everybody'] },
+  8: { ic: '⚡', t: 'Mix it', l: ['Finished? Regular or irregular?', 'No or question?'] },
+  9: { ic: '🗣️', t: 'Speak it', l: ['Full sentences, out loud.'] }
+};
+
+/* ================= building ================= */
+function makeUnique(type, seen) {
+  let it = null;
+  for (let i = 0; i < 40; i++) {
+    it = GEN[type]();
+    const s = sig(it);
+    if (!seen.has(s)) { seen.add(s); it.hint = HINTS[type] || ''; return it; }
+  }
+  seen.add(sig(it));
+  it.hint = HINTS[type] || '';
+  return it;
+}
+function buildMix(n) {
+  const plan = planTypes(n, ALL_TYPES);
+  const seen = new Set();
+  return plan.map(t => makeUnique(t, seen));
+}
+function buildItems(id) {
+  if (id === 0) return buildMix(10);
+  if (id === 9) {
+    const warm = buildMix(2);
+    warm.forEach(w => { w.review = true; });
+    const spoken = SPEAK.map(s => ({ kind: 'speak', prompt: s.p, tip: s.t }));
+    return [BLOCKS[8].teach].concat(warm, spoken);
+  }
+  const b = BLOCKS[id - 1];
+  const seen = new Set();
+  const out = [b.teach];
+  const types = id === 8 ? ALL_TYPES : BLOCK_TYPES[id];
+  planTypes(b.n, types).forEach(t => out.push(makeUnique(t, seen)));
+
+  const earlier = [];
+  for (let k = 1; k < id && k <= 7; k++) BLOCK_TYPES[k].forEach(t => earlier.push(t));
+  if (earlier.length) {
+    const nc = id >= 5 ? 3 : 2;
+    planTypes(nc, shuffle(earlier).slice(0, Math.min(earlier.length, 8))).forEach(t => {
+      const it = makeUnique(t, seen);
+      it.review = true;
+      out.push(it);
+    });
+  }
+  return out;
+}
+
+/* ================= session ================= */
+const session = { blockId: 1, items: [], i: 0, ok: 0, total: 1 };
+let answered = false;
+let hintedThis = false;
+let speakTimer = null;
+
+function applyTheme(id) {
+  const p = PAL[id] || PAL[0];
+  const v = $('#vPlay');
+  v.style.setProperty('--a', p.c);
+  v.style.setProperty('--s', p.s);
+  v.style.setProperty('--d', p.d);
+}
+function startBlock(id) {
+  clearInterval(speakTimer);
+  session.blockId = id;
+  session.items = buildItems(id);
+  session.i = 0;
+  session.ok = 0;
+  session.total = Math.max(1, session.items.filter(x => x.kind !== 'teach' && !x.review).length);
+  applyTheme(id);
+  $('#phName').textContent = id === 0
+    ? '⚡ Quick Mix'
+    : BLOCKS[id - 1].e + ' Block ' + id + ': ' + BLOCKS[id - 1].t;
+  screen('vPlay');
+  renderItem();
+}
+
+function paintStrip() {
+  const strip = $('#strip');
+  strip.innerHTML = '';
+  const cur = session.blockId;
+  BLOCKS.forEach(b => {
+    const p = PAL[b.id];
+    const done = !!state.passed[b.id];
+    const el = document.createElement('div');
+    el.className = 'sb' + (b.id === cur ? ' cur' : '') + (done ? ' done' : '');
+    el.style.background = done || b.id === cur ? p.s : '#fff';
+    el.style.borderColor = done ? p.c : (b.id === cur ? 'var(--ink)' : '#E0D5C4');
+    el.innerHTML = '<span style="font-size:.95rem">' +
+      (done ? '✓' : b.id === cur ? b.e : '•') + '</span><span>B' + b.id + '</span>';
+    strip.appendChild(el);
+  });
+}
+function paintProgress() {
+  paintStrip();
+  const d = $('#dots');
+  d.innerHTML = '';
+  session.items.forEach((it, i) => {
+    const s = document.createElement('span');
+    s.className = 'dot' + (i < session.i ? ' done' : i === session.i ? ' cur' : '');
+    d.appendChild(s);
+  });
+  $('#phScore').textContent = session.ok + ' / ' + session.total;
+}
+
+function renderItem() {
+  answered = false;
+  hintedThis = false;
+  clearInterval(speakTimer);
+  paintProgress();
+  const qa = $('#qArea');
+  const it = session.items[session.i];
+  if (!it) { finishBlock(); return; }
+  if (it.kind === 'teach') { renderTeach(it); return; }
+  if (it.kind === 'speak') { renderSpeak(it); return; }
+
+  const qAll = session.items.filter(x => x.kind !== 'teach').length;
+  const qNo = session.items.slice(0, session.i + 1).filter(x => x.kind !== 'teach').length;
+
+  let h = '<div class="qcard">';
+  h += '<div class="qtop">';
+  h += it.review
+    ? '<span class="tag flash">🔁 Flashback</span>'
+    : '<span class="tag">Question ' + qNo + ' / ' + qAll + '</span>';
+  h += it.hint ? '<button class="hintbtn" id="hintBtn">💡 Hint</button>' : '';
+  h += '</div>';
+  h += '<div class="hintbox" id="hintBox"></div>';
+  h += '<div class="qprompt">' + tall(it.prompt) + '</div>';
+  if (it.quote) {
+    h += '<div class="quote"><div>' + tall(it.quote) + '</div>' +
+      '<button class="listen" data-say="' + esc(plain(it.quote)) + '">🔊</button></div>';
+  }
+  if (it.kind === 'type') {
+    h += '<div class="trow"><input id="tin" class="tin" autocomplete="off" autocorrect="off" ' +
+      'autocapitalize="off" spellcheck="false" placeholder="type here…">' +
+      '<button class="btn pri" id="checkBtn">Check</button></div>';
+  } else {
+    h += '<div class="opts">' + it.options.map((o, i) =>
+      '<button class="opt" data-i="' + i + '">' + tall(o) + '</button>').join('') + '</div>';
+  }
+  h += '<div id="fb"></div></div>';
+  qa.innerHTML = h;
+
+  document.querySelectorAll('.listen').forEach(b =>
+    b.addEventListener('click', () => say(b.dataset.say)));
+
+  const hb = $('#hintBtn');
+  if (hb && it.hint) {
+    hb.addEventListener('click', () => {
+      hintedThis = true;
+      hb.disabled = true;
+      hb.textContent = '💡 Hint used';
+      const box = $('#hintBox');
+      box.textContent = it.hint;
+      void box.offsetWidth;
+      sfx('hint');
+    });
+  }
+
+  if (it.kind === 'type') {
+    const inp = $('#tin');
+    inp.focus();
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); checkType(); }
+    });
+    $('#checkBtn').addEventListener('click', checkType);
+  } else {
+    document.querySelectorAll('.opt').forEach(b =>
+      b.addEventListener('click', () => checkChoice(+b.dataset.i)));
+  }
+}
+
+function renderTeach(it) {
+  const cur = session.blockId;
+  let h = '<div class="teach">';
+  h += '<div class="qtop"><span class="tag">' +
+    (cur === 0 ? 'Quick Mix' : 'Block ' + cur + ' of 9') + '</span></div>';
+  h += '<div class="head"><span>' + it.emoji + '</span><h3>' + esc(it.title) + '</h3></div>';
+  h += '<ul>' + it.lines.map(l => '<li>' + tall(l) + '</li>').join('') + '</ul>';
+  it.examples.forEach(ex => {
+    h += '<div class="ex"><div>' + ex + '</div>' +
+      '<button class="listen" data-say="' + esc(plain(ex)) + '">🔊</button></div>';
+  });
+  if (it.note) h += '<div class="note">💡 ' + tall(it.note) + '</div>';
+  h += '<button class="btn pri wide" id="gotIt">Got it! Let\'s try →</button></div>';
+  $('#qArea').innerHTML = h;
+  document.querySelectorAll('.listen').forEach(b =>
+    b.addEventListener('click', () => say(b.dataset.say)));
+  $('#gotIt').addEventListener('click', () => {
+    sfx('click');
+    addXP(2);
+    next();
+  });
+}
+
+function renderSpeak(it) {
+  $('#qArea').innerHTML =
+    '<div class="qcard">' +
+      '<div class="qtop"><span class="tag">🗣️ Speaking</span></div>' +
+      '<div class="qprompt">' + esc(it.prompt) + '</div>' +
+      '<div class="note" style="margin-top:12px">💡 ' + esc(it.tip) + '</div>' +
+      '<div class="timer" id="timer">30</div>' +
+      '<div class="row">' +
+        '<button class="btn pri" id="goBtn">▶ Start talking</button>' +
+        '<button class="btn mint" id="doneBtn">✅ We said it</button>' +
+      '</div></div>';
+
+  let left = 30;
+  $('#goBtn').addEventListener('click', () => {
+    clearInterval(speakTimer);
+    left = 30;
+    const t = $('#timer');
+    t.textContent = left;
+    t.classList.remove('low');
+    speakTimer = setInterval(() => {
+      left--;
+      t.textContent = left > 0 ? left : 'Time!';
+      if (left <= 5) t.classList.add('low');
+      if (left <= 0) { clearInterval(speakTimer); sfx('level'); }
+    }, 1000);
+  });
+  $('#doneBtn').addEventListener('click', () => {
+    clearInterval(speakTimer);
+    session.ok++;
+    addXP(10);
+    sfx('ok');
+    next();
+  });
+}
+
+function checkChoice(i) {
+  if (answered) return;
+  const it = session.items[session.i];
+  const ok = i === it.ci;
+  document.querySelectorAll('.opt').forEach(b => {
+    b.disabled = true;
+    const bi = +b.dataset.i;
+    if (bi === it.ci) b.classList.add('ok');
+    else if (bi === i) b.classList.add('no');
+  });
+  resolve(ok, 'The answer is "' + plain(it.options[it.ci]) + '".');
+}
+function checkType() {
+  if (answered) return;
+  const it = session.items[session.i];
+  const inp = $('#tin');
+  const ok = it.answers.indexOf(norm(inp.value)) !== -1;
+  inp.disabled = true;
+  inp.classList.add(ok ? 'ok' : 'no');
+  $('#checkBtn').disabled = true;
+  resolve(ok, 'The answer is "' + it.show + '".');
+}
+
+const PRAISE = ['Yes! 🎉', 'Rawwwr-some! 🦖', 'Stomped it! 💥', 'Perfect! 🌟', 'Bone-tastic! 🦴', 'Exactly! 💪'];
+
+function resolve(ok, answerText) {
+  answered = true;
+  const it = session.items[session.i];
+  const fb = $('#fb');
+  const pen = hintedThis ? '<span class="pen">💡 hint used — 5 bones instead of 10</span>' : '';
+
+  if (ok) {
+    if (!it.review) session.ok++;
+    addXP(hintedThis ? 5 : (it.review ? 15 : 10));
+    state.streak++;
+    sfx('ok');
+    fb.innerHTML = '<div class="fb ok"><b>' + pick(PRAISE) + '</b>' +
+      '<span>' + tall(it.why || '') + '</span>' + pen + '</div>' +
+      '<button class="btn pri wide" id="nextBtn">Next →</button>';
+  } else {
+    state.streak = 0;
+    sfx('no');
+    fb.innerHTML = '<div class="fb no"><b>Not quite. ' + tall(answerText) + '</b>' +
+      '<span>' + tall(it.why || '') + '</span>' + pen + '</div>' +
+      '<button class="btn wide" id="nextBtn">Next →</button>';
+  }
+  hud();
+  $('#phScore').textContent = session.ok + ' / ' + session.total;
+  save();
+  $('#nextBtn').addEventListener('click', next);
+}
+function next() {
+  sfx('click');
+  session.i++;
+  if (session.i >= session.items.length) finishBlock();
+  else renderItem();
+}
+
+/* ================= finish ================= */
+function finishBlock() {
+  clearInterval(speakTimer);
+  const id = session.blockId;
+  const pct = Math.round(100 * session.ok / session.total);
+  const mix = id === 0;
+  const speaking = id === 9;
+  const pass = speaking ? true : pct >= 75;
+
+  if (pass && !mix) {
+    state.passed[id] = speaking ? 100 : Math.max(state.passed[id] || 0, pct);
+    if (id < 9 && state.unlocked === id) state.unlocked = id + 1;
+    confetti(speaking ? 140 : 80);
+    sfx('level');
+  }
+  save();
+  paintTower();
+  paintRules();
+
+  let h = '<div class="qcard res">';
+  if (speaking) {
+    h += '<div class="big">🏆</div><h2>You finished the canyon!</h2>' +
+      '<p>Finished past, time words, -ed, was/were, irregulars, didn\'t and Did.</p>' +
+      '<p>Now keep saying it out loud. That is where it sticks.</p>';
+  } else if (pass) {
+    h += '<div class="big">🎉</div><h2>Block cleared!</h2>' +
+      '<p>' + session.ok + ' of ' + session.total + ' right (' + pct + '%).</p>' +
+      '<p>' + (id < 9 ? 'Block ' + (id + 1) + ' is unlocked.' : '') + '</p>';
+  } else {
+    h += '<div class="big">💪</div><h2>Almost!</h2>' +
+      '<p>' + session.ok + ' of ' + session.total + ' right (' + pct + '%). You need 75%.</p>' +
+      '<p>Read the rule again, then try once more.</p>';
+  }
+  if (mix) h += '<p>Quick Mix: ' + session.ok + ' / ' + session.total + '.</p>';
+
+  h += '<div class="row">';
+  if (pass && !mix && !speaking && id < 8) {
+    h += '<button class="btn pri" id="nextBlk">Next block →</button>';
+  }
+  if (!mix) h += '<button class="btn" id="again">Try again</button>';
+  h += '<button class="btn mint" id="toMap">🗺️ Map</button></div></div>';
+  $('#qArea').innerHTML = h;
+  paintProgress();
+
+  const nb = $('#nextBlk');
+  if (nb) nb.addEventListener('click', () => { sfx('click'); startBlock(id + 1); });
+  const ag = $('#again');
+  if (ag) ag.addEventListener('click', () => { sfx('click'); startBlock(id); });
+  $('#toMap').addEventListener('click', () => {
+    sfx('click');
+    screen('vMap');
+    paintTower();
+    paintRules();
+  });
+}
+
+/* ================= map + rules ================= */
+let toastT = null;
+function toast(msg) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => el.classList.remove('on'), 2300);
+}
+function confetti(n) {
+  const cols = ['#FFB020', '#FF6B3D', '#3FB6E8', '#2E9E4F', '#A3E635', '#FB7185'];
+  for (let i = 0; i < n; i++) {
+    const d = document.createElement('div');
+    d.className = 'conf';
+    d.style.left = (Math.random() * 100) + 'vw';
+    d.style.background = pick(cols);
+    d.style.animationDelay = (Math.random() * 0.4) + 's';
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 2800);
+  }
+}
+function screen(id) {
+  ['vMap', 'vPlay'].forEach(v => $('#' + v).classList.toggle('on', v === id));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function hud() {
+  $('#xpV').textContent = state.xp;
+  $('#stkV').textContent = state.streak;
+  $('#sndBtn').textContent = state.sound ? '🔊' : '🔇';
+}
+function addXP(n) { state.xp += n; hud(); save(); }
+function stars(p) { return p >= 90 ? '⭐⭐⭐' : p >= 75 ? '⭐⭐' : '⭐'; }
+
+function paintTower() {
+  const t = $('#tower');
+  t.innerHTML = '';
+  let cleared = 0;
+  BLOCKS.forEach(b => {
+    const open = b.id <= state.unlocked;
+    const best = state.passed[b.id];
+    if (best) cleared++;
+    const p = PAL[b.id];
+    const el = document.createElement('button');
+    el.className = 'step' + (open ? '' : ' lock');
+    el.style.setProperty('--c', p.c);
+    el.style.setProperty('--soft', p.s);
+    el.innerHTML =
+      '<span class="step-e">' + b.e + '</span>' +
+      '<span class="step-b">' +
+        '<span class="step-n">Block ' + b.id + '</span>' +
+        '<span class="step-t">' + esc(b.t) + '</span>' +
+        '<span class="step-s">' + esc(b.s) + '</span>' +
+      '</span>' +
+      '<span class="step-go">' +
+        (open ? (best ? stars(best) : (b.id === state.unlocked ? '▶ Start' : 'Play')) : '🔒') +
+      '</span>';
+    el.addEventListener('click', () => {
+      if (!open) { sfx('no'); toast('Clear the block before this one first! 🔒'); return; }
+      sfx('click');
+      startBlock(b.id);
+    });
+    t.appendChild(el);
+  });
+  $('#progTxt').textContent = cleared + ' / 9 cleared';
+}
+
+function paintRules() {
+  const box = $('#ruleList');
+  box.innerHTML = '';
+  for (let i = 1; i <= 9; i++) {
+    const r = RULES[i];
+    const done = !!state.passed[i];
+    const el = document.createElement('div');
+    el.className = 'rcard' + (done ? '' : ' lock');
+    if (done) el.style.borderLeft = '10px solid ' + PAL[i].c;
+    el.innerHTML =
+      '<div class="ic">' + (done ? r.ic : '🔒') + '</div>' +
+      '<div><b>' + (done ? esc(r.t) : 'Block ' + i) + '</b>' +
+      '<ul>' + (done ? r.l.map(x => '<li>• ' + esc(x) + '</li>').join('')
+        : '<li>Clear Block ' + i + ' to unlock.</li>') + '</ul></div>';
+    box.appendChild(el);
+  }
+}
+
+/* ================= wire ================= */
+function init() {
+  load();
+  hud();
+  paintTower();
+  paintRules();
+  applyTheme(1);
+
+  $('#sndBtn').addEventListener('click', () => {
+    state.sound = !state.sound;
+    hud();
+    save();
+    if (state.sound) sfx('ok');
+  });
+
+  const openRules = () => {
+    paintRules();
+    $('#drawer').classList.add('on');
+    $('#scrim').classList.add('on');
+  };
+  const closeRules = () => {
+    $('#drawer').classList.remove('on');
+    $('#scrim').classList.remove('on');
+  };
+  $('#rulesBtn').addEventListener('click', openRules);
+  $('#dClose').addEventListener('click', closeRules);
+  $('#scrim').addEventListener('click', closeRules);
+
+  $('#backBtn').addEventListener('click', () => {
+    clearInterval(speakTimer);
+    sfx('click');
+    screen('vMap');
+    paintTower();
+    paintRules();
+  });
+
+  $('#mixBtn').addEventListener('click', () => { sfx('click'); startBlock(0); });
+
+  $('#unlockBtn').addEventListener('click', () => {
+    state.unlocked = 9;
+    save();
+    paintTower();
+    toast('All blocks unlocked (teacher mode) 🔓');
+  });
+
+  $('#resetBtn').addEventListener('click', () => {
+    if (!confirm('Reset all progress?')) return;
+    state.xp = 0; state.streak = 0; state.unlocked = 1; state.passed = {};
+    save(); hud(); paintTower(); paintRules(); screen('vMap');
+    toast('Fresh start! 🥚');
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if ($('#nextBtn')) { e.preventDefault(); next(); return; }
+      const cb = $('#checkBtn');
+      if (cb && !cb.disabled) { e.preventDefault(); checkType(); }
+    }
+    if (e.key === 'Escape') closeRules();
+  });
+}
+
+init();
+</script>
+</body>
+</html>
