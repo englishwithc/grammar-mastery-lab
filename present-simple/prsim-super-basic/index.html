@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ONE S — the present simple workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root{
+  --paper:#FBF6EC; --card:#FFFDF8; --ink:#1E2B3A; --muted:#5D6B7A;
+  --line:#E4D9C4; --teal:#0E7C7B; --teal-soft:#DCF0EE;
+  --coral:#D9503A; --coral-soft:#FBE3DD; --gold:#E8A81C; --gold-soft:#FDEFC3;
+  --green:#2F7D4F; --green-soft:#DDF0E1;
+}
+html,body{margin:0}
+body{
+  font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color:var(--ink); background-color:var(--paper);
+  background-image:radial-gradient(rgba(30,43,58,.08) 1px, transparent 1px);
+  background-size:24px 24px; min-height:100vh; padding-bottom:40px;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{margin:0;line-height:1.15;font-family:'Baloo 2','Nunito',sans-serif}
+button{font-family:inherit}
+
+/* header */
+.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:9px;
+  padding:9px 14px;background:rgba(251,246,236,.94);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--ink)}
+.brand{display:flex;align-items:center;gap:9px;margin-right:auto}
+.logo{width:38px;height:38px;border-radius:11px;background:var(--gold);
+  border:2px solid var(--ink);display:grid;place-items:center;
+  font-family:'Baloo 2',sans-serif;font-weight:800;font-size:1.35rem;
+  transform:rotate(-6deg);box-shadow:0 2px 0 var(--ink)}
+.bt b{display:block;font-family:'Baloo 2',sans-serif;font-size:1rem;
+  letter-spacing:.05em;line-height:1}
+.bt i{font-style:normal;font-size:.62rem;font-weight:800;color:var(--muted);
+  letter-spacing:.11em;text-transform:uppercase}
+.tools{display:flex;gap:7px}
+.icobtn{height:38px;min-width:38px;padding:0 11px;border:2px solid var(--ink);
+  border-radius:11px;background:var(--card);font-weight:900;font-size:.85rem;
+  cursor:pointer;box-shadow:0 2px 0 var(--ink);transition:.06s}
+.icobtn:active{transform:translateY(2px);box-shadow:none}
+.icobtn.guide{background:var(--teal);color:#fff}
+.hide{display:none!important}
+
+.wrap{max-width:720px;margin:0 auto;padding:18px 14px 40px}
+
+/* home */
+.hero{display:flex;gap:13px;align-items:center;background:var(--card);
+  border:2px solid var(--ink);border-radius:20px;padding:15px;
+  box-shadow:0 4px 0 rgba(30,43,58,.14);margin-bottom:16px}
+.heros{font-family:'Baloo 2',sans-serif;font-size:2rem;font-weight:800;
+  width:58px;height:58px;display:grid;place-items:center;background:var(--gold);
+  border:2px solid var(--ink);border-radius:16px;transform:rotate(-5deg);
+  flex:0 0 auto}
+.hero h1{font-size:1.12rem}
+.hero p{margin:5px 0 0;font-size:.84rem;font-weight:700;color:var(--muted);
+  line-height:1.35}
+.list{display:flex;flex-direction:column;gap:9px}
+.stn{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  background:var(--card);border:2px solid var(--ink);border-radius:16px;
+  padding:12px 13px;font-family:inherit;color:inherit;cursor:pointer;
+  box-shadow:0 3px 0 rgba(30,43,58,.14);transition:.12s}
+.stn:hover{transform:translateY(-2px);box-shadow:0 5px 0 rgba(30,43,58,.14)}
+.stn:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(30,43,58,.14)}
+.num{width:34px;height:34px;border-radius:10px;background:var(--teal-soft);
+  border:2px solid var(--ink);display:grid;place-items:center;
+  font-weight:900;font-size:.9rem;flex:0 0 auto}
+.stxt{flex:1;min-width:0}
+.stxt b{display:block;font-family:'Baloo 2',sans-serif;font-size:1rem;
+  font-weight:700;line-height:1.1}
+.stxt span{display:block;font-size:.76rem;font-weight:700;color:var(--muted);
+  margin-top:2px}
+.stars{font-size:.85rem;letter-spacing:1px;color:var(--gold);flex:0 0 auto}
+.stars .off{color:#DCD1BC}
+
+/* card */
+.card{background:var(--card);border:2px solid var(--ink);border-radius:20px;
+  padding:17px;box-shadow:0 4px 0 rgba(30,43,58,.14);animation:in .2s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.kick{display:inline-block;font-size:.64rem;font-weight:900;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal);background:var(--teal-soft);
+  border:1.5px solid var(--teal);border-radius:99px;padding:3px 9px;
+  margin-bottom:10px}
+.card h2{font-size:1.32rem;margin-bottom:7px}
+.rule{font-size:.98rem;font-weight:700;line-height:1.5;margin:0 0 12px}
+.rule b{background:var(--gold-soft);border-bottom:2px solid var(--gold);
+  padding:0 2px;border-radius:4px}
+.demo{font-family:'Baloo 2',sans-serif;font-size:1.3rem;text-align:center;
+  background:var(--paper);border:2px dashed var(--line);border-radius:14px;
+  padding:14px 10px;margin-bottom:12px;font-weight:600;line-height:1.5}
+.tip{font-size:.83rem;font-weight:700;color:var(--muted);line-height:1.45;
+  margin:0 0 15px}
+.tip b{color:var(--ink)}
+
+/* the S */
+.s{font-style:normal;display:inline-block;background:var(--gold);color:var(--ink);
+  padding:0 .12em;border-radius:5px;font-weight:800;
+  animation:sPop .45s cubic-bezier(.2,1.5,.5,1)}
+@keyframes sPop{0%{transform:scale(.3) rotate(-20deg);opacity:0}
+  60%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+/* buttons */
+.btn{font-weight:900;font-size:.94rem;border:2px solid var(--ink);
+  border-radius:13px;background:var(--card);color:var(--ink);padding:11px 17px;
+  cursor:pointer;box-shadow:0 3px 0 var(--ink);transition:.06s}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.primary{background:var(--teal);color:#fff}
+.btn.wide{width:100%;padding:15px;font-size:1rem}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.center{text-align:center}
+
+/* question */
+.pbar{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.track{flex:1;height:7px;background:#EADFCB;border-radius:99px;
+  overflow:hidden;border:1.5px solid var(--line)}
+.fill{height:100%;background:var(--teal);width:0;transition:width .3s}
+.cnt{font-size:.7rem;font-weight:900;color:var(--muted);letter-spacing:.05em}
+.qhead{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:2px;gap:8px}
+.tag{font-size:.62rem;font-weight:900;letter-spacing:.1em;
+  text-transform:uppercase;background:var(--teal-soft);border:1.5px solid var(--teal);
+  color:var(--teal);border-radius:99px;padding:3px 9px;white-space:nowrap}
+.qnum{font-size:.7rem;font-weight:900;color:var(--muted)}
+.lead{font-size:.85rem;font-weight:800;color:var(--muted);margin:10px 0 0;
+  text-align:center}
+.stem{font-family:'Baloo 2',sans-serif;font-size:clamp(1.3rem,5.2vw,1.85rem);
+  line-height:1.7;text-align:center;margin:14px 0 18px;font-weight:600}
+.blank{display:inline-block;min-width:2.3em;border-bottom:4px solid var(--gold);
+  text-align:center;color:var(--muted);font-weight:700}
+.blank.filled{border-bottom-color:var(--ink);color:var(--ink)}
+.subject{font-family:'Baloo 2',sans-serif;font-size:clamp(1.6rem,7vw,2.2rem);
+  text-align:center;font-weight:700;margin:12px 0 20px;
+  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+
+.opts{display:grid;gap:9px}
+.opt{width:100%;text-align:left;font-family:'Nunito',sans-serif;
+  font-size:1.02rem;font-weight:800;background:#fff;border:2px solid var(--ink);
+  border-radius:14px;padding:14px 15px;cursor:pointer;color:var(--ink);
+  min-height:54px;box-shadow:0 3px 0 rgba(30,43,58,.16);transition:.08s}
+.opt:hover:not(:disabled){background:var(--teal-soft)}
+.opt:active:not(:disabled){transform:translateY(2px);box-shadow:none}
+.opt:disabled{cursor:default}
+.opt.ok{background:var(--green-soft);border-color:var(--green)}
+.opt.ok::after{content:'✓';float:right;color:var(--green);font-weight:900}
+.opt.no{background:var(--coral-soft);border-color:var(--coral);opacity:.9}
+.opt.no::after{content:'✕';float:right;color:var(--coral);font-weight:900}
+.buckets{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.bucket{display:flex;flex-direction:column;gap:3px;align-items:center;
+  text-align:center;padding:16px 9px}
+.bucket b{font-family:'Baloo 2',sans-serif;font-size:1rem}
+.bucket span{font-size:.72rem;font-weight:800;color:var(--muted)}
+
+.fb{margin-top:14px;border-radius:14px;padding:13px 14px;font-weight:700;
+  font-size:.89rem;line-height:1.45;animation:in .18s}
+.fb:empty{display:none}
+.fb.ok{background:var(--green-soft);border:2px solid var(--green)}
+.fb.no{background:var(--coral-soft);border:2px solid var(--coral)}
+.fb.soft{background:var(--gold-soft);border:2px solid var(--gold)}
+.fb p{margin:7px 0 10px}
+.fbtop{font-family:'Baloo 2',sans-serif;font-size:.98rem;font-weight:700;
+  display:flex;align-items:center;gap:7px}
+.miniS{display:inline-grid;place-items:center;width:20px;height:20px;
+  background:var(--gold);border:1.5px solid var(--ink);border-radius:5px;
+  font-family:'Baloo 2',sans-serif;font-size:.8rem;font-weight:800}
+.spk{border:2px solid var(--ink);background:#fff;border-radius:10px;
+  width:30px;height:30px;font-size:.82rem;cursor:pointer;line-height:1}
+.spk.big{width:auto;height:auto;padding:8px 12px;font-size:.8rem;
+  font-weight:900;box-shadow:0 2px 0 var(--ink)}
+.ghost{background:none;border:0;color:var(--teal);font-weight:900;font-size:.8rem;
+  text-decoration:underline;cursor:pointer;padding:10px 2px;display:block;
+  margin:10px auto 0}
+
+/* build */
+.line{min-height:66px;display:flex;flex-wrap:wrap;gap:7px;align-items:center;
+  justify-content:center;background:var(--paper);border:2px dashed var(--line);
+  border-radius:14px;padding:12px;margin:14px 0}
+.ph{font-size:.78rem;font-weight:800;color:var(--muted)}
+.chip{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;
+  background:#fff;border:2px solid var(--ink);border-radius:11px;
+  padding:8px 12px;cursor:pointer;box-shadow:0 2px 0 rgba(30,43,58,.2)}
+.chip.placed{background:var(--teal-soft)}
+.bank{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;
+  margin-bottom:14px;min-height:42px}
+.dotend{font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800}
+.fixedline{font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:700}
+
+/* finish */
+.bigstars{font-size:2rem;color:var(--gold);letter-spacing:5px;line-height:1.1}
+.sub{font-size:.86rem;font-weight:700;color:var(--muted);margin:8px 0 0}
+.sub b{color:var(--ink)}
+.card .row{margin-top:16px;justify-content:center}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(30,43,58,.42);opacity:0;
+  pointer-events:none;transition:.2s;z-index:60}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);
+  background:var(--paper);border-left:2px solid var(--ink);z-index:70;
+  transform:translateX(102%);transition:transform .25s;display:flex;
+  flex-direction:column}
+.drawer.on{transform:none}
+.dh{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:13px 14px;border-bottom:2px solid var(--ink)}
+.dh h3{font-size:1.05rem}
+.db{padding:14px;overflow:auto}
+.rules{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.rules li{background:var(--card);border:2px solid var(--ink);border-radius:14px;
+  padding:11px 13px;font-size:.86rem;font-weight:700;line-height:1.4}
+.rules li b{font-family:'Baloo 2',sans-serif;font-size:.96rem;display:block;
+  margin-bottom:2px}
+.rules li i{font-style:normal;color:var(--muted)}
+.note{margin-top:14px;font-size:.8rem;font-weight:700;color:var(--muted);
+  line-height:1.5}
+
+details.teach{margin-top:16px;background:var(--card);border:2px dashed var(--line);
+  border-radius:14px;padding:11px 14px}
+details.teach summary{cursor:pointer;font-weight:900;font-size:.84rem;
+  color:var(--muted)}
+details.teach p{font-size:.82rem;font-weight:700;line-height:1.55;
+  color:var(--muted)}
+details.teach ol{font-size:.82rem;font-weight:700;line-height:1.55;
+  color:var(--muted);padding-left:18px;margin:8px 0}
+
+/* teacher guide overlay */
+.tutwrap{position:fixed;inset:0;z-index:80;background:rgba(30,43,58,.55);
+  display:none;align-items:center;justify-content:center;padding:16px;
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.tutwrap.on{display:flex}
+.tut{background:var(--card);border:2px solid var(--ink);border-radius:20px;
+  width:100%;max-width:460px;box-shadow:0 10px 0 rgba(30,43,58,.28);
+  padding:18px;animation:in .22s ease;max-height:92vh;overflow:auto}
+.tuttop{display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:12px}
+.tutstep{font-size:.63rem;font-weight:900;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--teal);background:var(--teal-soft);
+  border:1.5px solid var(--teal);border-radius:99px;padding:3px 9px}
+.tutx{background:none;border:0;font-size:1.05rem;font-weight:900;
+  color:var(--muted);cursor:pointer;line-height:1;padding:4px 6px}
+.tut h3{font-size:1.16rem;margin-bottom:9px}
+.tut p{font-size:.89rem;font-weight:700;line-height:1.55;color:#3A4757;
+  margin:0 0 10px}
+.tut p:last-child{margin-bottom:0}
+.tut p b{color:var(--ink)}
+.tut .kw{background:var(--gold-soft);border-bottom:2px solid var(--gold);
+  border-radius:4px;padding:0 2px;font-weight:900}
+.tdots{display:flex;gap:5px;margin:15px 0 13px}
+.tdots i{height:6px;flex:1;border-radius:99px;background:#EADFCB}
+.tdots i.on{background:var(--teal)}
+.tutrow{display:flex;gap:8px;align-items:center}
+.tutrow .btn{flex:0 0 auto;font-size:.86rem;padding:10px 14px}
+.spacer{flex:1}
+@media(max-width:430px){
+  .buckets{grid-template-columns:1fr}
+  .bt i{display:none}
+  .hero p{font-size:.8rem}
+  .tutrow .btn{font-size:.8rem;padding:9px 11px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <button class="icobtn hide" id="back" aria-label="Back to stations">←</button>
+  <div class="brand">
+    <span class="logo">S</span>
+    <div class="bt"><b>ONE S</b><i>present simple</i></div>
+  </div>
+  <div class="tools">
+    <button class="icobtn guide" id="guideBtn">Guide</button>
+    <button class="icobtn" id="rulesBtn">Rules</button>
+    <button class="icobtn" id="sndBtn" aria-label="Sound on or off">🔊</button>
+  </div>
+</header>
+
+<main class="wrap" id="stage"></main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="dh">
+    <h3>One S per sentence</h3>
+    <button class="icobtn" id="closeDrawer" aria-label="Close">✕</button>
+  </div>
+  <div class="db">
+    <ul class="rules">
+      <li><b>he · she · it</b>the verb takes one <span class="s">S</span><i> — She plays.</i></li>
+      <li><b>I · you · we · they</b>plain verb, no S<i> — They play.</i></li>
+      <li><b>ch · sh · s · x · o → -es</b>watch → watches, go → goes</li>
+      <li><b>consonant + y → -ies</b>study → studies, carry → carries</li>
+      <li><b>vowel + y → just -s</b>play → plays, buy → buys</li>
+      <li><b>doesn't / does</b>the S lives in there, so the verb is plain<i> — She doesn't play. Does she play?</i></li>
+      <li><b>have → has</b>He has a dog. Never "he haves".</li>
+    </ul>
+    <p class="note">Say every answer out loud. The mouth learns the S before the brain does.</p>
+  </div>
+</aside>
+
+<div class="tutwrap" id="tut" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
+  <div class="tut" id="tutCard"></div>
+</div>
+
+<script>
+/* ============ helpers ============ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+function shuffle(a) {
+  const b = a.slice();
+  for (let i = b.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [b[i], b[j]] = [b[j], b[i]];
+  }
+  return b;
+}
+function third(v) {
+  if (v === 'have') return 'has';
+  if (/[^aeiou]y$/.test(v)) return v.slice(0, -1) + 'ies';
+  if (/(ch|sh|ss|x|z|o)$/.test(v)) return v + 'es';
+  return v + 's';
+}
+/* wraps the S that belongs to he/she/it */
+function markS(w) {
+  w = String(w);
+  if (/^does/i.test(w)) return 'Do<em class="s">es</em>' + esc(w.slice(4));
+  if (/ies$/.test(w) && w.length > 4) return esc(w.slice(0, -3)) + '<em class="s">ies</em>';
+  if (/(ch|sh|ss|x|z|o)es$/.test(w)) return esc(w.slice(0, -2)) + '<em class="s">es</em>';
+  if (/s$/.test(w) && w.length > 2 && !/ss$/.test(w)) return esc(w.slice(0, -1)) + '<em class="s">s</em>';
+  return esc(w);
+}
+
+/* ============ sound ============ */
+let AC = null;
+function sfx(kind) {
+  if (!S.sound) return;
+  try {
+    if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+    if (AC.state === 'suspended') AC.resume();
+    const t = AC.currentTime;
+    const tone = (f, at, dur, type, vol) => {
+      const o = AC.createOscillator(), g = AC.createGain();
+      o.type = type || 'sine';
+      o.frequency.value = f;
+      o.connect(g); g.connect(AC.destination);
+      g.gain.setValueAtTime(0.0001, t + at);
+      g.gain.exponentialRampToValueAtTime(vol || 0.05, t + at + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + at + dur);
+      o.start(t + at); o.stop(t + at + dur + 0.03);
+    };
+    if (kind === 'ok') { tone(660, 0, 0.12); tone(990, 0.08, 0.16); }
+    else if (kind === 'no') { tone(190, 0, 0.15, 'square', 0.028); }
+    else { tone(520, 0, 0.05, 'triangle', 0.028); }
+  } catch (e) {}
+}
+function say(text) {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(String(text).replace(/<[^>]*>/g, ''));
+    u.lang = 'en-GB';
+    u.rate = 0.82;
+    u.pitch = 1.05;
+    window.speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
+/* ============ state ============ */
+const KEY = 'one_s_v1';
+let S = { sound: true, stars: {}, plays: 0, seenTut: false };
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    const r = JSON.parse(raw);
+    if (r && typeof r === 'object') {
+      if (typeof r.sound === 'boolean') S.sound = r.sound;
+      if (r.stars && typeof r.stars === 'object') S.stars = r.stars;
+      if (typeof r.plays === 'number') S.plays = r.plays;
+      if (typeof r.seenTut === 'boolean') S.seenTut = r.seenTut;
+    }
+  } catch (e) {}
+}
+
+/* ============ language data ============ */
+const ONE = ['he','she','it','Tom','Sarah','my mum','my dad','my brother','my sister',
+  'my teacher','Anna','the dog','the cat','my best friend','Sam','Lucy','my grandpa',
+  'the bus','my cousin'];
+const MANY = ['I','you','we','they','my friends','Tom and Anna','the children',
+  'my parents','my brothers','the boys','my cousins','the students','my sisters',
+  'Ben and Sam','the girls','my grandparents'];
+
+const P1 = ['he','she','Tom','Sarah','my mum','my dad','my brother','my sister',
+  'my teacher','Anna','the dog','my best friend','Sam','Lucy','my cousin','the cat'];
+const P2 = ['I','you','we','they','my friends','Tom and Anna','the children',
+  'my parents','my brothers','the boys','my cousins','my sisters'];
+
+const VO = [
+  ['play','football'],['like','pizza'],['live','in London'],['eat','breakfast'],
+  ['read','comics'],['speak','English'],['want','a dog'],['walk','to school'],
+  ['drink','water'],['swim','on Saturdays'],['love','music'],['need','a pencil'],
+  ['run','in the park'],['sing','in a band'],['help','at home'],['clean','the kitchen'],
+  ['sleep','a lot'],['cook','dinner'],['visit','grandma'],['draw','animals'],
+  ['ride','a bike'],['make','cakes'],['take','the bus'],['open','the window']
+];
+
+const SPELL = [
+  { v:'watch', o:'TV every evening', g:'es' },
+  { v:'finish', o:'homework at six', g:'es' },
+  { v:'wash', o:'the dishes', g:'es' },
+  { v:'catch', o:'the bus at seven', g:'es' },
+  { v:'go', o:'to school by bus', g:'es' },
+  { v:'do', o:'the dishes', g:'es' },
+  { v:'teach', o:'English', g:'es' },
+  { v:'fix', o:'bikes', g:'es' },
+  { v:'study', o:'English every day', g:'ies' },
+  { v:'carry', o:'a big bag', g:'ies' },
+  { v:'fly', o:'a kite on Sundays', g:'ies' },
+  { v:'try', o:'new food', g:'ies' },
+  { v:'worry', o:'about tests', g:'ies' },
+  { v:'play', o:'football on Sundays', g:'s' },
+  { v:'buy', o:'bread every morning', g:'s' },
+  { v:'stay', o:'at home on Sundays', g:'s' }
+];
+
+/* ============ generators ============ */
+function gSort() {
+  const one = Math.random() < 0.55;
+  const subj = pick(one ? ONE : MANY);
+  let hint = 'One other person or thing → he / she / it.';
+  if (!one) {
+    hint = (subj === 'I' || subj === 'you')
+      ? 'I and you are one person, but they still use the plain verb.'
+      : 'More than one → they → plain verb, no S.';
+  }
+  return {
+    kind: 'sort',
+    sig: 'sort|' + subj,
+    subject: subj,
+    options: ['he · she · it', 'I · you · we · they'],
+    correct: one ? 0 : 1,
+    hint,
+    say: cap(subj) + '.',
+    nudge: 'How many people is it? Look again.',
+    why: one
+      ? '<b>' + cap(subj) + '</b> is one other person or thing, so the verb will take <b>S</b>.'
+      : '<b>' + cap(subj) + '</b> uses the plain verb. No S.'
+  };
+}
+
+function gPick() {
+  const one = Math.random() < 0.5;
+  const subj = pick(one ? P1 : P2);
+  const pair = pick(VO);
+  const v = pair[0], o = pair[1];
+  const good = one ? third(v) : v;
+  const bad = one ? v : third(v);
+  const options = shuffle([good, bad]);
+  return {
+    kind: 'choice',
+    tag: 'S or no S?',
+    sig: 'pick|' + subj + '|' + v,
+    pre: cap(subj),
+    post: o + '.',
+    options,
+    correct: options.indexOf(good),
+    say: cap(subj) + ' ' + good + ' ' + o + '.',
+    nudge: 'Find the subject first. Is it he/she/it?',
+    why: one
+      ? '<b>' + cap(subj) + '</b> → he/she/it → <b>' + good + '</b>. One S on the verb.'
+      : '<b>' + cap(subj) + '</b> → I/you/we/they → <b>' + good + '</b>. No S.'
+  };
+}
+
+function gBuild() {
+  const one = Math.random() < 0.5;
+  const subj = pick(one ? P1 : P2);
+  const pair = pick(VO);
+  const v = pair[0], o = pair[1];
+  const form = one ? third(v) : v;
+  const answer = [cap(subj), form, o];
+  const toks = answer.map((t, i) => ({ t, verb: i === 1 }));
+  let sh = shuffle(toks);
+  if (sh.map(x => x.t).join(' ') === answer.join(' ')) sh = [sh[1], sh[2], sh[0]];
+  return {
+    kind: 'build',
+    tag: 'Build it',
+    sig: 'build|' + subj + '|' + v,
+    tokens: sh,
+    answer,
+    say: answer.join(' ') + '.',
+    nudge: 'Start with WHO. Then the verb.',
+    why: one
+      ? 'The subject is he/she/it, so the verb is <b>' + form + '</b>.'
+      : 'I/you/we/they → plain verb <b>' + form + '</b>.'
+  };
+}
+
+function gSpell() {
+  const it = pick(SPELL);
+  const good = third(it.v);
+  const wrongs = [];
+  [it.v + 's', it.v + 'es', it.v.replace(/y$/, 'ies'), it.v].forEach(c => {
+    if (c !== good && wrongs.indexOf(c) === -1) wrongs.push(c);
+  });
+  while (wrongs.length < 2) wrongs.push(it.v + 'ss');
+  const options = shuffle([good, wrongs[0], wrongs[1]]);
+  const subj = pick(['he', 'she', 'Tom', 'my mum', 'my sister', 'Anna']);
+  const why = it.g === 'es'
+    ? 'After <b>ch, sh, s, x, o</b> we add <b>-es</b>: ' + it.v + ' → ' + good + '.'
+    : it.g === 'ies'
+      ? 'Consonant + y: the y turns into <b>-ies</b>: ' + it.v + ' → ' + good + '.'
+      : 'Just add <b>-s</b>: ' + it.v + ' → ' + good + '. (A vowel before the y keeps it.)';
+  return {
+    kind: 'choice',
+    tag: 'Spelling',
+    sig: 'spell|' + it.v,
+    pre: cap(subj),
+    post: it.o + '. (' + it.v + ')',
+    options,
+    correct: options.indexOf(good),
+    say: cap(subj) + ' ' + good + ' ' + it.o + '.',
+    nudge: 'Look at the last letters of the verb.',
+    why
+  };
+}
+
+function gNeg() {
+  const one = Math.random() < 0.5;
+  const subj = pick(one ? P1 : P2);
+  const pair = pick(VO);
+  const v = pair[0], o = pair[1];
+  const good = (one ? "doesn't " : "don't ") + v;
+  const bad1 = (one ? "don't " : "doesn't ") + v;
+  const bad2 = (one ? "doesn't " : "don't ") + third(v);
+  const options = shuffle([good, bad1, bad2]);
+  return {
+    kind: 'choice',
+    tag: 'Saying no',
+    sig: 'neg|' + subj + '|' + v,
+    pre: cap(subj),
+    post: o + '.',
+    options,
+    correct: options.indexOf(good),
+    say: cap(subj) + ' ' + good + ' ' + o + '.',
+    nudge: 'Only one S in the sentence. Where is it hiding?',
+    why: one
+      ? 'The S jumps inside <b>doesn\'t</b>. One S only, so the verb stays plain: <b>' + v + '</b>.'
+      : '<b>don\'t</b> has no S at all, so the verb stays plain: <b>' + v + '</b>.'
+  };
+}
+
+function gQuestion() {
+  const one = Math.random() < 0.5;
+  const subj = pick(one ? P1 : P2);
+  const pair = pick(VO);
+  const v = pair[0], o = pair[1];
+
+  if (Math.random() < 0.5) {
+    const good = one ? 'Does' : 'Do';
+    const options = shuffle([good, one ? 'Do' : 'Does', 'Is']);
+    return {
+      kind: 'choice',
+      tag: 'Asking',
+      sig: 'q1|' + subj + '|' + v,
+      pre: '',
+      post: ' ' + subj + ' ' + v + ' ' + o + '?',
+      options,
+      correct: options.indexOf(good),
+      say: good + ' ' + subj + ' ' + v + ' ' + o + '?',
+      nudge: 'Who is the subject? he/she/it, or I/you/we/they?',
+      why: '<b>' + good + '</b> carries the S, so the verb stays plain: <b>' + v + '</b>.'
+    };
+  }
+
+  const good = v;
+  const options = shuffle([good, third(v)]);
+  return {
+    kind: 'choice',
+    tag: 'Asking',
+    sig: 'q2|' + subj + '|' + v,
+    pre: 'Does ' + subj,
+    post: o + '?',
+    options,
+    correct: options.indexOf(good),
+    say: 'Does ' + subj + ' ' + v + ' ' + o + '?',
+    nudge: 'The S is already in "Does". Does the verb need another one?',
+    why: 'The S is already in <b>Does</b>, so the verb stays plain: <b>' + v + '</b>.'
+  };
+}
+
+function gHave() {
+  const subj = pick(['he', 'she', 'Tom', 'my mum', 'my sister']);
+  const options = shuffle(['has', 'have', 'haves']);
+  return {
+    kind: 'choice',
+    tag: 'Special verb',
+    sig: 'have|' + subj,
+    pre: cap(subj),
+    post: 'a dog.',
+    options,
+    correct: options.indexOf('has'),
+    say: cap(subj) + ' has a dog.',
+    nudge: 'This one does not just take an S. It changes shape.',
+    why: '<b>have</b> is special: he / she / it → <b>has</b>.'
+  };
+}
+
+function gMixed() {
+  return pick([gSort, gPick, gBuild, gSpell, gNeg, gQuestion, gHave])();
+}
+
+/* ============ stations ============ */
+const STATIONS = [
+  {
+    id: 1, name: 'Who is it?', sub: 'he · she · it → S', n: 8, gen: gSort,
+    intro: {
+      title: 'First: who are we talking about?',
+      rule: 'Only <b>he · she · it</b> puts an <b>S</b> on the verb.',
+      demo: 'She play<em class="s">s</em>. &nbsp;·&nbsp; They play.',
+      tip: 'I and you are just one person too — but they use the plain verb. That is the trickiest bit, and it is very learnable.'
+    }
+  },
+  {
+    id: 2, name: 'The S goes on the verb', sub: 'play or plays?', n: 8, gen: gPick,
+    intro: {
+      title: 'The S goes on the verb',
+      rule: '<b>he · she · it</b> → verb + <b>S</b>.',
+      demo: 'Tom play<em class="s">s</em> football.',
+      tip: 'Say it out loud every time: play-SS. The tongue has to finish the word, not just the eyes.'
+    }
+  },
+  {
+    id: 3, name: 'Build the sentence', sub: 'who + verb + rest', n: 7, gen: gBuild,
+    intro: {
+      title: 'Build it yourself',
+      rule: 'WHO + VERB + the rest.',
+      demo: 'My sister &nbsp;|&nbsp; read<em class="s">s</em> &nbsp;|&nbsp; comics.',
+      tip: 'Tap the person first. The verb always comes second.'
+    }
+  },
+  {
+    id: 4, name: 'Spelling', sub: '-es · -ies · -s', n: 8, gen: gSpell,
+    intro: {
+      title: 'Three spelling families',
+      rule: '<b>ch · sh · s · x · o</b> → -es &nbsp;·&nbsp; <b>consonant + y</b> → -ies &nbsp;·&nbsp; the rest → -s',
+      demo: 'watch → watch<em class="s">es</em> &nbsp; study → stud<em class="s">ies</em> &nbsp; play → play<em class="s">s</em>',
+      tip: 'Say "watch" out loud — it already hisses, so it needs the extra e to be heard.'
+    }
+  },
+  {
+    id: 5, name: 'Saying no', sub: "don't · doesn't", n: 8, gen: gNeg,
+    intro: {
+      title: 'One S, hiding in one place',
+      rule: 'The S jumps inside <b>doesn\'t</b>. Then the verb is plain.',
+      demo: 'She doesn\'t play. &nbsp;·&nbsp; They don\'t play.',
+      tip: 'Count the S sounds. There is only ever one. If doesn\'t has it, the verb cannot.'
+    }
+  },
+  {
+    id: 6, name: 'Asking', sub: 'do · does', n: 7, gen: gQuestion,
+    intro: {
+      title: 'Asking questions',
+      rule: '<b>Does</b> he play? &nbsp; <b>Do</b> they play?',
+      demo: 'Does she like fish?',
+      tip: 'Same trick again: the S lives in "does", so the verb stays plain.'
+    }
+  },
+  {
+    id: 7, name: 'All mixed', sub: 'everything, one S', n: 8, gen: gMixed,
+    intro: {
+      title: 'All mixed up',
+      rule: 'One S. Every single time.',
+      demo: 'He plays. &nbsp; He doesn\'t play. &nbsp; Does he play?',
+      tip: 'Ask one question first: who is it? Everything else follows from that.'
+    }
+  }
+];
+
+/* ============ teacher guide ============ */
+const TUT = [
+  {
+    t: 'What this site is really teaching',
+    b: 'One rule, not six. <b>he · she · it → one <span class="kw">S</span></b> on the verb. ' +
+      'Negatives and questions are then presented as the same rule, with the S moving inside ' +
+      '<b>doesn\'t</b> and <b>does</b>. The student tracks one thing instead of memorising a table.'
+  },
+  {
+    t: 'Why station 1 has no verbs',
+    b: 'Before choosing <i>play</i> or <i>plays</i>, the student has to spot who the subject is. ' +
+      'Station 1 is only that decision: he/she/it, or I/you/we/they. Nothing to conjugate, so it ' +
+      'delivers an early win and installs the step that does all the work later.'
+  },
+  {
+    t: 'Two wrong taps, then the answer',
+    b: 'A wrong tap is not a fail. After two, the answer appears with the reason. Read the reason ' +
+      'aloud together, press the speaker, and move on — <b>do not re-drill that item</b>. ' +
+      'Repeating an error is how the error becomes automatic.'
+  },
+  {
+    t: 'Stars reward first tries only',
+    b: 'Nothing is locked and there is no pass mark, so the student cannot get stranded behind a door. ' +
+      'Stars only rise on first-try answers, which makes the score useful information for you ' +
+      'rather than pressure on the student.'
+  },
+  {
+    t: 'Make the S physical',
+    b: 'The -s is quiet and easy to miss in speech, which is exactly why it does not stick. ' +
+      'When a gold S appears, have the student tap it and say <b>"sss"</b>. A tap plus a sound ' +
+      'turns an invisible letter into something the mouth remembers.'
+  },
+  {
+    t: 'Ten minutes, run like this',
+    b: 'Stations 1 and 2 together, out loud, before anything is attempted alone. Next session: ' +
+      '3, 4, 5. Then 6 and 7. Always finish on the talking card rather than on a score — ' +
+      '"Tell me three things your mum does."'
+  }
+];
+let tutStep = 0;
+
+function showTut(step) {
+  tutStep = Math.max(0, Math.min(step, TUT.length - 1));
+  const s = TUT[tutStep];
+  const last = tutStep === TUT.length - 1;
+  const dots = TUT.map((_, i) => '<i class="' + (i <= tutStep ? 'on' : '') + '"></i>').join('');
+
+  $('#tutCard').innerHTML =
+    '<div class="tuttop">' +
+      '<span class="tutstep">Step ' + (tutStep + 1) + ' of ' + TUT.length + '</span>' +
+      '<button class="tutx" id="tutX" aria-label="Close guide">✕</button>' +
+    '</div>' +
+    '<h3 id="tutTitle">' + s.t + '</h3>' +
+    '<p>' + s.b + '</p>' +
+    '<div class="tdots">' + dots + '</div>' +
+    '<div class="tutrow">' +
+      '<button class="btn" id="tutSkip">' + (last ? 'Close' : 'Skip') + '</button>' +
+      '<span class="spacer"></span>' +
+      (tutStep > 0 ? '<button class="btn" id="tutBack">Back</button>' : '') +
+      '<button class="btn primary" id="tutNext">' + (last ? 'Start' : 'Next →') + '</button>' +
+    '</div>';
+
+  $('#tut').classList.add('on');
+  document.body.style.overflow = 'hidden';
+
+  $('#tutX').onclick = tutClose;
+  $('#tutSkip').onclick = tutClose;
+  $('#tutNext').onclick = () => { sfx('tap'); tutGo(1); };
+  const bk = $('#tutBack');
+  if (bk) bk.onclick = () => { sfx('tap'); tutGo(-1); };
+}
+
+function tutGo(d) {
+  if (tutStep + d > TUT.length - 1) { tutClose(); return; }
+  showTut(tutStep + d);
+}
+
+function tutClose() {
+  $('#tut').classList.remove('on');
+  document.body.style.overflow = '';
+  S.seenTut = true;
+  save();
+}
+
+/* ============ session ============ */
+let run = { id: null, items: [], i: 0, clean: 0, tries: 0, locked: false, placed: [] };
+
+function buildItems(id) {
+  const st = STATIONS.find(s => s.id === id);
+  const items = [];
+  const seen = {};
+  let guard = 0;
+  while (items.length < st.n && guard++ < 500) {
+    const it = st.gen();
+    if (seen[it.sig]) continue;
+    seen[it.sig] = 1;
+    items.push(it);
+  }
+  return [{ kind: 'intro', st }].concat(items);
+}
+
+function startStation(id) {
+  run = { id, items: buildItems(id), i: 0, clean: 0, tries: 0, locked: false, placed: [] };
+  $('#back').classList.remove('hide');
+  render();
+}
+
+function render() {
+  const it = run.items[run.i];
+  if (!it) { finish(); return; }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (it.kind === 'intro') { renderIntro(it); return; }
+  run.tries = 0;
+  run.locked = false;
+  run.placed = [];
+  paintBar();
+  if (it.kind === 'build') renderBuild(it);
+  else if (it.kind === 'sort') renderSort(it);
+  else renderChoice(it);
+  bindSpeakers();
+}
+
+function bindSpeakers() {
+  $$('.spk[data-say]').forEach(b => {
+    b.onclick = () => { sfx('tap'); say(b.dataset.say); };
+  });
+}
+
+function paintBar() {
+  const total = run.items.length - 1;
+  const at = Math.max(0, run.i - 1);
+  const pct = total ? Math.round((at / total) * 100) : 0;
+  const bar = $('#pbar');
+  if (bar) {
+    bar.innerHTML = '<div class="track"><div class="fill" style="width:' + pct + '%"></div></div>' +
+      '<span class="cnt">' + run.i + ' / ' + total + '</span>';
+  }
+}
+
+function renderIntro(it) {
+  const st = it.st;
+  $('#stage').innerHTML =
+    '<div class="card">' +
+      '<span class="kick">Station ' + st.id + ' of 7</span>' +
+      '<h2>' + st.intro.title + '</h2>' +
+      '<p class="rule">' + st.intro.rule + '</p>' +
+      '<div class="demo">' + st.intro.demo + '</div>' +
+      '<p class="tip"><b>Tip.</b> ' + st.intro.tip + '</p>' +
+      '<button class="btn primary wide" id="go">Start · ' + st.n + ' questions</button>' +
+    '</div>';
+  $('#go').onclick = () => { sfx('tap'); run.i++; render(); };
+}
+
+function renderSort(it) {
+  const total = run.items.length - 1;
+  $('#stage').innerHTML =
+    '<div class="pbar" id="pbar"></div>' +
+    '<div class="card">' +
+      '<div class="qhead"><span class="tag">Who is it?</span>' +
+        '<span class="qnum">' + run.i + ' / ' + total + '</span></div>' +
+      '<p class="lead">Does the verb take an S?</p>' +
+      '<div class="subject">' + esc(cap(it.subject)) +
+        '<button class="spk" data-say="' + esc(it.say) + '" aria-label="Listen">🔊</button></div>' +
+      '<div class="opts buckets" id="opts">' +
+        '<button class="opt bucket" data-i="0"><b>he · she · it</b>' +
+          '<span>the verb takes <em class="s">S</em></span></button>' +
+        '<button class="opt bucket" data-i="1"><b>I · you · we · they</b>' +
+          '<span>the plain verb</span></button>' +
+      '</div>' +
+      '<button class="ghost" id="hintBtn">Show me a hint</button>' +
+      '<div class="fb" id="fb" aria-live="polite"></div>' +
+    '</div>';
+  paintBar();
+  $$('#opts .opt').forEach(b => {
+    b.onclick = () => choose(Number(b.dataset.i), it);
+  });
+  $('#hintBtn').onclick = function () {
+    sfx('tap');
+    this.style.display = 'none';
+    const box = $('#fb');
+    box.className = 'fb soft';
+    box.innerHTML = '<div class="fbtop">Hint</div><p>' + esc(it.hint) + '</p>';
+  };
+}
+
+function renderChoice(it) {
+  const total = run.items.length - 1;
+  const opts = it.options.map((o, i) =>
+    '<button class="opt" data-i="' + i + '">' + esc(o) + '</button>').join('');
+  $('#stage').innerHTML =
+    '<div class="pbar" id="pbar"></div>' +
+    '<div class="card">' +
+      '<div class="qhead"><span class="tag">' + esc(it.tag) + '</span>' +
+        '<span class="qnum">' + run.i + ' / ' + total + '</span></div>' +
+      '<div class="stem"><span>' + esc(it.pre) + '</span> ' +
+        '<span class="blank" id="blank">?</span> ' +
+        '<span>' + esc(it.post) + '</span></div>' +
+      '<div class="opts" id="opts">' + opts + '</div>' +
+      '<div class="fb" id="fb" aria-live="polite"></div>' +
+    '</div>';
+  paintBar();
+  $$('#opts .opt').forEach(b => {
+    b.onclick = () => choose(Number(b.dataset.i), it);
+  });
+}
+
+function choose(i, it) {
+  if (run.locked) return;
+  const btns = $$('#opts .opt');
+  const blank = $('#blank');
+
+  if (i === it.correct) {
+    run.locked = true;
+    btns.forEach((b, k) => {
+      b.disabled = true;
+      if (k === i) b.classList.add('ok');
+    });
+    if (blank) {
+      blank.innerHTML = '<b>' + markS(it.options[i]) + '</b>';
+      blank.classList.add('filled');
+    }
+    if (run.tries === 0) run.clean++;
+    feedback(true, it, false);
+  } else {
+    run.tries++;
+    if (btns[i]) { btns[i].classList.add('no'); btns[i].disabled = true; }
+    if (run.tries >= 2) {
+      run.locked = true;
+      btns.forEach(b => { b.disabled = true; });
+      if (btns[it.correct]) btns[it.correct].classList.add('ok');
+      if (blank) {
+        blank.innerHTML = '<b>' + markS(it.options[it.correct]) + '</b>';
+        blank.classList.add('filled');
+      }
+      feedback(false, it, true);
+    } else {
+      sfx('no');
+      const box = $('#fb');
+      box.className = 'fb soft';
+      box.innerHTML = '<div class="fbtop">Not that one.</div><p>' +
+        esc(it.nudge) + '</p>';
+    }
+  }
+}
+
+function renderBuild(it) {
+  const total = run.items.length - 1;
+  $('#stage').innerHTML =
+    '<div class="pbar" id="pbar"></div>' +
+    '<div class="card">' +
+      '<div class="qhead"><span class="tag">Build it</span>' +
+        '<span class="qnum">' + run.i + ' / ' + total + '</span></div>' +
+      '<p class="lead">Tap the words in the right order.</p>' +
+      '<div class="line" id="line"></div>' +
+      '<div class="bank" id="bank"></div>' +
+      '<button class="btn primary wide" id="check" disabled>Check</button>' +
+      '<div class="fb" id="fb" aria-live="polite"></div>' +
+    '</div>';
+  paintBar();
+  paintLine(it);
+  paintBank(it);
+  $('#check').onclick = () => {
+    if (run.locked) return;
+    const made = run.placed.map(k => it.tokens[k].t).join(' ');
+    if (made === it.answer.join(' ')) {
+      run.locked = true;
+      if (run.tries === 0) run.clean++;
+      $('#check').disabled = true;
+      feedback(true, it, false);
+    } else {
+      run.tries++;
+      if (run.tries >= 2) {
+        run.locked = true;
+        $('#check').disabled = true;
+        $('#line').innerHTML = '<span class="fixedline">' + esc(it.answer.join(' ')) + '.</span>';
+        feedback(false, it, true);
+      } else {
+        sfx('no');
+        const box = $('#fb');
+        box.className = 'fb soft';
+        box.innerHTML = '<div class="fbtop">Not yet.</div><p>' + esc(it.nudge) + '</p>';
+      }
+    }
+  };
+}
+
+function paintLine(it) {
+  const line = $('#line');
+  if (!line) return;
+  if (!run.placed.length) {
+    line.innerHTML = '<span class="ph">tap the words below</span>';
+    return;
+  }
+  line.innerHTML = '';
+  run.placed.forEach((idx, pos) => {
+    const tok = it.tokens[idx];
+    const c = document.createElement('button');
+    c.className = 'chip placed';
+    c.innerHTML = tok.verb ? markS(tok.t) : esc(tok.t);
+    c.onclick = () => {
+      if (run.locked) return;
+      run.placed.splice(pos, 1);
+      paintLine(it); paintBank(it);
+    };
+    line.appendChild(c);
+  });
+  const dot = document.createElement('span');
+  dot.className = 'dotend';
+  dot.textContent = '.';
+  line.appendChild(dot);
+}
+
+function paintBank(it) {
+  const bank = $('#bank');
+  bank.innerHTML = '';
+  it.tokens.forEach((tok, idx) => {
+    if (run.placed.indexOf(idx) !== -1) return;
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = tok.t;
+    b.onclick = () => {
+      if (run.locked) return;
+      sfx('tap');
+      run.placed.push(idx);
+      paintLine(it); paintBank(it);
+    };
+    bank.appendChild(b);
+  });
+  const check = $('#check');
+  if (check) check.disabled = run.placed.length !== it.tokens.length || run.locked;
+}
+
+function feedback(ok, it, revealed) {
+  const box = $('#fb');
+  if (!box) return;
+  let html = '';
+  if (ok) {
+    box.className = 'fb ok';
+    html = '<div class="fbtop">' + pick(['Yes!', "That's it!", 'Exactly!', 'Nice one!']) +
+      ' <span class="miniS">S</span></div>' +
+      '<p>' + it.why + '</p>' +
+      '<div class="row">' +
+        '<button class="spk big" data-say="' + esc(it.say) + '">🔊 Say it</button>' +
+        '<button class="btn primary" id="nextBtn">Next →</button>' +
+      '</div>';
+    sfx('ok');
+  } else if (revealed) {
+    box.className = 'fb no';
+    html = '<div class="fbtop">This is the one:</div>' +
+      '<p>' + it.why + '</p>' +
+      '<div class="row">' +
+        '<button class="spk big" data-say="' + esc(it.say) + '">🔊 Say it</button>' +
+        '<button class="btn" id="nextBtn">Next →</button>' +
+      '</div>';
+  }
+  box.innerHTML = html;
+  bindSpeakers();
+  const nb = $('#nextBtn');
+  if (nb) nb.onclick = () => { sfx('tap'); run.i++; render(); };
+}
+
+function finish() {
+  const total = run.items.length - 1;
+  const clean = run.clean;
+  const pct = total ? Math.round((clean / total) * 100) : 0;
+  const stars = clean === total ? 3 : pct >= 70 ? 2 : pct >= 40 ? 1 : 0;
+  const prev = S.stars[run.id] || 0;
+  S.stars[run.id] = Math.max(prev, stars);
+  S.plays = (S.plays || 0) + 1;
+  save();
+
+  const nextSt = STATIONS.find(s => s.id === run.id + 1);
+  const isLast = run.id === 7;
+  const starRow = '★'.repeat(stars) + '<span class="off">' + '★'.repeat(3 - stars) + '</span>';
+
+  const head = clean === total ? 'Perfect run.' : 'Station finished.';
+  const msg = 'First-try answers: <b>' + clean + ' of ' + total + '</b>.';
+  const extra = stars < 3
+    ? '<p class="sub">Stars only go up when the answer is right first try. This station can be replayed any time.</p>'
+    : '<p class="sub">Every one, first try. That is what "automatic" feels like.</p>';
+
+  let talk = '';
+  if (isLast) {
+    talk = '<div class="fb ok" style="margin-top:18px;text-align:left">' +
+      '<div class="fbtop">Now say it out loud 🗣️</div>' +
+      '<p>1. Three things you do every day. (<i>I wake up… I eat… I play…</i>)<br>' +
+      '2. Three things someone in your family does. (<i>My mum works… She cooks…</i>)<br>' +
+      '3. Two things you never do. (<i>I never…</i>)<br>' +
+      '4. Two things your friend doesn\'t do.</p>' +
+      '<p style="margin:0"><b>Remember:</b> he / she / it → one S. Every time.</p></div>';
+  }
+
+  $('#stage').innerHTML =
+    '<div class="card center">' +
+      '<div class="bigstars">' + starRow + '</div>' +
+      '<h2>' + head + '</h2>' +
+      '<p class="sub">' + msg + '</p>' +
+      extra + talk +
+      '<div class="row">' +
+        '<button class="btn" id="again">↻ Again</button>' +
+        (nextSt ? '<button class="btn primary" id="nextSt">' + nextSt.name + ' →</button>' : '') +
+        '<button class="btn" id="home">All stations</button>' +
+      '</div>' +
+    '</div>';
+
+  $('#again').onclick = () => { sfx('tap'); startStation(run.id); };
+  $('#home').onclick = () => { sfx('tap'); goHome(); };
+  const nb = $('#nextSt');
+  if (nb) nb.onclick = () => { sfx('tap'); startStation(run.id + 1); };
+  $('#back').classList.add('hide');
+}
+
+/* ============ home ============ */
+function goHome() {
+  $('#back').classList.add('hide');
+  renderHome();
+}
+
+function renderHome() {
+  const rows = STATIONS.map(st => {
+    const s = S.stars[st.id] || 0;
+    const star = '★'.repeat(s) + '<span class="off">' + '★'.repeat(3 - s) + '</span>';
+    return '<button class="stn" data-id="' + st.id + '">' +
+      '<span class="num">' + st.id + '</span>' +
+      '<span class="stxt"><b>' + st.name + '</b><span>' + st.sub + '</span></span>' +
+      '<span class="stars">' + star + '</span>' +
+    '</button>';
+  }).join('');
+
+  $('#stage').innerHTML =
+    '<div class="hero">' +
+      '<span class="heros">S</span>' +
+      '<div><h1>One S. That is the whole trick.</h1>' +
+      '<p>Seven short stations. One decision at a time. Nothing locks, so any order works.</p></div>' +
+    '</div>' +
+    '<div class="list">' + rows + '</div>' +
+    '<details class="teach">' +
+      '<summary>For the teacher</summary>' +
+      '<p><b>Do stations 1 and 2 together, out loud, before the student works alone.</b> ' +
+      'The goal is not the score — it is that the -s stops being invisible.</p>' +
+      '<ol>' +
+        '<li>Name the subject first, every time: "Who is it? … She. One person. So…"</li>' +
+        '<li>Have the student tap the gold S with a finger when it appears and say "sss".</li>' +
+        '<li>After two wrong answers the site shows the answer. Read the reason out loud together, then move on — do not re-drill a failed item.</li>' +
+        '<li>Two stations per session is plenty. Short and daily beats long and weekly.</li>' +
+        '<li>Finish with 60 seconds of real talk: "Tell me three things your mum does."</li>' +
+      '</ol>' +
+      '<p><button class="btn" id="guideBtn2" style="font-size:.78rem;padding:8px 12px">Open the guide</button></p>' +
+      '<p style="margin-bottom:0"><button class="btn" id="resetBtn" style="font-size:.78rem;padding:8px 12px">Reset all progress</button></p>' +
+    '</details>';
+
+  $$('.stn').forEach(b => {
+    b.onclick = () => { sfx('tap'); startStation(Number(b.dataset.id)); };
+  });
+  $('#guideBtn2').onclick = () => { sfx('tap'); showTut(0); };
+  $('#resetBtn').onclick = () => {
+    if (!confirm('Reset all stars?')) return;
+    S.stars = {};
+    S.plays = 0;
+    save();
+    renderHome();
+  };
+}
+
+/* ============ chrome ============ */
+function openDrawer() {
+  $('#drawer').classList.add('on');
+  $('#drawer').setAttribute('aria-hidden', 'false');
+  $('#scrim').classList.add('on');
+}
+function closeDrawer() {
+  $('#drawer').classList.remove('on');
+  $('#drawer').setAttribute('aria-hidden', 'true');
+  $('#scrim').classList.remove('on');
+}
+
+$('#back').onclick = () => { sfx('tap'); goHome(); };
+$('#guideBtn').onclick = () => { sfx('tap'); showTut(0); };
+$('#rulesBtn').onclick = () => { sfx('tap'); openDrawer(); };
+$('#closeDrawer').onclick = closeDrawer;
+$('#scrim').onclick = closeDrawer;
+$('#sndBtn').onclick = function () {
+  S.sound = !S.sound;
+  this.textContent = S.sound ? '🔊' : '🔇';
+  save();
+  if (S.sound) sfx('ok');
+};
+
+document.addEventListener('keydown', e => {
+  const tutOpen = $('#tut').classList.contains('on');
+  if (tutOpen) {
+    if (e.key === 'Escape') { tutClose(); return; }
+    if (e.key === 'Enter' || e.key === 'ArrowRight') { e.preventDefault(); tutGo(1); return; }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); tutGo(-1); return; }
+    return;
+  }
+  if (e.key === 'Escape') closeDrawer();
+  if (e.key === 'Enter') {
+    const nb = $('#nextBtn');
+    if (nb) { e.preventDefault(); nb.click(); return; }
+    const go = $('#go');
+    if (go) { e.preventDefault(); go.click(); return; }
+  }
+  const n = Number(e.key);
+  if (n >= 1 && n <= 3) {
+    const b = $$('#opts .opt')[n - 1];
+    if (b && !b.disabled) b.click();
+  }
+});
+
+/* ============ init ============ */
+load();
+$('#sndBtn').textContent = S.sound ? '🔊' : '🔇';
+renderHome();
+if (!S.seenTut) showTut(0);
+</script>
+</body>
+</html>
